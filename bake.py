@@ -1,24 +1,23 @@
 """
-halcyon-news-bake — pre-bake Edge-TTS MP3s for the 6 Halcyon Audio news apps
-so the Android Automotive OS flavors play real audio URLs through ExoPlayer
-(no system TTS dependency, no MainActivity wake-up, no audio-focus shims).
+halcyon-news-bake — pre-bake MP3s for the 6 Halcyon Audio news apps so the
+Android Automotive OS flavors play real audio URLs through ExoPlayer (no
+system TTS dependency, no MainActivity wake-up, no audio-focus shims).
+
+Uses gTTS (Google Translate TTS, free, no auth, works from any IP) — we
+switched from edge-tts because Microsoft blocks the Edge synthesis endpoint
+from GitHub Actions / cloud datacenter IPs (403 WSServerHandshakeError).
 
 Architecture:
   1. For each app, fetch its Cloudflare Worker feed across all categories.
   2. For each article, compute a stable MP3 key = sha256(article.id)[:32] + ".mp3".
-  3. If the key already exists in R2, skip. Otherwise, synthesize with Edge-TTS
+  3. If the key already exists in R2, skip. Otherwise, synthesize with gTTS
      in the app's primary language and upload to R2 with a long Cache-Control.
   4. Public URL pattern: https://pub-<r2-hash>.r2.dev/<key>
      The app predicts the same URL deterministically and hands it to ExoPlayer.
-
-Runs on GitHub Actions (free unlimited minutes on public repo). Cron schedule
-fires every 15 minutes past the hour. Single bake run is bounded by the workflow
-timeout-minutes setting (60).
 """
 
 from __future__ import annotations
 
-import asyncio
 import hashlib
 import os
 import re
@@ -29,9 +28,9 @@ from io import BytesIO
 from typing import Any
 
 import boto3
-import edge_tts
 import requests
 from botocore.exceptions import ClientError
+from gtts import gTTS
 
 # ---------- Configuration --------------------------------------------------
 
@@ -40,44 +39,50 @@ R2_SECRET_KEY = os.environ["R2_SECRET_ACCESS_KEY"]
 R2_ENDPOINT = os.environ["R2_ENDPOINT_URL"]
 R2_BUCKET = os.environ.get("R2_BUCKET", "halcyon-news-tts")
 
-# Per-app primary language + Edge-TTS voice. Bake server speaks the article
-# title + summary in this voice. The phone in-app path keeps using real-time
+# Per-app primary gTTS language code. Bake server speaks the article
+# title + summary in this language. The phone in-app path keeps using real-time
 # system TTS for language switches; AAOS uses these pre-baked MP3s only.
 APPS: list[dict[str, Any]] = [
     {
         "slug": "kpop",
         "feed_url": "https://kpop-today.buzz9362.workers.dev/feed",
-        "voice": "en-US-AndrewNeural",
+        "lang": "en",
+        "tld": "us",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "bollywood",
         "feed_url": "https://bollywood-today.buzz9362.workers.dev/feed",
-        "voice": "en-US-AndrewNeural",
+        "lang": "en",
+        "tld": "us",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "anime",
         "feed_url": "https://anime-brief.buzz9362.workers.dev/feed",
-        "voice": "en-US-AndrewNeural",
+        "lang": "en",
+        "tld": "us",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "tropic",
         "feed_url": "https://kpop-tropic.buzz9362.workers.dev/feed",
-        "voice": "en-US-AndrewNeural",
+        "lang": "en",
+        "tld": "us",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "hype",
         "feed_url": "https://hype-id.buzz9362.workers.dev/feed",
-        "voice": "id-ID-ArdiNeural",
+        "lang": "id",
+        "tld": "co.id",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "tinh",
         "feed_url": "https://tinh-tu.buzz9362.workers.dev/feed",
-        "voice": "vi-VN-NamMinhNeural",
+        "lang": "vi",
+        "tld": "com.vn",
         "categories": ["latest", "trending", "charts"],
     },
 ]
@@ -149,12 +154,10 @@ def text_for(article: dict) -> str:
     body = " ".join(body_parts).strip()
     return body[:MAX_TEXT_LEN]
 
-async def synth_to_mp3(text: str, voice: str) -> bytes:
-    communicate = edge_tts.Communicate(text, voice)
+def synth_to_mp3(text: str, lang: str, tld: str) -> bytes:
+    tts = gTTS(text=text, lang=lang, tld=tld, slow=False)
     buf = BytesIO()
-    async for chunk in communicate.stream():
-        if chunk["type"] == "audio":
-            buf.write(chunk["data"])
+    tts.write_to_fp(buf)
     return buf.getvalue()
 
 # ---------- Per-app bake loop ----------------------------------------------
@@ -162,7 +165,8 @@ async def synth_to_mp3(text: str, voice: str) -> bytes:
 def bake_app(app: dict[str, Any]) -> tuple[int, int]:
     """Returns (baked_count, skipped_count) for logging."""
     slug = app["slug"]
-    voice = app["voice"]
+    lang = app["lang"]
+    tld = app["tld"]
     feed_url = app["feed_url"]
     baked = 0
     skipped = 0
@@ -201,7 +205,7 @@ def bake_app(app: dict[str, Any]) -> tuple[int, int]:
                 continue
 
             try:
-                mp3 = asyncio.run(synth_to_mp3(text, voice))
+                mp3 = synth_to_mp3(text, lang, tld)
                 upload(key, mp3)
                 baked += 1
                 print(f"[{slug}] baked {aid[:40]}... -> {key} ({len(mp3)} bytes)")
