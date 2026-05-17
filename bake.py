@@ -46,37 +46,37 @@ R2_BUCKET = os.environ.get("R2_BUCKET", "halcyon-news-tts")
 APPS: list[dict[str, Any]] = [
     {
         "slug": "kpop",
-        "feed_url": "https://kpop-today.workers.dev/feed",
+        "feed_url": "https://kpop-today.buzz9362.workers.dev/feed",
         "voice": "en-US-AndrewNeural",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "bollywood",
-        "feed_url": "https://bollywood-today.workers.dev/feed",
+        "feed_url": "https://bollywood-today.buzz9362.workers.dev/feed",
         "voice": "en-US-AndrewNeural",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "anime",
-        "feed_url": "https://anime-brief.workers.dev/feed",
+        "feed_url": "https://anime-brief.buzz9362.workers.dev/feed",
         "voice": "en-US-AndrewNeural",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "tropic",
-        "feed_url": "https://kpop-tropic.workers.dev/feed",
+        "feed_url": "https://kpop-tropic.buzz9362.workers.dev/feed",
         "voice": "en-US-AndrewNeural",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "hype",
-        "feed_url": "https://hype-id.workers.dev/feed",
+        "feed_url": "https://hype-id.buzz9362.workers.dev/feed",
         "voice": "id-ID-ArdiNeural",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "tinh",
-        "feed_url": "https://tinh-tu.workers.dev/feed",
+        "feed_url": "https://tinh-tu.buzz9362.workers.dev/feed",
         "voice": "vi-VN-NamMinhNeural",
         "categories": ["latest", "trending", "charts"],
     },
