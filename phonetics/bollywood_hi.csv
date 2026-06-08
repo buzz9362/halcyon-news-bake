@@ -1,0 +1,101 @@
+Name,Phonetic
+# Bollywood Today — Hindi (Devanagari) transliteration table.
+# Format: Name,Phonetic. Loaded by TtsPronunciation.loadCsvAssets at startup.
+# Goal: rewrite Latin-script proper nouns to their conventional Devanagari
+# spelling so Kokoro / Google's Hindi TTS voice (hi-IN) reads them with
+# native Hindi phonemes instead of stumbling on Latin script.
+# Verified May 2026.
+#
+# === Top male stars ===
+Shah Rukh Khan,शाहरुख़ ख़ान
+Shahrukh Khan,शाहरुख़ ख़ान
+SRK,शाहरुख़
+Salman Khan,सलमान ख़ान
+Aamir Khan,आमिर ख़ान
+Amir Khan,आमिर ख़ान
+Akshay Kumar,अक्षय कुमार
+Hrithik Roshan,रितिक रोशन
+Hrithik,रितिक
+Ranbir Kapoor,रणबीर कपूर
+Ranveer Singh,रणवीर सिंह
+Vicky Kaushal,विक्की कौशल
+Ayushmann Khurrana,आयुष्मान खुराना
+Rajkummar Rao,राजकुमार राव
+Rajkumar Rao,राजकुमार राव
+Kartik Aaryan,कार्तिक आर्यन
+Sidharth Malhotra,सिद्धार्थ मल्होत्रा
+Varun Dhawan,वरुण धवन
+Tiger Shroff,टाइगर श्रॉफ़
+Shahid Kapoor,शाहिद कपूर
+Ajay Devgn,अजय देवगन
+Amitabh Bachchan,अमिताभ बच्चन
+Big B,अमिताभ बच्चन
+Abhishek Bachchan,अभिषेक बच्चन
+Pankaj Tripathi,पंकज त्रिपाठी
+Nawazuddin Siddiqui,नवाज़ुद्दीन सिद्दीक़ी
+Anil Kapoor,अनिल कपूर
+Saif Ali Khan,सैफ़ अली ख़ान
+# === Top female stars ===
+Alia Bhatt,आलिया भट्ट
+Deepika Padukone,दीपिका पादुकोण
+Priyanka Chopra,प्रियंका चोपड़ा
+Katrina Kaif,कैटरीना कैफ़
+Kareena Kapoor,करीना कपूर
+Anushka Sharma,अनुष्का शर्मा
+Kangana Ranaut,कंगना रनौत
+Vidya Balan,विद्या बालन
+Madhuri Dixit,माधुरी दीक्षित
+Aishwarya Rai,ऐश्वर्या राय
+Sonakshi Sinha,सोनाक्षी सिन्हा
+Sonam Kapoor,सोनम कपूर
+Kriti Sanon,कृति सेनन
+Kiara Advani,कियारा आडवाणी
+Janhvi Kapoor,जान्हवी कपूर
+Sara Ali Khan,सारा अली ख़ान
+Ananya Panday,अनन्या पांडे
+Shraddha Kapoor,श्रद्धा कपूर
+Disha Patani,दिशा पटानी
+Jacqueline Fernandez,जैकलीन फ़र्नांडिस
+Taapsee Pannu,तापसी पन्नू
+Rashmika Mandanna,रश्मिका मंदाना
+Nora Fatehi,नोरा फ़तेही
+# === Directors / producers / music ===
+Karan Johar,करण जौहर
+Sanjay Leela Bhansali,संजय लीला भंसाली
+Rajkumar Hirani,राजकुमार हिरानी
+Imtiaz Ali,इम्तियाज़ अली
+Farhan Akhtar,फ़रहान अख़्तर
+Zoya Akhtar,ज़ोया अख़्तर
+AR Rahman,ए आर रहमान
+A.R. Rahman,ए आर रहमान
+Arijit Singh,अरिजीत सिंह
+Shreya Ghoshal,श्रेया घोषाल
+# === Studios ===
+Yash Raj Films,यशराज फ़िल्म्स
+YRF,यशराज
+Dharma Productions,धर्मा प्रोडक्शन्स
+T-Series,टी सीरीज़
+T Series,टी सीरीज़
+# === Trade vocabulary ===
+Bollywood,बॉलीवुड
+Box Office,बॉक्स ऑफ़िस
+box office,बॉक्स ऑफ़िस
+Filmfare,फ़िल्मफ़ेयर
+IIFA,आईफ़ा
+Cannes,कान
+Oscars,ऑस्कर
+Hollywood,हॉलीवुड
+OTT,ओ टी टी
+Netflix,नेटफ़्लिक्स
+Amazon Prime,ऐमेज़ॉन प्राइम
+Prime Video,प्राइम वीडियो
+Hotstar,हॉटस्टार
+Disney+,डिज़्नी प्लस
+ZEE5,ज़ी फ़ाइव
+Zee5,ज़ी फ़ाइव
+Sony Liv,सोनी लिव
+SonyLIV,सोनी लिव
+JioCinema,जियो सिनेमा
+Jio Cinema,जियो सिनेमा
+crore,करोड़
+lakhs,लाख

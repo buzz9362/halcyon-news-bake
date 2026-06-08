@@ -87,6 +87,18 @@ APPS: list[dict[str, Any]] = [
     },
 ]
 
+# Hindi pass — only baked on explicit FORCE_APP=bollywood_hi (so a scheduled run
+# never bakes Hindi against a worker that doesn't serve /feed?lang=hi yet). gTTS hi.
+HINDI_APPS: list[dict[str, Any]] = [
+    {
+        "slug": "bollywood",
+        "feed_url": "https://bollywood-today.buzz9362.workers.dev/feed?lang=hi",
+        "lang": "hi",
+        "tld": "co.in",
+        "phonetics_slug": "bollywood_hi",
+    },
+]
+
 MAX_TEXT_LEN = 4000      # Edge-TTS handles ~8k cleanly, cap at 4k for AAOS cadence
 MIN_TEXT_LEN = 20        # below this, the article is just a stub — skip
 FEED_TIMEOUT_S = 30
@@ -98,6 +110,7 @@ MAX_NEW_BAKES_PER_APP = 30   # cap so one app can't exhaust the GHA timeout
 import re as _re
 PHONETICS = {
     "bollywood": "phonetics/bollywood_en.csv",
+    "bollywood_hi": "phonetics/bollywood_hi.csv",
 }
 # FORCE_APP="bollywood" (or "all") re-bakes that app ignoring the R2 cache +
 # per-app cap, so a pronunciation/voice change overwrites the old audio.
@@ -268,6 +281,38 @@ def bake_app(app: dict[str, Any]) -> tuple[int, int]:
 
     return baked, skipped
 
+# ---------- Hindi pass -----------------------------------------------------
+
+def bake_hindi(app: dict[str, Any]) -> tuple[int, int]:
+    """Bake the Hindi feed with gTTS hi. Always overwrites (small set, explicit
+    trigger only) so a voice/source change propagates."""
+    slug = app["slug"]
+    baked = 0
+    try:
+        r = requests.get(app["feed_url"], timeout=FEED_TIMEOUT_S)
+        r.raise_for_status()
+        items = r.json().get("items", [])
+    except Exception as e:
+        print(f"[{slug}/hi] feed fetch failed: {e}")
+        return 0, 0
+    print(f"[{slug}/hi] feed has {len(items)} items")
+    for article in items:
+        aid = article.get("id")
+        if not aid:
+            continue
+        text = apply_phonetics(text_for(article), app["phonetics_slug"])
+        if len(text) < MIN_TEXT_LEN:
+            continue
+        try:
+            mp3 = synth_to_mp3(text, app["lang"], app["tld"])
+            upload(article_key(aid), mp3)
+            baked += 1
+            print(f"[{slug}/hi] baked {aid[:40]} -> {article_key(aid)} ({len(mp3)} bytes)")
+        except Exception as e:
+            print(f"[{slug}/hi] bake failed for {aid[:30]}: {e}")
+            traceback.print_exc()
+    return baked, 0
+
 # ---------- Main -----------------------------------------------------------
 
 def main() -> int:
@@ -278,6 +323,12 @@ def main() -> int:
         b, s = bake_app(app)
         total_baked += b
         total_skipped += s
+    # Hindi pass only on explicit trigger (worker must serve /feed?lang=hi first).
+    if FORCE_APP in ("bollywood_hi", "all_hi"):
+        for app in HINDI_APPS:
+            b, s = bake_hindi(app)
+            total_baked += b
+            total_skipped += s
     elapsed = time.monotonic() - started
     print(f"\nSummary: {total_baked} baked, {total_skipped} already-cached, {elapsed:.1f}s")
     return 0
