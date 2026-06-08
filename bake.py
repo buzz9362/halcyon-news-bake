@@ -287,10 +287,12 @@ def bake_app(app: dict[str, Any]) -> tuple[int, int]:
 # ---------- Hindi pass -----------------------------------------------------
 
 def bake_hindi(app: dict[str, Any]) -> tuple[int, int]:
-    """Bake the Hindi feed with gTTS hi. Always overwrites (small set, explicit
-    trigger only) so a voice/source change propagates."""
+    """Bake the Hindi feed with gTTS hi. Incremental on the cron (skips already-
+    baked keys, like English); FORCE_APP=bollywood_hi/all_hi re-bakes all."""
     slug = app["slug"]
+    force = FORCE_APP in (slug, "all", "bollywood_hi", "all_hi")
     baked = 0
+    skipped = 0
     try:
         r = requests.get(app["feed_url"], timeout=FEED_TIMEOUT_S)
         r.raise_for_status()
@@ -298,10 +300,14 @@ def bake_hindi(app: dict[str, Any]) -> tuple[int, int]:
     except Exception as e:
         print(f"[{slug}/hi] feed fetch failed: {e}")
         return 0, 0
-    print(f"[{slug}/hi] feed has {len(items)} items")
+    print(f"[{slug}/hi] feed has {len(items)} items (force={force})")
     for article in items:
         aid = article.get("id")
         if not aid:
+            continue
+        key = article_key(aid)
+        if not force and r2_exists(key):
+            skipped += 1
             continue
         # Amar Ujala gives clean Hindi title + summary, so read the full text like
         # the English path; phonetics_hi transliterates any Latin names to Devanagari.
@@ -310,13 +316,15 @@ def bake_hindi(app: dict[str, Any]) -> tuple[int, int]:
             continue
         try:
             mp3 = synth_to_mp3(text, app["lang"], app["tld"])
-            upload(article_key(aid), mp3)
+            upload(key, mp3)
             baked += 1
-            print(f"[{slug}/hi] baked {aid[:40]} -> {article_key(aid)} ({len(mp3)} bytes)")
+            print(f"[{slug}/hi] baked {aid[:40]} -> {key} ({len(mp3)} bytes)")
         except Exception as e:
             print(f"[{slug}/hi] bake failed for {aid[:30]}: {e}")
             traceback.print_exc()
-    return baked, 0
+        if not force and baked >= MAX_NEW_BAKES_PER_APP:
+            break
+    return baked, skipped
 
 # ---------- Main -----------------------------------------------------------
 
@@ -328,12 +336,12 @@ def main() -> int:
         b, s = bake_app(app)
         total_baked += b
         total_skipped += s
-    # Hindi pass only on explicit trigger (worker must serve /feed?lang=hi first).
-    if FORCE_APP in ("bollywood_hi", "all_hi"):
-        for app in HINDI_APPS:
-            b, s = bake_hindi(app)
-            total_baked += b
-            total_skipped += s
+    # Hindi pass — runs every cron now that the worker serves /feed?lang=hi.
+    # bake_hindi is incremental (skips already-baked), so it just adds new ones.
+    for app in HINDI_APPS:
+        b, s = bake_hindi(app)
+        total_baked += b
+        total_skipped += s
     elapsed = time.monotonic() - started
     print(f"\nSummary: {total_baked} baked, {total_skipped} already-cached, {elapsed:.1f}s")
     return 0
