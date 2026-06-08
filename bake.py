@@ -300,6 +300,8 @@ def bake_hindi(app: dict[str, Any]) -> tuple[int, int]:
         aid = article.get("id")
         if not aid:
             continue
+        # Amar Ujala gives clean Hindi title + summary, so read the full text like
+        # the English path; phonetics_hi transliterates any Latin names to Devanagari.
         text = apply_phonetics(text_for(article), app["phonetics_slug"])
         if len(text) < MIN_TEXT_LEN:
             continue
