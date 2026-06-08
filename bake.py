@@ -100,6 +100,9 @@ HINDI_APPS: list[dict[str, Any]] = [
 ]
 
 MAX_TEXT_LEN = 4000      # Edge-TTS handles ~8k cleanly, cap at 4k for AAOS cadence
+FAIR_USE_SNIPPET = 350   # match the app's Article.kt snippet(maxChars=350) for
+                         # ALL_RIGHTS_RESERVED sources — the baked audio must not
+                         # reproduce more of a publisher's text than the app shows.
 MIN_TEXT_LEN = 20        # below this, the article is just a stub — skip
 FEED_TIMEOUT_S = 30
 MAX_NEW_BAKES_PER_APP = 30   # cap so one app can't exhaust the GHA timeout
@@ -207,7 +210,7 @@ def text_for(article: dict) -> str:
         if not title.endswith((".", "!", "?")):
             body_parts.append(".")
     if summary and summary.lower() != title.lower():
-        body_parts.append(summary)
+        body_parts.append(summary[:FAIR_USE_SNIPPET])  # fair-use excerpt cap
     body = " ".join(body_parts).strip()
     return body[:MAX_TEXT_LEN]
 
