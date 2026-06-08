@@ -92,6 +92,50 @@ MIN_TEXT_LEN = 20        # below this, the article is just a stub — skip
 FEED_TIMEOUT_S = 30
 MAX_NEW_BAKES_PER_APP = 30   # cap so one app can't exhaust the GHA timeout
 
+# Jun 9 2026 — per-app pronunciation tables (copied from each app's
+# assets/phonetics_en.csv). gTTS ignores the in-app CSV, so apply the same
+# respellings here before synthesis. Tuned for Google TTS English.
+import re as _re
+PHONETICS = {
+    "bollywood": "phonetics/bollywood_en.csv",
+}
+# FORCE_APP="bollywood" (or "all") re-bakes that app ignoring the R2 cache +
+# per-app cap, so a pronunciation/voice change overwrites the old audio.
+FORCE_APP = os.environ.get("FORCE_APP", "").strip().lower()
+
+_phon_cache: dict[str, list] = {}
+def load_phonetics(slug: str) -> list:
+    if slug in _phon_cache:
+        return _phon_cache[slug]
+    rules: list[tuple[str, str]] = []
+    path = PHONETICS.get(slug)
+    if path and os.path.exists(path):
+        seen: set[str] = set()
+        with open(path, encoding="utf-8-sig") as f:
+            for i, line in enumerate(f):
+                if i == 0:
+                    continue
+                s = line.strip()
+                if not s or s.startswith("#"):
+                    continue
+                c = line.find(",")
+                if c <= 0:
+                    continue
+                frm, to = line[:c].strip(), line[c + 1:].strip()
+                if not frm or not to or frm.lower() in seen:
+                    continue
+                seen.add(frm.lower())
+                rules.append((frm, to))
+        rules.sort(key=lambda r: len(r[0]), reverse=True)  # longest first
+        print(f"[{slug}] loaded {len(rules)} phonetic rules from {path}")
+    _phon_cache[slug] = rules
+    return rules
+
+def apply_phonetics(text: str, slug: str) -> str:
+    for frm, to in load_phonetics(slug):
+        text = _re.sub(r"\b" + _re.escape(frm) + r"\b", to, text, flags=_re.IGNORECASE)
+    return text
+
 # ---------- R2 client ------------------------------------------------------
 
 s3 = boto3.client(
@@ -171,6 +215,9 @@ def bake_app(app: dict[str, Any]) -> tuple[int, int]:
     baked = 0
     skipped = 0
     seen_ids: set[str] = set()
+    force = FORCE_APP in (slug, "all")
+    if force:
+        print(f"[{slug}] FORCE re-bake: ignoring R2 cache + per-app cap")
 
     for category in app["categories"]:
         try:
@@ -192,7 +239,7 @@ def bake_app(app: dict[str, Any]) -> tuple[int, int]:
 
             key = article_key(aid)
             try:
-                if r2_exists(key):
+                if not force and r2_exists(key):
                     skipped += 1
                     continue
             except Exception as e:
@@ -200,6 +247,7 @@ def bake_app(app: dict[str, Any]) -> tuple[int, int]:
                 continue
 
             text = text_for(article)
+            text = apply_phonetics(text, slug)
             if len(text) < MIN_TEXT_LEN:
                 print(f"[{slug}] skipping {aid[:30]}: text too short ({len(text)} chars)")
                 continue
@@ -214,7 +262,7 @@ def bake_app(app: dict[str, Any]) -> tuple[int, int]:
                 traceback.print_exc()
                 continue
 
-            if baked >= MAX_NEW_BAKES_PER_APP:
+            if not force and baked >= MAX_NEW_BAKES_PER_APP:
                 print(f"[{slug}] hit per-app bake cap ({MAX_NEW_BAKES_PER_APP}); stopping")
                 return baked, skipped
 

@@ -1,0 +1,296 @@
+Name,Phonetic
+# Bollywood Today — English phonetic respellings.
+# Format: Name,Phonetic. Loaded by TtsPronunciation.loadCsvAssets at startup.
+# Goal: respell Indian names so espeak-ng / Google TTS English produces a
+# pronunciation as close as a non-Indian English speaker can credibly say.
+# Verified May 2026.
+#
+# === Common abbreviations + relational acronyms ===
+SRK,SRK
+AB ,AB 
+Big B,Amitabh Bachchan
+PC ,PC 
+DDLJ,DDLJ
+K3G,K3G
+KKHH,KKHH
+# === Studios / production houses ===
+YRF,Y R F
+Yash Raj Films,Yash Raj Films
+SLB,S L B
+T-Series,T-Series
+T Series,Tee Series
+KJo,KJo
+K Jo,K Joh
+KWK,K W K
+RRR,R R R
+KGF,K G F
+KKR,K K R
+AAP,A A P
+AIB,A I B
+FWICE,FWICE
+IMPPA,Impa
+IFTDA,I F T D A
+CBFC,C B F C
+MIB,M I B
+I&B,I and B
+IIFA,I I F A
+MAMI,Maami
+# === People — male leads ===
+Shah Rukh Khan,Shaah Rookh Khaan
+Shahrukh Khan,Shaah Rookh Khaan
+Salman Khan,Salmaan Khaan
+Aamir Khan,Aameer Khaan
+Aamir,Aameer
+Akshay Kumar,Ukshay Koomar
+Hrithik Roshan,Hritik Roshan
+Hrithik,Hritik
+Ranbir Kapoor,Ranbir Kapoor
+Ranveer Singh,Ranveer Singh
+Vicky Kaushal,Vicky Kaushal
+Saif Ali Khan,Saif Ali Khaan
+Pankaj Tripathi,Pankaj Tripathi
+Nawazuddin Siddiqui,Nawazuddin Siddiqui
+Rajkummar Rao,Rajkumar Rao
+Rajkumar Hirani,Rajkumar Hirani
+Ayushmann Khurrana,Ayushmaan Khurana
+Ayushmann,Ayushmaan
+Shahid Kapoor,Shahid Kapoor
+Shahid,Shahid
+Kartik Aaryan,Kartik Aaryan
+Kartik,Kartik
+Sidharth Malhotra,Siddharth Malhotra
+Sidharth,Siddharth
+Siddharth Malhotra,Siddharth Malhotra
+Varun Dhawan,Varun Dhawan
+Varun,Varun
+Ranbir,Ranbir
+Ranveer,Ranveer
+Tiger Shroff,Tiger Shroff
+Ajay Devgn,Ajay Devgun
+Ajay Devgan,Ajay Devgun
+Anil Kapoor,Anil Kapoor
+Sanjay Dutt,Sanjay Dutt
+Govinda,Govinda
+Dharmendra,Dharmendra
+Boman Irani,Boman Irani
+Naseeruddin Shah,Naseeruddin Shah
+Manoj Bajpayee,Manoj Bajpayee
+Manoj Bajpai,Manoj Bajpai
+Anupam Kher,Anupam Kher
+Irrfan Khan,Irfan Khan
+Irrfan,Irfan
+Diljit Dosanjh,Diljit Dosanjh
+Diljit,Diljit
+Sushant Singh Rajput,Sushant Singh Rajput
+Sushant,Sushant
+Aditya Roy Kapur,Aditya Roy Kapoor
+Aditya,Aditya
+Imran Khan,Imran Khan
+Vicky,Vicky
+# === People — female leads ===
+Aishwarya,Aishwarya
+Anushka Sharma,Anushka Sharma
+Deepika Padukone,Deepika Padukone
+Kareena Kapoor,Kareena Kapoor
+Kangana Ranaut,Kangana Ranaut
+Kangana,Kangana
+Madhuri Dixit,Madhuri Dikshit
+Madhuri,Madhuri
+Vidya Balan,Vidya Balan
+Vidya,Vidya
+Sushmita Sen,Sushmita Sen
+Tabu,Tabu
+Rani Mukerji,Rani Mukerjee
+Rani Mukerjee,Rani Mukerjee
+Karisma Kapoor,Karisma Kapoor
+Karisma,Karisma
+Bhumi Pednekar,Bhumi Pednekar
+Bhumi,Bhumi
+Parineeti Chopra,Parineeti Chopra
+Parineeti,Parineeti
+Konkona Sen Sharma,Konkona Sen Sharma
+Konkona,Konkona
+Rashmika Mandanna,Rashmika Mandanna
+Rashmika,Rashmika
+Samantha Ruth Prabhu,Samantha Ruth Prabhu
+Disha Patani,Disha Patani
+Disha,Disha
+Sonakshi Sinha,Sonakshi Sinha
+Sonakshi,Sonakshi
+Sonam Kapoor,Sonam Kapoor
+Sonam,Sonam
+Shilpa Shetty,Shilpa Shetty
+Yami Gautam,Yami Gautam
+Mrunal Thakur,Mrunal Thakur
+Triptii Dimri,Tripti Dimri
+Tripti Dimri,Tripti Dimri
+Kriti Sanon,Kriti Sanon
+Janhvi Kapoor,Janhvi Kapoor
+Janhvi,Janhvi
+Taapsee Pannu,Taapsee Pannu
+Taapsee,Taapsee
+Jacqueline,Jacqueline
+Kriti,Kriti
+# === Pan-Indian / Telugu / Tamil crossover stars ===
+Allu Arjun,Allu Arjun
+Mahesh Babu,Mahesh Babu
+Prabhas,Prabhas
+Vijay Deverakonda,Vijay Deverakonda
+Yash,Yush
+Rajinikanth,Rajinikanth
+Kamal Haasan,Kamal Haasan
+Vijay,Vijay
+Dhanush,Dhanush
+Jr NTR,Junior N T R
+Ram Charan,Ram Charan
+SS Rajamouli,S S Rajamouli
+S.S. Rajamouli,S S Rajamouli
+# === Music ===
+AR Rahman,A R Rahman
+A.R. Rahman,A R Rahman
+Arijit Singh,Arijeet Singh
+Arijit,Arijeet
+Shreya Ghoshal,Shreya Ghoshal
+Pritam,Pritam
+Vishal Mishra,Vishal Mishra
+Vishal-Shekhar,Vishal-Shekhar
+Shankar Mahadevan,ShankarMa haadevan
+Sonu Nigam,Sonoo Nigam
+Atif Aslam,Atif Aslam
+Lata Mangeshkar,La taMangeshkar
+Asha Bhosle,Aasha Bhosle
+Jubin Nautiyal,Joobin Nowtiyal
+Neha Kakkar,Neha Kakkar
+Badshah,Badshah
+Honey Singh,Honey Singh
+Yo Yo Honey Singh,Yo Yo Honey Singh
+Mohammed Rafi,Mohammed Raafee
+# === Directors ===
+Sanjay Leela Bhansali,Sunjay Leela Bhansaalee
+Bhansali,Bhansali
+Karan Johar,Karan Johar
+Rohit Shetty,Rohit Shettee
+Anurag Kashyap,Anurag Kashyap
+Imtiaz Ali,Imtiyaaz Ali
+Farhan Akhtar,Farhaan Akhtar
+Zoya Akhtar,Zoya Akhtar
+Vishal Bhardwaj,Vishaal Bhardwaaj
+Kabir Khan,Kabeer Khaan
+Ayan Mukerji,Ayan Mukerjee
+Mani Ratnam,Manee Ratnam
+# === Films / franchises ===
+KK,K K
+Pathaan,Pathaan
+Jawan,Jawan
+Dunki,Dunki
+Pushpa,Pushpa
+Bhool Bhulaiyaa,Bhool Bhulayaa
+Stree,Stree
+Animal,Animal
+Kalki,Kalki
+Devara,Devara
+Tiger 3,Tiger Three
+# === OTT Platforms ===
+JioCinema,JioCinema
+Jio Cinema,Jio Cinema
+ZEE5,ZEE5
+Zee5,Zee5
+SonyLIV,SonyLIV
+Sony Liv,Sony Liv
+SonyLiv,SonyLiv
+Hotstar,Hotstar
+Disney+ Hotstar,Disney Plus Hot Star
+Disney+,Disney Plus
+# === Box-office abbreviations + Indian-currency idioms ===
+BO,BO
+WW,worldwide
+cr.,crore
+Cr.,crore
+Cr,crore
+CR,crore
+cr,crore
+crore+,crore plus
+Cr+,crore plus
+L+,lakh plus
+Lakh,lakh
+LAKH,lakh
+Rs.,rupees
+Rs,rupees
+INR,rupees
+₹, rupees
+100K,100K
+nett,net
+# === Awards ===
+Filmfare,Filmfare
+Dadasaheb Phalke,Dadasaheb Phalke
+Zee Cine Awards,Zee Cine Awards
+Star Screen,Star Screen
+# === Festivals / cultural references ===
+Diwali,Diwali
+Eid,Eed
+Holi,Holi
+Karwa Chauth,Kar waChowth
+Raksha Bandhan,Raksha Bandhan
+Navratri,Navratri
+# === Cities / neighbourhoods ===
+Bandra,Bandra
+Juhu,Juhu
+Andheri,Andheri
+Powai,Powai
+Marine Drive,Marine Drive
+Jaipur,Jaipur
+Lucknow,Lucknow
+Kolkata,Kolkata
+Chennai,Chennai
+Hyderabad,Hyderabad
+Bengaluru,Bengaluru
+Bangalore,Bangalore
+Pune,Pune
+Ahmedabad,Ahmedabad
+Varanasi,Varanasi
+Goa,Goa
+# === Languages / industries ===
+Bhojpuri,Bhojpuri
+Marathi,Marathi
+Gujarati,Gujarati
+Punjabi,Punjabi
+Tollywood,Tollywood
+Kollywood,Kollywood
+Mollywood,Mollywood
+# === Booking / business idioms ===
+BookMyShow,BookMyShow
+Book My Show,Book My Show
+BMS,BMS
+FDFS,FDFS
+# === Hindi/Sanskrit honorifics + relational terms ===
+Bhai,Bhai
+Behan,Behan
+Beti,Beti
+Beta,Beta
+Saab,Saahb
+Sahab,Sahab
+Sahib,Sahib
+Babu,Babu
+Ammi,Ammi
+Abbu,Abbu
+Bhajan,Bhajan
+Qawwali,Qawwali
+Ghazal,Ghazal
+Mehfil,Mehfil
+Sangeet,Sangeet
+Naach,Nahch
+Yaar,Yaar
+Bhaijaan,Bhaijaan
+Bhaiya,Bhaiya
+Didi,Didi
+Chacha,Chacha
+Mama,Mama
+Bua,Bua
+Daadi,Daadi
+Naani,Naani
+# === Cross-political crossover ===
+Bharat,Bharat
+Hindustan,Hindustan
+Sarkar,Sarkar
+Mantri,Mantri
+Pradhan,Pradhan
