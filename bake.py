@@ -445,10 +445,14 @@ def main() -> int:
         b, s = bake_manifest(m)
         total_baked += b
         total_skipped += s
+    # All apps are now manifest-driven (the appning app reads the R2 manifest, not
+    # broad per-category baking). Skip the broad APPS loop in normal runs to avoid
+    # wasted synth + gTTS rate-limit pressure; still runnable via FORCE_APP=<slug>/all.
     for app in APPS:
-        b, s = bake_app(app)
-        total_baked += b
-        total_skipped += s
+        if FORCE_APP in (app["slug"], "all"):
+            b, s = bake_app(app)
+            total_baked += b
+            total_skipped += s
     elapsed = time.monotonic() - started
     print(f"\nSummary: {total_baked} baked, {total_skipped} already-cached, {elapsed:.1f}s")
     return 0
