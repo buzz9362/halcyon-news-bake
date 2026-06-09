@@ -19,6 +19,7 @@ Architecture:
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import re
 import sys
@@ -50,13 +51,8 @@ APPS: list[dict[str, Any]] = [
         "tld": "us",
         "categories": ["latest", "trending", "charts"],
     },
-    {
-        "slug": "bollywood",
-        "feed_url": "https://bollywood-today.soundica.app/feed",
-        "lang": "en",
-        "tld": "us",
-        "categories": ["latest", "trending", "charts"],
-    },
+    # bollywood is now driven by the MANIFESTS passes below (manifest = source of
+    # truth for the appning app), so it is intentionally NOT in the broad APPS loop.
     {
         "slug": "anime",
         "feed_url": "https://anime-brief.soundica.app/feed",
@@ -87,16 +83,18 @@ APPS: list[dict[str, Any]] = [
     },
 ]
 
-# Hindi pass — only baked on explicit FORCE_APP=bollywood_hi (so a scheduled run
-# never bakes Hindi against a worker that doesn't serve /feed?lang=hi yet). gTTS hi.
-HINDI_APPS: list[dict[str, Any]] = [
-    {
-        "slug": "bollywood",
-        "feed_url": "https://bollywood-today.soundica.app/feed?lang=hi",
-        "lang": "hi",
-        "tld": "co.in",
-        "phonetics_slug": "bollywood_hi",
-    },
+# Manifest passes (Jun 9 2026): the appning app reads these R2 JSON manifests
+# DIRECTLY (NOT the live worker feed), so it is immune to Cloudflare per-colo feed
+# divergence (baker colo != car colo saw different rotating windows -> 404). Each
+# bake_manifest() fetches the EXACT url the appning app fetches, bakes any missing
+# MP3, and writes a manifest listing ONLY ids whose MP3 is CONFIRMED present in R2 —
+# so the car can never request an un-baked id -> no "Source error". URLs mirror the
+# appning NewsApi.fetchFromBackend reads: /feed (en) and /feed?lang=hi (hi).
+MANIFESTS: list[dict[str, Any]] = [
+    {"manifest": "bollywood_en", "feed_url": "https://bollywood-today.soundica.app/feed",
+     "lang": "en", "tld": "us", "phonetics": "bollywood"},
+    {"manifest": "bollywood_hi", "feed_url": "https://bollywood-today.soundica.app/feed?lang=hi",
+     "lang": "hi", "tld": "co.in", "phonetics": "bollywood_hi"},
 ]
 
 MAX_TEXT_LEN = 4000      # Edge-TTS handles ~8k cleanly, cap at 4k for AAOS cadence
@@ -330,18 +328,101 @@ def bake_hindi(app: dict[str, Any]) -> tuple[int, int]:
     print(f"[{slug}/hi] done: baked={baked} skipped={skipped} (force={force})")
     return baked, skipped
 
+# ---------- Manifest pass (appning source of truth) ------------------------
+
+def write_manifest(name: str, items: list[dict]) -> None:
+    """Write the baked-article manifest to R2 as ArticleFeed-shaped JSON. The
+    appning app reads this single global object, so every device sees the same
+    list and every id in it is guaranteed to have an MP3 in the same bucket."""
+    body = json.dumps(
+        {"generatedAtMs": int(time.time() * 1000), "items": items},
+        ensure_ascii=False,
+    ).encode("utf-8")
+    s3.put_object(
+        Bucket=R2_BUCKET,
+        Key=f"{name}.json",
+        Body=body,
+        ContentType="application/json; charset=utf-8",
+        CacheControl="public, max-age=120",
+    )
+    print(f"[{name}] wrote manifest {name}.json ({len(items)} items, {len(body)} bytes)")
+
+def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
+    """Fetch the EXACT feed url the appning app reads, bake any missing MP3, then
+    write a manifest listing ONLY ids whose MP3 is CONFIRMED in R2. An article is
+    appended to the manifest ONLY after its upload succeeds (or it already exists),
+    never on the text-length check alone — so the manifest can never list an
+    un-baked id. The manifest object is written LAST, after all uploads in the run."""
+    name = m["manifest"]
+    lang = m["lang"]
+    tld = m["tld"]
+    phon = m["phonetics"]
+    force = FORCE_APP in (name, "bollywood", "all")
+    try:
+        r = requests.get(m["feed_url"], timeout=FEED_TIMEOUT_S)
+        r.raise_for_status()
+        items = r.json().get("items", [])
+    except Exception as e:
+        # Do NOT rewrite the manifest on a fetch failure — leave the last good one.
+        print(f"[{name}] feed fetch failed: {e}; manifest left unchanged")
+        return 0, 0
+    print(f"[{name}] feed has {len(items)} items (force={force})")
+    manifest_items: list[dict] = []
+    baked = 0
+    skipped = 0
+    seen: set[str] = set()
+    for article in items:
+        aid = article.get("id")
+        if not aid or aid in seen:
+            continue
+        seen.add(aid)
+        key = article_key(aid)
+        try:
+            exists = r2_exists(key)
+        except Exception as e:
+            print(f"[{name}] head_object failed {aid[:30]}: {e}")
+            continue
+        if exists and not force:
+            manifest_items.append(article)   # confirmed present
+            skipped += 1
+            continue
+        # Need to (re)bake. Respect the cap for NEW synths, but still keep any
+        # already-present item in the manifest (so it stays complete).
+        if not force and baked >= MAX_NEW_HINDI_BAKES:
+            if exists:
+                manifest_items.append(article)
+            continue
+        text = apply_phonetics(text_for(article), phon)
+        if len(text) < MIN_TEXT_LEN:
+            if exists:
+                manifest_items.append(article)
+            else:
+                print(f"[{name}] skip {aid[:30]}: text too short ({len(text)})")
+            continue
+        try:
+            mp3 = synth_to_mp3(text, lang, tld)
+            upload(key, mp3)
+            baked += 1
+            manifest_items.append(article)   # ONLY after a confirmed upload
+            print(f"[{name}] baked {aid[:40]} -> {key} ({len(mp3)} bytes)")
+        except Exception as e:
+            print(f"[{name}] bake FAILED {aid[:30]}: {e}; EXCLUDED from manifest")
+            traceback.print_exc()
+    write_manifest(name, manifest_items)
+    print(f"[{name}] done: manifest={len(manifest_items)} baked={baked} skipped={skipped} (force={force})")
+    return baked, skipped
+
 # ---------- Main -----------------------------------------------------------
 
 def main() -> int:
     started = time.monotonic()
     total_baked = 0
     total_skipped = 0
-    # Hindi pass FIRST so the English bake (30-cap + ~130s GHA budget) can't
-    # starve it. The Amar Ujala window rotates, so Hindi must bake the full live
-    # window each run or the app's live ids stay un-baked -> 404 "Source error".
-    # bake_hindi is incremental (skips already-baked keys).
-    for app in HINDI_APPS:
-        b, s = bake_hindi(app)
+    # Manifest passes FIRST: the appning app reads these R2 manifests directly.
+    # Each lists ONLY ids whose MP3 is confirmed in R2, so the car never 404s,
+    # regardless of which Cloudflare colo the baker vs the car hit.
+    for m in MANIFESTS:
+        b, s = bake_manifest(m)
         total_baked += b
         total_skipped += s
     for app in APPS:
