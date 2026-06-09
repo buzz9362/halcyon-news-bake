@@ -106,6 +106,9 @@ FAIR_USE_SNIPPET = 350   # match the app's Article.kt snippet(maxChars=350) for
 MIN_TEXT_LEN = 20        # below this, the article is just a stub — skip
 FEED_TIMEOUT_S = 30
 MAX_NEW_BAKES_PER_APP = 30   # cap so one app can't exhaust the GHA timeout
+MAX_NEW_HINDI_BAKES = 80     # Hindi gets a higher cap: the Amar Ujala feed rotates its
+                             # ~60-item window every cycle, so a low cap left most of the
+                             # live ids un-baked -> the app 404'd ("Source error").
 
 # Jun 9 2026 — per-app pronunciation tables (copied from each app's
 # assets/phonetics_en.csv). gTTS ignores the in-app CSV, so apply the same
@@ -322,8 +325,9 @@ def bake_hindi(app: dict[str, Any]) -> tuple[int, int]:
         except Exception as e:
             print(f"[{slug}/hi] bake failed for {aid[:30]}: {e}")
             traceback.print_exc()
-        if not force and baked >= MAX_NEW_BAKES_PER_APP:
+        if not force and baked >= MAX_NEW_HINDI_BAKES:
             break
+    print(f"[{slug}/hi] done: baked={baked} skipped={skipped} (force={force})")
     return baked, skipped
 
 # ---------- Main -----------------------------------------------------------
@@ -332,14 +336,16 @@ def main() -> int:
     started = time.monotonic()
     total_baked = 0
     total_skipped = 0
-    for app in APPS:
-        b, s = bake_app(app)
-        total_baked += b
-        total_skipped += s
-    # Hindi pass — runs every cron now that the worker serves /feed?lang=hi.
-    # bake_hindi is incremental (skips already-baked), so it just adds new ones.
+    # Hindi pass FIRST so the English bake (30-cap + ~130s GHA budget) can't
+    # starve it. The Amar Ujala window rotates, so Hindi must bake the full live
+    # window each run or the app's live ids stay un-baked -> 404 "Source error".
+    # bake_hindi is incremental (skips already-baked keys).
     for app in HINDI_APPS:
         b, s = bake_hindi(app)
+        total_baked += b
+        total_skipped += s
+    for app in APPS:
+        b, s = bake_app(app)
         total_baked += b
         total_skipped += s
     elapsed = time.monotonic() - started
