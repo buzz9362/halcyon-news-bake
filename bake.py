@@ -45,42 +45,42 @@ R2_BUCKET = os.environ.get("R2_BUCKET", "halcyon-news-tts")
 APPS: list[dict[str, Any]] = [
     {
         "slug": "kpop",
-        "feed_url": "https://kpop-today.buzz9362.workers.dev/feed",
+        "feed_url": "https://kpop-today.soundica.app/feed",
         "lang": "en",
         "tld": "us",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "bollywood",
-        "feed_url": "https://bollywood-today.buzz9362.workers.dev/feed",
+        "feed_url": "https://bollywood-today.soundica.app/feed",
         "lang": "en",
         "tld": "us",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "anime",
-        "feed_url": "https://anime-brief.buzz9362.workers.dev/feed",
+        "feed_url": "https://anime-brief.soundica.app/feed",
         "lang": "en",
         "tld": "us",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "tropic",
-        "feed_url": "https://kpop-tropic.buzz9362.workers.dev/feed",
+        "feed_url": "https://kpop-tropic.soundica.app/feed",
         "lang": "en",
         "tld": "us",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "hype",
-        "feed_url": "https://hype-id.buzz9362.workers.dev/feed",
+        "feed_url": "https://hype-id.soundica.app/feed",
         "lang": "id",
         "tld": "co.id",
         "categories": ["latest", "trending", "charts"],
     },
     {
         "slug": "tinh",
-        "feed_url": "https://tinh-tu.buzz9362.workers.dev/feed",
+        "feed_url": "https://tinh-tu.soundica.app/feed",
         "lang": "vi",
         "tld": "com.vn",
         "categories": ["latest", "trending", "charts"],
@@ -92,7 +92,7 @@ APPS: list[dict[str, Any]] = [
 HINDI_APPS: list[dict[str, Any]] = [
     {
         "slug": "bollywood",
-        "feed_url": "https://bollywood-today.buzz9362.workers.dev/feed?lang=hi",
+        "feed_url": "https://bollywood-today.soundica.app/feed?lang=hi",
         "lang": "hi",
         "tld": "co.in",
         "phonetics_slug": "bollywood_hi",
