@@ -1,0 +1,64 @@
+# Tinh Tú phonetic overrides for vi-VN system TTS.
+# Format: original,phonetic-rendering
+# Lines beginning with # are ignored. Empty lines skipped.
+# Word-boundary matched, case-insensitive. Add new rows freely.
+
+# ─── Publishers / sources ────────────────────────────────────────────────
+VnExpress,Vê Nờ Ép Sờ Prét
+vnexpress.net,Vê Nờ Ép Sờ Prét
+Kenh14,Kê Mười Bốn
+kenh14.vn,Kê Mười Bốn
+Znews,Zét Niu Sờ
+ZNews,Zét Niu Sờ
+znews.vn,Zét Niu Sờ
+Dân Trí,Dân Trí
+DanTri,Dân Trí
+Thanh Niên,Thanh Niên
+ThanhNien,Thanh Niên
+Tuổi Trẻ,Tuổi Trẻ
+TuoiTre,Tuổi Trẻ
+VietnamNet,Việt Nam Nét
+Soha,Sô Ha
+
+# ─── English abbreviations heard as Vietnamese letters ─────────────────
+MV,Em Vi
+MC,Em Xê
+DJ,Đi Giây
+OST,Ô Eo Tê
+PV,Pê Vê
+TV,Ti Vi
+CEO,Si I Ô
+CD,Si Đi
+DVD,Đi Vi Đi
+HD,Ếch Đi
+3D,Ba Đê
+EP,I Pi
+LP,En Pê
+DOP,Đi O Pi
+
+# ─── K-pop names commonly mentioned in Vietnamese press ─────────────────
+BTS,Bi Ti Ét Sờ
+BLACKPINK,Bờ Lác Pinh Cờ
+NewJeans,Niu Gin Sờ
+TWICE,Tu Ai Sờ
+Stray Kids,Sờ Trây Kit Sờ
+LE SSERAFIM,Le Sê Ra Phim
+ITZY,Ít Si
+NCT,En Si Ti
+TXT,Ti Ích Ti
+ATEEZ,Ây Tin Sờ
+
+# ─── V-pop & Vietnamese stars that benefit from a written-out pronunciation
+M-TP,Em Tê Pê
+HIEUTHUHAI,Hi Yu Thư Hai
+MONO,Mô Nô
+AMEE,A Mi
+GREY D,Gờ Rây Đi
+Wren Evans,Ren E Văn Sờ
+HURRYKNG,Hơ Ri Kinh
+
+# ─── Hashtag / branded phrases ──────────────────────────────────────────
+V-pop,Vi Pốp
+Vpop,Vi Pốp
+K-pop,Ka Pốp
+Kpop,Ka Pốp

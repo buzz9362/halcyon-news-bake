@@ -1,0 +1,57 @@
+Name,Phonetic
+# Brazilian Portuguese phonetic overrides for KPop Today TTS.
+# Format: Name,Phonetic — same as phonetics_en.csv.
+# Loaded by TtsPronunciation at app startup.
+#
+# Brazilian PT J = /ʒ/ which approximates Korean ㅈ — so J-names
+# need NO override (unlike Spanish). Main differences from default
+# PT TTS are acronyms (Brazilian fans say PT letter names) and a
+# few group names. Sources: Globo, Capricho, UOL Splash, Folha.
+# Verified May 2026.
+#
+# === Acronyms — Portuguese letter names ===
+BTS,Bê Tê Esse
+NCT,Ene Cê Tê
+TXT,Tê Xis Tê
+TOMORROW X TOGETHER,Tê Xis Tê
+Tomorrow X Together,Tê Xis Tê
+RM,Erre Eme
+DK,Dê Ká
+YTN,I psilón Tê Ene
+KBS,Ká Bê Esse
+MBC,Eme Bê Cê
+SBS,Esse Bê Esse
+MMA,Eme Eme A
+GDA,Gê Dê A
+# === Group names where PT-BR default is wrong ===
+aespa,Espa
+AESPA,Espa
+LE SSERAFIM,Lay Seh Ra Feem
+Le Sserafim,Lay Seh Ra Feem
+LESSERAFIM,Lay Seh Ra Feem
+KEYVITUP,Kee Bit Up
+KeyVitUp,Kee Bit Up
+Keyvitup,Kee Bit Up
+(G)I-DLE,Ji Aidol
+(G)-IDLE,Ji Aidol
+GIDLE,Ji Aidol
+G-IDLE,Ji Aidol
+CORTIS,Kor Tees
+Cortis,Kor Tees
+ENHYPEN,En Hai Pen
+Enhypen,En Hai Pen
+Plave,Plei Bi
+PLAVE,Plei Bi
+# === Korean publications ===
+Korea JoongAng K-Ent,Korea Joong Ang K Entertainment
+JoongAng Daily,Joong Ang Daily
+JoongAng,Joong Ang
+Joongang,Joong Ang
+StarNews,Star News
+# === Number expansion (PT) ===
+t2online,T Vinte Online
+T2online,T Vinte Online
+T2 Online,T Vinte Online
+
+# === New (3.0.0) ===
+TWS,Tu uhs

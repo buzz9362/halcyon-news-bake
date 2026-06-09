@@ -1,0 +1,138 @@
+# Hype ID phonetic overrides for id-ID system TTS.
+# Format: original,phonetic-rendering
+# Lines beginning with # are ignored. Empty lines skipped.
+# Word-boundary matched, case-insensitive. Add new rows freely.
+
+# ─── Publishers / sources ────────────────────────────────────────────────
+Liputan6,Liputan Enam
+liputan6,Liputan Enam
+SINDOnews,Sindo Nius
+sindo,Sindo
+detik.com,Detik dot kom
+detikcom,Detik dot kom
+CNN Indonesia,Si En En Indonesia
+Tempo.co,Tempo dot co
+Antara,Antara
+Okezone,Okezon
+Tribunnews,Tribun nius
+KapanLagi,Kapan Lagi
+Wowkeren,Wow keren
+
+# ─── English abbreviations heard as Indonesian letters ───────────────────
+MV,Em Vi
+MC,Em Se
+DJ,Di Je
+OST,O Es Te
+TV,Ti Vi
+CEO,Si I O
+CD,Si Di
+DVD,Di Vi Di
+HD,Ha De
+3D,Tiga De
+EP,I Pi
+LP,El Pe
+
+# ─── K-pop names commonly mentioned in Indonesian press ─────────────────
+BTS,Bi Ti Es
+BLACKPINK,Blek Pink
+NewJeans,Niu Jins
+TWICE,Twais
+Stray Kids,Strey Kids
+LE SSERAFIM,Le Sera fim
+ITZY,It Zi
+NCT,En Si Ti
+TXT,Ti Eks Ti
+ATEEZ,Ei-tiz
+
+# ─── English-name Indonesian artists ────────────────────────────────────
+Rich Brian,Ric Brayen
+NIKI,Niki
+Niki,Niki
+Weird Genius,Wird Jénius
+RAN,Ren
+Saykoji,Saikoji
+
+# ─── Brand / category vocab ─────────────────────────────────────────────
+K-pop,Kei pop
+Kpop,Kei pop
+J-pop,Jei pop
+Indonesian Idol,Indonesien Aidol
+X Factor,Eks Faktor
+
+# ─── K-pop group + artist names (Indonesian press conventions) ──────────
+# Strategy: leave acronyms (BTS, NCT, EXO, TXT, IVE) ALONE — Indonesian TTS
+# reads them as "be te es", "en se te" etc., which matches how Indonesian
+# K-pop press (Kapanlagi, Wowkeren, IDNTimes) speaks them. Only override
+# names that the engine would otherwise mangle.
+# Format: Source name,Phonetic — applied via word-boundary regex.
+# CSV format note: a phonetic with a comma must be wrapped in "" — none here.
+NewJeans,Niu Jins
+aespa,Es-pa
+Aespa,Es-pa
+AESPA,Es-pa
+LE SSERAFIM,Le Sserafim
+Le Sserafim,Le Sserafim
+ENHYPEN,En-haipen
+Enhypen,En-haipen
+ATEEZ,Ei-tiz
+Ateez,Ei-tiz
+ZEROBASEONE,Ziro Beis Wan
+ZEROBASEONE,Ziro Beis Wan
+ZB1,Zi Bi Wan
+RIIZE,Rais
+Riize,Rais
+ILLIT,I-lit
+Illit,I-lit
+PLAVE,Plei
+Plave,Plei
+ITZY,It-zi
+Itzy,It-zi
+2NE1,Tu Nei Wan
+G-Dragon,Ji Dragon
+Jungkook,Jung-kuk
+Jimin,Ji-min
+Suga,Su-ga
+J-Hope,Jei Houp
+RM,Ar-em
+Rosé,Rose
+Jisoo,Ji-su
+Jennie,Jeni
+
+# ─── K-pop Demon Hunters + K-culture terms (Indonesian TTS) ─────────────
+Huntrx,Hantriks
+HUNTRX,Hantriks
+Saja Boys,Sa Ja Boys
+Saja Boy,Sa Ja Boy
+
+# ─── Korean cultural / heritage terms — force syllable boundaries so the
+#     id-ID engine reads each consonant cluster cleanly rather than as a
+#     mangled English word (e.g. "Arirang" was reading strangely in ID). ─────
+Arirang,A ri rang
+arirang,a ri rang
+Hangul,Han gul
+hangul,han gul
+Hanbok,Han bok
+Kimchi,Kim chi
+Soju,So ju
+Bibimbap,Bi bim bap
+bibimbap,bi bim bap
+Tteokbokki,Tok bo ki
+Mukbang,Mok bang
+Hallyu,Hal lyu
+hallyu,hal lyu
+Sasaeng,Sa seng
+Maknae,Mak ne
+Aegyo,E gyo
+Daesang,De sang
+Bias,Ba i es
+
+# ─── Korean place names commonly mentioned in K-pop news ────────────────
+Gangnam,Gang nam
+Hongdae,Hong de
+Itaewon,I te won
+Myeongdong,Myong dong
+Jeonju,Jon ju
+Busan,Bu san
+Incheon,In con
+Daegu,De gu
+Daejeon,De jon

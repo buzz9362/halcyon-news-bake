@@ -95,6 +95,16 @@ MANIFESTS: list[dict[str, Any]] = [
      "lang": "en", "tld": "us", "phonetics": "bollywood"},
     {"manifest": "bollywood_hi", "feed_url": "https://bollywood-today.soundica.app/feed?lang=hi",
      "lang": "hi", "tld": "co.in", "phonetics": "bollywood_hi"},
+    # Jun 9 2026 — 5 sibling apps ported to the same appning manifest architecture.
+    {"manifest": "kpop_en",   "feed_url": "https://kpop-today.soundica.app/feed",          "lang": "en", "tld": "us",     "phonetics": "kpop_en"},
+    {"manifest": "kpop_es",   "feed_url": "https://kpop-today.soundica.app/feed?lang=es",  "lang": "es", "tld": "es",     "phonetics": "kpop_es"},
+    {"manifest": "kpop_pt",   "feed_url": "https://kpop-today.soundica.app/feed?lang=pt",  "lang": "pt", "tld": "com.br", "phonetics": "kpop_pt"},
+    {"manifest": "anime_en",  "feed_url": "https://anime-brief.soundica.app/feed",         "lang": "en", "tld": "us",     "phonetics": "anime_en"},
+    {"manifest": "tropic_en", "feed_url": "https://kpop-tropic.soundica.app/feed",         "lang": "en", "tld": "us",     "phonetics": "tropic_en"},
+    {"manifest": "tropic_id", "feed_url": "https://kpop-tropic.soundica.app/feed?lang=id", "lang": "id", "tld": "co.id",  "phonetics": "tropic_id"},
+    {"manifest": "tropic_vi", "feed_url": "https://kpop-tropic.soundica.app/feed?lang=vi", "lang": "vi", "tld": "com.vn", "phonetics": "tropic_vi"},
+    {"manifest": "hype_id",   "feed_url": "https://hype-id.soundica.app/feed",             "lang": "id", "tld": "co.id",  "phonetics": "hype_id"},
+    {"manifest": "tinh_vi",   "feed_url": "https://tinh-tu.soundica.app/feed",             "lang": "vi", "tld": "com.vn", "phonetics": "tinh_vi"},
 ]
 
 MAX_TEXT_LEN = 4000      # Edge-TTS handles ~8k cleanly, cap at 4k for AAOS cadence
@@ -115,6 +125,16 @@ import re as _re
 PHONETICS = {
     "bollywood": "phonetics/bollywood_en.csv",
     "bollywood_hi": "phonetics/bollywood_hi.csv",
+    "kpop_en": "phonetics/kpop_en.csv",
+    "kpop_es": "phonetics/kpop_es.csv",
+    "kpop_pt": "phonetics/kpop_pt.csv",
+    "tropic_en": "phonetics/tropic_en.csv",
+    "tropic_id": "phonetics/tropic_id.csv",
+    "tropic_vi": "phonetics/tropic_vi.csv",
+    "hype_id": "phonetics/hype_id.csv",
+    "tinh_vi": "phonetics/tinh_vi.csv",
+    # anime_en intentionally has no CSV (no Japanese-romaji table yet) — apply_phonetics
+    # is a no-op for an unknown key, so anime bakes with no respellings.
 }
 # FORCE_APP="bollywood" (or "all") re-bakes that app ignoring the R2 cache +
 # per-app cap, so a pronunciation/voice change overwrites the old audio.
@@ -357,7 +377,7 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
     lang = m["lang"]
     tld = m["tld"]
     phon = m["phonetics"]
-    force = FORCE_APP in (name, "bollywood", "all")
+    force = FORCE_APP in (name, name.split("_")[0], "all")
     try:
         r = requests.get(m["feed_url"], timeout=FEED_TIMEOUT_S)
         r.raise_for_status()

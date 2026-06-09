@@ -1,0 +1,146 @@
+# Tinh Tú phonetic overrides for vi-VN system TTS.
+# Format: original,phonetic-rendering
+# Lines beginning with # are ignored. Empty lines skipped.
+# Word-boundary matched, case-insensitive. Add new rows freely.
+
+# ─── Publishers / sources ────────────────────────────────────────────────
+VnExpress,Vê Nờ Ép Sờ Prét
+vnexpress.net,Vê Nờ Ép Sờ Prét
+Kenh14,Kê Mười Bốn
+kenh14.vn,Kê Mười Bốn
+Znews,Zét Niu Sờ
+ZNews,Zét Niu Sờ
+znews.vn,Zét Niu Sờ
+Dân Trí,Dân Trí
+DanTri,Dân Trí
+Thanh Niên,Thanh Niên
+ThanhNien,Thanh Niên
+Tuổi Trẻ,Tuổi Trẻ
+TuoiTre,Tuổi Trẻ
+VietnamNet,Việt Nam Nét
+Soha,Sô Ha
+
+# ─── English abbreviations heard as Vietnamese letters ─────────────────
+MV,Em Vi
+MC,Em Xê
+DJ,Đi Giây
+OST,Ô Eo Tê
+PV,Pê Vê
+TV,Ti Vi
+CEO,Si I Ô
+CD,Si Đi
+DVD,Đi Vi Đi
+HD,Ếch Đi
+3D,Ba Đê
+EP,I Pi
+LP,En Pê
+DOP,Đi O Pi
+
+# ─── K-pop names commonly mentioned in Vietnamese press ─────────────────
+BTS,Bi Ti Ét Sờ
+BLACKPINK,Bờ Lác Pinh Cờ
+NewJeans,Niu Gin Sờ
+TWICE,Tu Ai Sờ
+Stray Kids,Sờ Trây Kit Sờ
+LE SSERAFIM,Le Sê Ra Phim
+ITZY,Ít Si
+NCT,En Si Ti
+TXT,Ti Ích Ti
+ATEEZ,Ây Tin Sờ
+
+# ─── V-pop & Vietnamese stars that benefit from a written-out pronunciation
+M-TP,Em Tê Pê
+HIEUTHUHAI,Hi Yu Thư Hai
+MONO,Mô Nô
+AMEE,A Mi
+GREY D,Gờ Rây Đi
+Wren Evans,Ren E Văn Sờ
+HURRYKNG,Hơ Ri Kinh
+
+# ─── Hashtag / branded phrases ──────────────────────────────────────────
+V-pop,Vi Pốp
+Vpop,Vi Pốp
+K-pop,Ka Pốp
+Kpop,Ka Pốp
+
+# ─── K-pop group + artist names (Vietnamese press conventions) ──────────
+# Strategy: leave acronyms (BTS, NCT, EXO, TXT, IVE) ALONE — Vietnamese
+# TTS reads them as "bê tê ét", "en xi ti" etc., matching how Vietnamese
+# K-pop press (Kenh14 Musik, Yan, Tiin) speaks them. Override only names
+# the engine would otherwise mangle as English. Use Vietnamese
+# orthography with diacritics so the engine reads each syllable cleanly.
+# Format: Source name,Phonetic — applied via word-boundary regex.
+NewJeans,Niu Din
+aespa,Ép Spa
+Aespa,Ép Spa
+AESPA,Ép Spa
+LE SSERAFIM,Le Sờ Ra Phim
+Le Sserafim,Le Sờ Ra Phim
+ENHYPEN,En Hai Phen
+Enhypen,En Hai Phen
+ATEEZ,Ây Tít
+Ateez,Ây Tít
+SEVENTEEN,Sê Vần Tin
+ZEROBASEONE,Di Rô Bây Oăn
+ZB1,Di Bi Oăn
+RIIZE,Rai Dờ
+Riize,Rai Dờ
+ILLIT,Il Lít
+Illit,Il Lít
+PLAVE,Pờ Lây
+Plave,Pờ Lây
+ITZY,Ít Di
+Itzy,Ít Di
+2NE1,Tu Nai Oăn
+BIGBANG,Bích Beng
+Bigbang,Bích Beng
+G-Dragon,Ji Đờ-rê-gân
+Jungkook,Châng Cúc
+Jimin,Chi Min
+Suga,Xu Ga
+J-Hope,Chê Hốp
+RM,A Em
+Rosé,Rô Dê
+Jisoo,Chi Su
+Jennie,Châm Ni
+Lisa,Li Sa
+SHINee,Sai Ni
+
+# ─── K-pop Demon Hunters + K-culture terms (Vietnamese TTS) ─────────────
+Huntrx,Hân Trích
+HUNTRX,Hân Trích
+Saja Boys,Xa Cha Boys
+Saja Boy,Xa Cha Boy
+
+# ─── Korean cultural / heritage terms with Vietnamese diacritics so each
+#     syllable reads cleanly. Mirrors how Kenh14 Musik + Yan transcribe
+#     these in print. ─────────────────────────────────────────────────────
+Arirang,A Ri Rang
+arirang,a ri rang
+Hangul,Han Gun
+hangul,han gun
+Hanbok,Han Bốc
+Kimchi,Kim Chi
+Soju,Sô Chu
+Bibimbap,Bi Bim Báp
+bibimbap,bi bim báp
+Tteokbokki,Tốc Bốc Ki
+Mukbang,Mốc Bang
+Hallyu,Han Lưu
+hallyu,han lưu
+Sasaeng,Sa Seng
+Maknae,Mác Nê
+Aegyo,Ê Gi Ô
+Daesang,Đề Sang
+Bias,Bai Ợt
+
+# ─── Korean place names ─────────────────────────────────────────────────
+Gangnam,Cang Nam
+Hongdae,Hông Đê
+Itaewon,I Tê Wơn
+Myeongdong,Miêng Đong
+Jeonju,Chơn Chu
+Busan,Bu San
+Incheon,In Chơn
+Daegu,Đê Gu
+Daejeon,Đê Chơn

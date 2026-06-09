@@ -1,0 +1,103 @@
+Name,Phonetic
+# Spanish (LATAM) phonetic overrides for KPop Today TTS.
+# Format: Name,Phonetic — same as phonetics_en.csv.
+# Loaded by TtsPronunciation.loadEnglishCsv-style loader at app startup.
+# Only entries where LATAM Spanish K-pop press / fans say it differently
+# from default Spanish TTS — so this file is intentionally short.
+#
+# Sources: LOS40, Hipertextual, Sopitas, La Vanguardia Música, Hola.com K-pop.
+# Verified May 2026.
+#
+# === J-name substitutions (Spanish J = /h/, K-pop press uses Y) ===
+Jin,Yeen
+Kim Seokjin,Kim Suk Yeen
+Seokjin,Suk Yeen
+Jungkook,Yung Guk
+JUNGKOOK,Yung Guk
+Jung Kook,Yung Guk
+JUNG KOOK,Yung Guk
+Jeon,Yon
+Jeon Jungkook,Yon Yung Guk
+Jimin,Yi Min
+JIMIN,Yi Min
+Park Jimin,Pak Yi Min
+Jisoo,Yi Su
+JISOO,Yi Su
+Jennie,Yeni
+JENNIE,Yeni
+J-Hope,Yei Houp
+J-hope,Yei Houp
+J-HOPE,Yei Houp
+Jhope,Yei Houp
+Junhui,Yun Hui
+Jeonghan,Yong Han
+JEONGHAN,Yong Han
+Jeongyeon,Yong Yon
+JEONGYEON,Yong Yon
+Jihyo,Yi Hyo
+JIHYO,Yi Hyo
+Jongho,Yong Ho
+JONGHO,Yong Ho
+Joshua,Yoshua
+Jay,Yei
+Jaehyun,Yei Hyun
+Jaemin,Yei Meen
+Jeno,Yeh No
+Jisung,Yi Sung
+Junkyu,Yun Kyu
+Jaehyuk,Yei Hyuk
+Jeongwoo,Yong Woo
+Jay B,Yei Bee
+JAY B,Yei Bee
+Jackson,Yak Son
+Jinyoung,Yin Young
+Jeongin,Yong In
+J,Yei
+# === Acronyms — Spanish letter names ===
+BTS,Be Te Ese
+NCT,Ene Ce Te
+TXT,Te Equis Te
+TOMORROW X TOGETHER,Te Equis Te
+Tomorrow X Together,Te Equis Te
+RM,Erre Eme
+DK,De Ka
+YTN,Ye Te Ene
+KBS,Ka Be Ese
+MBC,Eme Be Ce
+SBS,Ese Be Ese
+MMA,Eme Eme A
+GDA,Ge De A
+MAMA Awards,Mama Awards
+# === Group names where Spanish default is wildly wrong ===
+aespa,Espa
+AESPA,Espa
+ENHYPEN,En Jaipen
+Enhypen,En Jaipen
+LE SSERAFIM,Lay Seh Ra Feem
+Le Sserafim,Lay Seh Ra Feem
+LESSERAFIM,Lay Seh Ra Feem
+KEYVITUP,Kee Bit Up
+KeyVitUp,Kee Bit Up
+Keyvitup,Kee Bit Up
+ITZY,It Yi
+Itzy,It Yi
+(G)I-DLE,Yi Aidol
+(G)-IDLE,Yi Aidol
+GIDLE,Yi Aidol
+G-IDLE,Yi Aidol
+CORTIS,Kor Tees
+Cortis,Kor Tees
+# === Korean publications (also need help in ES) ===
+Korea JoongAng K-Ent,Korea Yung Ang K Entertainment
+JoongAng Daily,Yung Ang Daily
+JoongAng,Yung Ang
+Joongang,Yung Ang
+StarNews,Star News
+Hankyoreh,Han kyo reh
+# === Number expansion ===
+t2online,T Veinte Online
+T2online,T Veinte Online
+T2 Online,T Veinte Online
+
+# === New (3.0.0) ===
+TWS,Tu uhs
