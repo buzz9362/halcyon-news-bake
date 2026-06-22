@@ -428,6 +428,15 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
         except Exception as e:
             print(f"[{name}] bake FAILED {aid[:30]}: {e}; EXCLUDED from manifest")
             traceback.print_exc()
+    # MIN floor: a successful-but-empty/thin feed (a transient worker hiccup on a
+    # quiet language) must NOT clobber the last good manifest with an empty or
+    # near-empty one, which would blank or 1-item the car language section. Skip
+    # the write and leave the previous good manifest in place; the next cron bake
+    # retries once the feed recovers. (A healthy manifest is dozens of items.)
+    MIN_MANIFEST_ITEMS = 5
+    if len(manifest_items) < MIN_MANIFEST_ITEMS:
+        print(f"[{name}] manifest only {len(manifest_items)} items (< {MIN_MANIFEST_ITEMS}); leaving last good manifest unchanged")
+        return baked, skipped
     write_manifest(name, manifest_items)
     print(f"[{name}] done: manifest={len(manifest_items)} baked={baked} skipped={skipped} (force={force})")
     return baked, skipped
