@@ -105,6 +105,28 @@ MANIFESTS: list[dict[str, Any]] = [
     {"manifest": "tropic_vi", "feed_url": "https://kpop-tropic.soundica.app/feed?lang=vi", "lang": "vi", "tld": "com.vn", "phonetics": "tropic_vi"},
     {"manifest": "hype_id",   "feed_url": "https://hype-id.soundica.app/feed",             "lang": "id", "tld": "co.id",  "phonetics": "hype_id"},
     {"manifest": "tinh_vi",   "feed_url": "https://tinh-tu.soundica.app/feed",             "lang": "vi", "tld": "com.vn", "phonetics": "tinh_vi"},
+    # Circuitly (tech news) — appning baked-MP3. App fetches circuitly_<lang>.json. Worker
+    # serves en/es/pt/vi/de/fr/it (ko/ja in the worker are unused — the app dropped them).
+    # No phonetics CSV yet (tech terms read fine in gTTS; the unknown key is a no-op like anime_en).
+    {"manifest": "circuitly_en", "feed_url": "https://circuitly.soundica.app/feed",          "lang": "en", "tld": "us",     "phonetics": "circuitly_en"},
+    {"manifest": "circuitly_es", "feed_url": "https://circuitly.soundica.app/feed?lang=es",  "lang": "es", "tld": "es",     "phonetics": "circuitly_es"},
+    {"manifest": "circuitly_pt", "feed_url": "https://circuitly.soundica.app/feed?lang=pt",  "lang": "pt", "tld": "com.br", "phonetics": "circuitly_pt"},
+    {"manifest": "circuitly_vi", "feed_url": "https://circuitly.soundica.app/feed?lang=vi",  "lang": "vi", "tld": "com.vn", "phonetics": "circuitly_vi"},
+    {"manifest": "circuitly_de", "feed_url": "https://circuitly.soundica.app/feed?lang=de",  "lang": "de", "tld": "de",     "phonetics": "circuitly_de"},
+    {"manifest": "circuitly_fr", "feed_url": "https://circuitly.soundica.app/feed?lang=fr",  "lang": "fr", "tld": "fr",     "phonetics": "circuitly_fr"},
+    {"manifest": "circuitly_it", "feed_url": "https://circuitly.soundica.app/feed?lang=it",  "lang": "it", "tld": "it",     "phonetics": "circuitly_it"},
+    # Tickerly (finance news) — appning baked-MP3. Worker serves en/es/pt/vi/id/de/fr/it.
+    # NOTE: the app advertises a 9th language (hi) but the Tickerly worker has NO Hindi
+    # finance sources yet, so tickerly_hi is intentionally NOT baked here (it would fall back
+    # to English under a Hindi list). Add hi only after Hindi finance sources are added to the worker.
+    {"manifest": "tickerly_en", "feed_url": "https://tickerly.soundica.app/feed",          "lang": "en", "tld": "us",     "phonetics": "tickerly_en"},
+    {"manifest": "tickerly_es", "feed_url": "https://tickerly.soundica.app/feed?lang=es",  "lang": "es", "tld": "es",     "phonetics": "tickerly_es"},
+    {"manifest": "tickerly_pt", "feed_url": "https://tickerly.soundica.app/feed?lang=pt",  "lang": "pt", "tld": "com.br", "phonetics": "tickerly_pt"},
+    {"manifest": "tickerly_vi", "feed_url": "https://tickerly.soundica.app/feed?lang=vi",  "lang": "vi", "tld": "com.vn", "phonetics": "tickerly_vi"},
+    {"manifest": "tickerly_id", "feed_url": "https://tickerly.soundica.app/feed?lang=id",  "lang": "id", "tld": "co.id",  "phonetics": "tickerly_id"},
+    {"manifest": "tickerly_de", "feed_url": "https://tickerly.soundica.app/feed?lang=de",  "lang": "de", "tld": "de",     "phonetics": "tickerly_de"},
+    {"manifest": "tickerly_fr", "feed_url": "https://tickerly.soundica.app/feed?lang=fr",  "lang": "fr", "tld": "fr",     "phonetics": "tickerly_fr"},
+    {"manifest": "tickerly_it", "feed_url": "https://tickerly.soundica.app/feed?lang=it",  "lang": "it", "tld": "it",     "phonetics": "tickerly_it"},
 ]
 
 MAX_TEXT_LEN = 4000      # Edge-TTS handles ~8k cleanly, cap at 4k for AAOS cadence
