@@ -241,6 +241,26 @@ def clean_text(t: str) -> str:
     t = _WS_RE.sub(" ", t).strip()
     return t
 
+# Worker feed JSON can carry LONE UTF-16 surrogate halves: some publishers encode
+# an emoji as two HTML numeric entities (&#55358;&#56596;), the JS worker passes them
+# through as "\ud83e"-style escapes (JS strings tolerate WTF-16), and Python's
+# json.loads accepts them — but a later .encode("utf-8") REFUSES ("surrogates not
+# allowed"). That killed the whole Jul 2 2026 run at the circuitly_pt manifest write
+# (and silently skipped every manifest after it). Repair adjacent halves back into
+# the real emoji and drop truly lone halves at INGEST, so neither gTTS nor
+# write_manifest ever sees one.
+def fix_surrogates(s: str) -> str:
+    try:
+        s.encode("utf-8")
+        return s
+    except UnicodeEncodeError:
+        # utf-16 surrogatepass re-joins a high+low pair into the real code point;
+        # errors="ignore" drops any half that has no partner.
+        return s.encode("utf-16", "surrogatepass").decode("utf-16", "ignore")
+
+def sanitize_article(article: dict) -> dict:
+    return {k: (fix_surrogates(v) if isinstance(v, str) else v) for k, v in article.items()}
+
 def text_for(article: dict) -> str:
     title = clean_text(article.get("title", ""))
     summary = clean_text(article.get("summary", ""))
@@ -287,7 +307,7 @@ def bake_app(app: dict[str, Any]) -> tuple[int, int]:
             print(f"[{slug}/{category}] feed fetch failed: {e}")
             continue
 
-        items = data.get("items", [])
+        items = [sanitize_article(a) for a in data.get("items", []) if isinstance(a, dict)]
         print(f"[{slug}/{category}] feed has {len(items)} items")
 
         for article in items:
@@ -339,7 +359,7 @@ def bake_hindi(app: dict[str, Any]) -> tuple[int, int]:
     try:
         r = requests.get(app["feed_url"], timeout=FEED_TIMEOUT_S)
         r.raise_for_status()
-        items = r.json().get("items", [])
+        items = [sanitize_article(a) for a in r.json().get("items", []) if isinstance(a, dict)]
     except Exception as e:
         print(f"[{slug}/hi] feed fetch failed: {e}")
         return 0, 0
@@ -376,10 +396,12 @@ def write_manifest(name: str, items: list[dict]) -> None:
     """Write the baked-article manifest to R2 as ArticleFeed-shaped JSON. The
     appning app reads this single global object, so every device sees the same
     list and every id in it is guaranteed to have an MP3 in the same bucket."""
-    body = json.dumps(
+    # fix_surrogates is a last-resort guard here (ingest sanitizing should make it
+    # a no-op): a stray surrogate must never kill the run at the final write again.
+    body = fix_surrogates(json.dumps(
         {"generatedAtMs": int(time.time() * 1000), "items": items},
         ensure_ascii=False,
-    ).encode("utf-8")
+    )).encode("utf-8")
     s3.put_object(
         Bucket=R2_BUCKET,
         Key=f"{name}.json",
@@ -403,7 +425,7 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
     try:
         r = requests.get(m["feed_url"], timeout=FEED_TIMEOUT_S)
         r.raise_for_status()
-        items = r.json().get("items", [])
+        items = [sanitize_article(a) for a in r.json().get("items", []) if isinstance(a, dict)]
     except Exception as e:
         # Do NOT rewrite the manifest on a fetch failure — leave the last good one.
         print(f"[{name}] feed fetch failed: {e}; manifest left unchanged")
@@ -473,7 +495,14 @@ def main() -> int:
     # Each lists ONLY ids whose MP3 is confirmed in R2, so the car never 404s,
     # regardless of which Cloudflare colo the baker vs the car hit.
     for m in MANIFESTS:
-        b, s = bake_manifest(m)
+        # One manifest crashing must not kill the rest of the run (the Jul 2 2026
+        # surrogate crash at circuitly_pt silently skipped every tickerly pass).
+        try:
+            b, s = bake_manifest(m)
+        except Exception as e:
+            print(f"[{m['manifest']}] manifest pass CRASHED: {e}; continuing with next app")
+            traceback.print_exc()
+            continue
         total_baked += b
         total_skipped += s
     # All apps are now manifest-driven (the appning app reads the R2 manifest, not
