@@ -140,6 +140,15 @@ MAX_NEW_BAKES_PER_APP = 30   # cap so one app can't exhaust the GHA timeout
 MAX_NEW_HINDI_BAKES = 80     # Hindi gets a higher cap: the Amar Ujala feed rotates its
                              # ~60-item window every cycle, so a low cap left most of the
                              # live ids un-baked -> the app 404'd ("Source error").
+# Jul 11 2026 — manifest carry-forward (fixes tickerly car thinness, QAB-audit finding):
+# fast-rotating feeds (finance) rotate their 60-item window faster than gTTS rate
+# limits let one run bake, so a window-only manifest stalled at the ~10 newest
+# confirmed ids forever (tickerly vi/de/fr/it/hi sat at 8-12 items while the live
+# feed had 60). Previously-manifested items are carried forward — their MP3s are in
+# R2 by construction (a manifest never lists an un-baked id and MP3s are never
+# deleted) — until they age out or the cap trims them.
+CARRY_MAX_AGE_MS = 72 * 3600 * 1000  # carried items older than 72h drop off
+MAX_MANIFEST_ITEMS = 80              # newest-first cap on the merged manifest
 
 # Jun 9 2026 — per-app pronunciation tables (copied from each app's
 # assets/phonetics_en.csv). gTTS ignores the in-app CSV, so apply the same
@@ -473,6 +482,27 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
         except Exception as e:
             print(f"[{name}] bake FAILED {aid[:30]}: {e}; EXCLUDED from manifest")
             traceback.print_exc()
+    # Carry-forward union: keep the previous manifest's items whose ids rotated out
+    # of the live window (MP3s confirmed in R2 by construction — see CARRY_MAX_AGE_MS
+    # note). After a FORCE re-voice, carried items keep the old audio until they age
+    # out (<=72h) — acceptable. Window items always win on id collision via `seen`.
+    if not force:
+        try:
+            prev = s3.get_object(Bucket=R2_BUCKET, Key=f"{name}.json")
+            prev_items = json.loads(prev["Body"].read().decode("utf-8")).get("items", [])
+        except Exception:
+            prev_items = []
+        now_ms = int(time.time() * 1000)
+        carried = [
+            a for a in prev_items
+            if isinstance(a, dict) and a.get("id") and a["id"] not in seen
+            and 0 <= now_ms - int(a.get("publishedAtMs") or 0) <= CARRY_MAX_AGE_MS
+        ]
+        if carried:
+            manifest_items.extend(carried)
+            manifest_items.sort(key=lambda a: int(a.get("publishedAtMs") or 0), reverse=True)
+            del manifest_items[MAX_MANIFEST_ITEMS:]
+            print(f"[{name}] carried {len(carried)} prior items forward (total {len(manifest_items)})")
     # MIN floor: a successful-but-empty/thin feed (a transient worker hiccup on a
     # quiet language) must NOT clobber the last good manifest with an empty or
     # near-empty one, which would blank or 1-item the car language section. Skip
@@ -495,7 +525,11 @@ def main() -> int:
     # Manifest passes FIRST: the appning app reads these R2 manifests directly.
     # Each lists ONLY ids whose MP3 is confirmed in R2, so the car never 404s,
     # regardless of which Cloudflare colo the baker vs the car hit.
-    for m in MANIFESTS:
+    # Jul 11 2026 — rotate the starting manifest each run so late-list apps
+    # (tickerly, 9 manifests at the tail) get first claim on the gTTS/time
+    # budget as often as the early ones; a fixed order starved them.
+    off = int(time.time() // 1800) % len(MANIFESTS)
+    for m in MANIFESTS[off:] + MANIFESTS[:off]:
         # One manifest crashing must not kill the rest of the run (the Jul 2 2026
         # surrogate crash at circuitly_pt silently skipped every tickerly pass).
         try:
