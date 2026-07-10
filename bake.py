@@ -115,10 +115,10 @@ MANIFESTS: list[dict[str, Any]] = [
     {"manifest": "circuitly_de", "feed_url": "https://circuitly.soundica.app/feed?lang=de",  "lang": "de", "tld": "de",     "phonetics": "circuitly_de"},
     {"manifest": "circuitly_fr", "feed_url": "https://circuitly.soundica.app/feed?lang=fr",  "lang": "fr", "tld": "fr",     "phonetics": "circuitly_fr"},
     {"manifest": "circuitly_it", "feed_url": "https://circuitly.soundica.app/feed?lang=it",  "lang": "it", "tld": "it",     "phonetics": "circuitly_it"},
-    # Tickerly (finance news) — appning baked-MP3. Worker serves en/es/pt/vi/id/de/fr/it.
-    # NOTE: the app advertises a 9th language (hi) but the Tickerly worker has NO Hindi
-    # finance sources yet, so tickerly_hi is intentionally NOT baked here (it would fall back
-    # to English under a Hindi list). Add hi only after Hindi finance sources are added to the worker.
+    # Tickerly (finance news) — appning baked-MP3. Worker serves en/es/pt/vi/id/de/fr/it/hi,
+    # matching the app's full 9-language AppLanguage enum. (hi was skipped until Jul 10 2026
+    # because the worker had no Hindi finance sources; it now has 6 — Money9live/Amar
+    # Ujala/Prabhat Khabar — and ?lang=hi serves a healthy 60-item window.)
     {"manifest": "tickerly_en", "feed_url": "https://tickerly.soundica.app/feed",          "lang": "en", "tld": "us",     "phonetics": "tickerly_en"},
     {"manifest": "tickerly_es", "feed_url": "https://tickerly.soundica.app/feed?lang=es",  "lang": "es", "tld": "es",     "phonetics": "tickerly_es"},
     {"manifest": "tickerly_pt", "feed_url": "https://tickerly.soundica.app/feed?lang=pt",  "lang": "pt", "tld": "com.br", "phonetics": "tickerly_pt"},
@@ -127,6 +127,7 @@ MANIFESTS: list[dict[str, Any]] = [
     {"manifest": "tickerly_de", "feed_url": "https://tickerly.soundica.app/feed?lang=de",  "lang": "de", "tld": "de",     "phonetics": "tickerly_de"},
     {"manifest": "tickerly_fr", "feed_url": "https://tickerly.soundica.app/feed?lang=fr",  "lang": "fr", "tld": "fr",     "phonetics": "tickerly_fr"},
     {"manifest": "tickerly_it", "feed_url": "https://tickerly.soundica.app/feed?lang=it",  "lang": "it", "tld": "it",     "phonetics": "tickerly_it"},
+    {"manifest": "tickerly_hi", "feed_url": "https://tickerly.soundica.app/feed?lang=hi",  "lang": "hi", "tld": "co.in",  "phonetics": "tickerly_hi"},
 ]
 
 MAX_TEXT_LEN = 4000      # Edge-TTS handles ~8k cleanly, cap at 4k for AAOS cadence
