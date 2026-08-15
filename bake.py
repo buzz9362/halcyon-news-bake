@@ -516,6 +516,69 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
     print(f"[{name}] done: manifest={len(manifest_items)} baked={baked} skipped={skipped} (force={force})")
     return baked, skipped
 
+# ---------- Soundica FM merged manifests ------------------------------------
+# Aug 14 2026. Soundica FM's appning (FORVIA car) flavor is a multi-topic super
+# app, but it shipped reading kpop_<lang>.json, so its car News tab could only
+# ever offer K-Pop; the other categories sat empty and are now hidden by the
+# app's honest-categories rule. Every missing category ALREADY has a baked
+# sibling manifest in this bucket (circuitly=tech, tickerly=finance, anime,
+# bollywood, kpop), so this pass just merges them into soundicafm_<lang>.json,
+# stamping each item's `category` with its topic. The app buckets manifest
+# articles by that field, so categories appear on the car with no app update
+# once this file exists. No new synthesis happens here: component manifests
+# list only ids whose MP3 is already confirmed in R2, so the merge inherits
+# that guarantee for free.
+#
+# `entertainment` is deliberately absent: its only English sources are Google
+# News queries, which are off-limits for the commercial baker path (see the
+# COMMERCIAL POSTURE note in the memory doc), so the car simply does not offer
+# that category.
+SOUNDICA_FM_COMPONENTS: dict[str, list[tuple[str, str]]] = {
+    "en": [("kpop", "kpop_en"), ("anime", "anime_en"), ("bollywood", "bollywood_en"),
+           ("tech", "circuitly_en"), ("finance", "tickerly_en")],
+    "es": [("kpop", "kpop_es"), ("tech", "circuitly_es"), ("finance", "tickerly_es")],
+    "pt": [("kpop", "kpop_pt"), ("tech", "circuitly_pt"), ("finance", "tickerly_pt")],
+    "vi": [("tech", "circuitly_vi"), ("finance", "tickerly_vi")],
+    "de": [("tech", "circuitly_de"), ("finance", "tickerly_de")],
+    "fr": [("tech", "circuitly_fr"), ("finance", "tickerly_fr")],
+    "it": [("tech", "circuitly_it"), ("finance", "tickerly_it")],
+    "id": [("finance", "tickerly_id")],
+    "hi": [("bollywood", "bollywood_hi"), ("finance", "tickerly_hi")],
+}
+# Per-topic cap inside a merged manifest: enough for a full car shelf, small
+# enough that five topics still fit a manifest the head unit parses instantly.
+SOUNDICA_FM_PER_TOPIC = 20
+
+def merge_soundicafm() -> None:
+    for lang, comps in SOUNDICA_FM_COMPONENTS.items():
+        merged: list[dict] = []
+        seen_ids: set[str] = set()
+        for topic, name in comps:
+            try:
+                obj = s3.get_object(Bucket=R2_BUCKET, Key=f"{name}.json")
+                items = json.loads(obj["Body"].read().decode("utf-8")).get("items", [])
+            except Exception as e:
+                print(f"[soundicafm_{lang}] component {name} unavailable: {e}")
+                continue
+            items = [a for a in items if isinstance(a, dict) and a.get("id")]
+            items.sort(key=lambda a: int(a.get("publishedAtMs") or 0), reverse=True)
+            for a in items[:SOUNDICA_FM_PER_TOPIC]:
+                if a["id"] in seen_ids:
+                    continue
+                seen_ids.add(a["id"])
+                # The app's topic bucketing reads this field for manifest
+                # articles; a component manifest's own category value (a
+                # language tag on some) is not meaningful here.
+                a = dict(a)
+                a["category"] = topic
+                merged.append(a)
+        # Same thin-write guard as bake_manifest: never clobber a good merged
+        # manifest with a near-empty one when components are transiently missing.
+        if len(merged) < 5:
+            print(f"[soundicafm_{lang}] only {len(merged)} items; leaving previous manifest unchanged")
+            continue
+        write_manifest(f"soundicafm_{lang}", merged)
+
 # ---------- Main -----------------------------------------------------------
 
 def main() -> int:
@@ -540,6 +603,13 @@ def main() -> int:
             continue
         total_baked += b
         total_skipped += s
+    # Soundica FM merged manifests LAST, so they see this run's freshly written
+    # component manifests. Pure R2 reads + one write per language; never bakes.
+    try:
+        merge_soundicafm()
+    except Exception as e:
+        print(f"[soundicafm] merge pass CRASHED: {e}; component manifests unaffected")
+        traceback.print_exc()
     # All apps are now manifest-driven (the appning app reads the R2 manifest, not
     # broad per-category baking). Skip the broad APPS loop in normal runs to avoid
     # wasted synth + gTTS rate-limit pressure; still runnable via FORCE_APP=<slug>/all.
