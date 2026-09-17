@@ -2,8 +2,16 @@ name: Bake article MP3s
 
 on:
   schedule:
-    # Every 30 minutes, offset by 15 so it doesn't pile up on the top of the hour
-    # when every other free cron in the world also fires.
+    # Asked for every 30 minutes, offset by 15 so it doesn't pile up on the top of
+    # the hour when every other free cron in the world also fires.
+    #
+    # GitHub DOES NOT DELIVER THIS. Measured Sep 15 2026 over runs 1515 to 1536:
+    # every run started with 0 minutes of queue time, so nothing is queuing and the
+    # concurrency group is not the cause -- the schedule EVENT simply arrives every
+    # 96 to 383 minutes instead of every 30. All 38 of those runs succeeded with full
+    # item counts, so bake.py is healthy; the cadence is not ours to control. The job
+    # below therefore bakes on a LOOP for a few hours per trigger, which is the only
+    # lever that does not need an outside credential.
     - cron: '15,45 * * * *'
   workflow_dispatch:
     inputs:
@@ -15,11 +23,19 @@ on:
 concurrency:
   group: bake
   cancel-in-progress: false
+  # EXPECTED SIDE EFFECT of the long looping job below: while one is running, each
+  # scheduled trigger becomes a PENDING run, and GitHub cancels an older pending run
+  # when a newer one arrives. So the Actions list will show cancelled runs during a
+  # loop window. That is not a failing baker -- the running job is baking every 30
+  # minutes throughout. Judge health by the manifests' generatedAtMs, not by the
+  # colour of the run list. (Two such cancelled runs on Sep 12 2026 were read as
+  # failures at first glance and were not.)
 
 jobs:
   bake:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    # Must exceed LOOP_MINUTES plus one full bake pass. GitHub's ceiling is 360.
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v5
 
@@ -38,4 +54,36 @@ jobs:
           R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
           R2_BUCKET: halcyon-news-tts
           FORCE_APP: ${{ github.event.inputs.force_app }}
-        run: python bake.py
+          # One trigger, many bakes. 300 minutes of looping at a 30-minute cadence
+          # turns an unreliable trigger into a reliable one from the app's point of
+          # view: the car flavors read baked manifests, so a 5-hour-old manifest is a
+          # 5-hour-old car app.
+          LOOP_MINUTES: '300'
+          INTERVAL_MINUTES: '30'
+        run: |
+          set -o pipefail
+          if [ -n "${FORCE_APP}" ]; then
+            echo "manual dispatch, FORCE_APP=${FORCE_APP}: one pass, no loop"
+            exec python bake.py
+          fi
+          deadline=$(( $(date +%s) + LOOP_MINUTES * 60 ))
+          n=0; ok=0
+          while :; do
+            n=$(( n + 1 ))
+            pass_start=$(date +%s)
+            echo "::group::bake pass ${n} at $(date -u +%H:%M:%SZ)"
+            # A failed pass must not kill the loop: the next one re-bakes the same
+            # articles, and carry-forward keeps the manifest whole meanwhile.
+            if python bake.py; then ok=$(( ok + 1 )); else echo "pass ${n} FAILED, continuing"; fi
+            echo "::endgroup::"
+            elapsed=$(( $(date +%s) - pass_start ))
+            nap=$(( INTERVAL_MINUTES * 60 - elapsed ))
+            [ "${nap}" -lt 60 ] && nap=60
+            if [ $(( $(date +%s) + nap )) -ge "${deadline}" ]; then break; fi
+            echo "pass ${n} took ${elapsed}s; sleeping ${nap}s"
+            sleep "${nap}"
+          done
+          echo "bake passes=${n} succeeded=${ok}"
+          # Green if anything got through; red only if the whole window failed, which
+          # is a real outage rather than one flaky fetch.
+          [ "${ok}" -gt 0 ] || { echo "every bake pass in this window failed"; exit 1; }
