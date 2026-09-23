@@ -230,6 +230,53 @@ def r2_exists(key: str) -> bool:
             return False
         raise
 
+# Sep 24 2026 (r6) one-shot RE-VOICE. The workers now fold the em dash and drop edition
+# tags in "source", and text_for drops tags from the spoken source, but an id already in
+# R2 is never re-synthesized, so its MP3 still says the old name. The first pass of this
+# code writes _retext/<tag>.json with its start time (the cutover); every later pass
+# re-synthesizes, in place, any window item of RETEXT_APPS whose MP3 is OLDER than the
+# cutover, up to RETEXT_MAX_PER_PASS per manifest. A re-voiced MP3 is newer than the
+# cutover, so each id is redone once and the mode ends on its own; it is also switched
+# off RETEXT_TTL_MS after the cutover, when every such id has left the window. A failed
+# re-voice keeps the old audio and the item (it retries next pass), so a manifest can
+# never shrink because of this mode.
+RETEXT_TAG = "r6-2026-09-24"
+RETEXT_APPS = {"anime", "kpop", "circuitly", "bollywood", "tickerly", "tropic"}
+RETEXT_MAX_PER_PASS = 30
+RETEXT_TTL_MS = 72 * 3600 * 1000
+_retext_cut: list = []
+
+def retext_cutover_ms() -> int | None:
+    if _retext_cut:
+        return _retext_cut[0]
+    cut = None
+    key = f"_retext/{RETEXT_TAG}.json"
+    try:
+        try:
+            obj = s3.get_object(Bucket=R2_BUCKET, Key=key)
+            cut = int(json.loads(obj["Body"].read().decode("utf-8"))["cutover_ms"])
+        except ClientError as e:
+            if e.response["Error"]["Code"] not in ("404", "NoSuchKey", "NotFound"):
+                raise
+            cut = int(time.time() * 1000)
+            s3.put_object(Bucket=R2_BUCKET, Key=key, ContentType="application/json",
+                          Body=json.dumps({"cutover_ms": cut}).encode("utf-8"))
+            print(f"[retext] cutover set {cut}")
+        if int(time.time() * 1000) - cut > RETEXT_TTL_MS:
+            cut = None
+    except Exception as e:
+        print(f"[retext] disabled for this pass: {e}")
+        cut = None
+    _retext_cut.append(cut)
+    return cut
+
+def r2_modified_ms(key: str) -> int | None:
+    try:
+        h = s3.head_object(Bucket=R2_BUCKET, Key=key)
+        return int(h["LastModified"].timestamp() * 1000)
+    except Exception:
+        return None
+
 def upload(key: str, data: bytes) -> None:
     s3.put_object(
         Bucket=R2_BUCKET,
@@ -271,10 +318,29 @@ def fix_surrogates(s: str) -> str:
 def sanitize_article(article: dict) -> dict:
     return {k: (fix_surrogates(v) if isinstance(v, str) else v) for k, v in article.items()}
 
+# Sep 24 2026 (r6): a roster edition tag ("KoreanIndo (ID)", "Kenh14 Star (VN)",
+# "Investing.com France (FR)") must not be READ ALOUD. Spoken text only: the manifest
+# "source" field is untouched, because on kpop-tropic it is the appning logo key.
+# Same rule as the workers' stripEditionTag: a 2-letter upper-case code, alone or as
+# the head of "(AA/Region)". Anything else ("Quem (Globo, BR)") stays.
+def spoken_source(name: str) -> str:
+    n = name.rstrip()
+    if not n.endswith(")"):
+        return name
+    op = n.rfind(" (")
+    if op <= 0:
+        return name
+    tag = n[op + 2:-1]
+    head = tag.split("/")[0]
+    is_code = len(head) == 2 and head.isascii() and head.isalpha() and head.isupper()
+    if not is_code or (len(tag) != 2 and len(tag) < 4):
+        return name
+    return n[:op].rstrip()
+
 def text_for(article: dict) -> str:
     title = clean_text(article.get("title", ""))
     summary = clean_text(article.get("summary", ""))
-    source = clean_text(article.get("source", ""))
+    source = spoken_source(clean_text(article.get("source", "")))
     body_parts = []
     if source:
         body_parts.append(f"{source},")
@@ -445,6 +511,8 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
     baked = 0
     skipped = 0
     seen: set[str] = set()
+    retext_cut = retext_cutover_ms() if name.split("_")[0] in RETEXT_APPS else None
+    retexted = 0
     for article in items:
         aid = article.get("id")
         if not aid or aid in seen:
@@ -457,6 +525,18 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
             print(f"[{name}] head_object failed {aid[:30]}: {e}")
             continue
         if exists and not force:
+            if retext_cut is not None and retexted < RETEXT_MAX_PER_PASS:
+                mod = r2_modified_ms(key)
+                if mod is not None and mod < retext_cut:
+                    rtext = apply_phonetics(text_for(article), phon)
+                    if len(rtext) >= MIN_TEXT_LEN:
+                        try:
+                            upload(key, synth_to_mp3(rtext, lang, tld))
+                            retexted += 1
+                            print(f"[{name}] re-voiced {aid[:40]} -> {key}")
+                        except Exception as e:
+                            # Old audio stays; the item stays; next pass retries.
+                            print(f"[{name}] re-voice FAILED {aid[:30]}: {e}; old audio kept")
             manifest_items.append(article)   # confirmed present
             skipped += 1
             continue
@@ -513,7 +593,7 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
         print(f"[{name}] manifest only {len(manifest_items)} items (< {MIN_MANIFEST_ITEMS}); leaving last good manifest unchanged")
         return baked, skipped
     write_manifest(name, manifest_items)
-    print(f"[{name}] done: manifest={len(manifest_items)} baked={baked} skipped={skipped} (force={force})")
+    print(f"[{name}] done: manifest={len(manifest_items)} baked={baked} skipped={skipped} (force={force}) re-voiced={retexted}")
     return baked, skipped
 
 # ---------- Soundica FM merged manifests ------------------------------------
