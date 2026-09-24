@@ -242,8 +242,8 @@ def r2_exists(key: str) -> bool:
 # never shrink because of this mode.
 RETEXT_TAG = "r6-2026-09-24"
 RETEXT_APPS = {"anime", "kpop", "circuitly", "bollywood", "tickerly", "tropic"}
-RETEXT_MAX_PER_PASS = 30
-RETEXT_TTL_MS = 72 * 3600 * 1000
+RETEXT_MAX_PER_PASS = 5   # Sep 24 2026: 30 made a pass take hours and starved fresh bakes
+RETEXT_TTL_MS = 7 * 24 * 3600 * 1000   # 5/pass needs more passes; auto-terminates when done
 _retext_cut: list = []
 
 def retext_cutover_ms() -> int | None:
@@ -513,6 +513,7 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
     seen: set[str] = set()
     retext_cut = retext_cutover_ms() if name.split("_")[0] in RETEXT_APPS else None
     retexted = 0
+    retext_candidates: list[tuple[str, str, dict]] = []
     for article in items:
         aid = article.get("id")
         if not aid or aid in seen:
@@ -525,18 +526,10 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
             print(f"[{name}] head_object failed {aid[:30]}: {e}")
             continue
         if exists and not force:
-            if retext_cut is not None and retexted < RETEXT_MAX_PER_PASS:
-                mod = r2_modified_ms(key)
-                if mod is not None and mod < retext_cut:
-                    rtext = apply_phonetics(text_for(article), phon)
-                    if len(rtext) >= MIN_TEXT_LEN:
-                        try:
-                            upload(key, synth_to_mp3(rtext, lang, tld))
-                            retexted += 1
-                            print(f"[{name}] re-voiced {aid[:40]} -> {key}")
-                        except Exception as e:
-                            # Old audio stays; the item stays; next pass retries.
-                            print(f"[{name}] re-voice FAILED {aid[:30]}: {e}; old audio kept")
+            # Re-voice candidates are collected here and voiced AFTER the manifest
+            # is written (Sep 24 2026): freshness never waits on re-synthesis.
+            if retext_cut is not None:
+                retext_candidates.append((aid, key, article))
             manifest_items.append(article)   # confirmed present
             skipped += 1
             continue
@@ -593,6 +586,23 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
         print(f"[{name}] manifest only {len(manifest_items)} items (< {MIN_MANIFEST_ITEMS}); leaving last good manifest unchanged")
         return baked, skipped
     write_manifest(name, manifest_items)
+    # Re-voice pass, after the fresh manifest is live: at most RETEXT_MAX_PER_PASS
+    # items whose MP3 predates the cutover. A failure keeps the old audio.
+    for aid, key, article in retext_candidates:
+        if retexted >= RETEXT_MAX_PER_PASS:
+            break
+        mod = r2_modified_ms(key)
+        if mod is None or mod >= retext_cut:
+            continue
+        rtext = apply_phonetics(text_for(article), phon)
+        if len(rtext) < MIN_TEXT_LEN:
+            continue
+        try:
+            upload(key, synth_to_mp3(rtext, lang, tld))
+            retexted += 1
+            print(f"[{name}] re-voiced {aid[:40]} -> {key}")
+        except Exception as e:
+            print(f"[{name}] re-voice FAILED {aid[:30]}: {e}; old audio kept")
     print(f"[{name}] done: manifest={len(manifest_items)} baked={baked} skipped={skipped} (force={force}) re-voiced={retexted}")
     return baked, skipped
 
