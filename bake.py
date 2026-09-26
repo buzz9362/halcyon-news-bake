@@ -661,6 +661,118 @@ def strip_social_residue(text: str) -> str:
     t = _SR_HASHTAG_RUN.sub(" ", _SR_BRACKET_HASHTAG.sub(" ", t))
     return _SR_SPACE_BEFORE_PUNCT.sub(r"\1", _WS_RE.sub(" ", t)).strip()
 
+# ---------- Code residue (Sep 26 2026, JS) -----------------------------------------------------
+# Ear test, circuitly_de rss_1l6c716 (PC-Welt, baked 2026-09-26T09:01:59Z): after the headline the
+# car read about 40 s of JavaScript ("function, document, querySelector, Raute sticky promo block").
+# PC-Welt's RSS description opens with an affiliate "sticky promo block": a <div> and a <script>
+# click handler. Every worker's stripHtml drops the tags but keeps the text between <script> and
+# </script>, so the feed summary is the promo line followed by the code, cut at 600 chars. Money
+# Times (tickerly_pt) carries a TradingView chart widget the same way
+# ('new TradingView.MediumWidget( { "customer": ...').
+# Rule: a code run in a SUMMARY is never voiced. A run starts at a code signature (_CR_START) and
+# ends where its brackets close, at a ";" outside brackets, or at the end of a truncated summary.
+# When what is left is shorter than MIN_SUMMARY_CHARS the summary is dropped and the story reads
+# the headline only (the apps' short-content gate, Article.MIN_SUMMARY_CHARS). The TITLE is never
+# touched by this rule: the appning headline cut counts the title's gTTS chunks.
+# The manifest stores the summary without the run (sanitize_article, write_manifest), so the
+# appning app shows the same text and plans its cut on it (BakedHeadlineCut.bakedText counts the
+# summary's chunks; a manifest summary longer than the voiced one moves the cut EARLY, into the
+# title). Clean text comes back unchanged (the same object), so no other story changes.
+MIN_SUMMARY_CHARS = 40
+_CR_ID = r"[A-Za-z_$][A-Za-z0-9_$]*"
+_CR_B0 = r"(?<![A-Za-z0-9_$.])"
+_CR_ELEMENT = re.compile(r"<(script|style|noscript)(?![A-Za-z0-9_-])[^>]*>.*?(?:</\1\s*>|$)", re.I | re.S)
+# Code signatures, each seen in a real feed summary (tests/test_code_residue.py): PC-Welt and Macwelt
+# "(function () { document.querySelector(", ifun.de "function open_amazon(link) {", Tecnoblog
+# "if(typeof handle_redirect!=='function'){", Money Times "new TradingView.MediumWidget( {", Benzinga
+# "hbspt.forms.create({", "(form, res) => {", "window.LOAD_MODULE_LAYOUT = true;", ".mob-button {
+# margin", ECO "a.ai-bold {font-weight", "var aiShowDebug=", Xataka / Kiplinger / El Comercio JSON
+# ('{"videoId":', '{"source":', '{"@graph":'), Canaltech "{{WHATSAPP_CHANNEL}}".
+_CR_START = re.compile(
+    r"\(\s*function\s*\("                                                          # (function () {
+    r"|" + _CR_B0 + r"function(?:\s+" + _CR_ID + r")?\s*\([^()]{0,80}\)\s*\{"        # function f(e) {
+    r"|" + _CR_B0 + r"new\s+" + _CR_ID + r"(?:\." + _CR_ID + r")*\s*\(\s*[{\[]"       # new A.B( {
+    r"|" + _CR_B0 + _CR_ID + r"(?:\." + _CR_ID + r")+\s*\(\s*(?:[{\[]|function(?![A-Za-z0-9_$]))"  # a.b.c({
+    r"|" + _CR_B0 + r"(?:document|window|localStorage|sessionStorage|navigator|console)\."
+    + _CR_ID + r"\s*(?:[(=\[]|\.[A-Za-z_$])"                                        # document.x(
+    r"|" + _CR_B0 + r"(?:var|let|const)\s+" + _CR_ID + r"\s*=(?!=)"                  # const debug =
+    r"|" + _CR_B0 + r"(?:dataLayer|googletag|gtag|fbq|_taboola|adsbygoogle|jQuery)\s*(?:[(=\[]|\.[A-Za-z_$])"
+    r"|" + _CR_B0 + r"(?:if|for|while|switch|catch)\s*\([^{}]{0,200}\)\s*\{"         # if (x) {
+    r"|" + _CR_B0 + r"(?:else|try|finally)(?:\s+if\s*\([^{}]{0,200}\))?\s*\{"        # else {
+    r"|\(\s*(?:" + _CR_ID + r"\s*(?:,\s*" + _CR_ID + r"\s*)*)?\)\s*=>"                 # (form, res) =>
+    r"|\{\s*\"[^\"\n]{1,40}\"\s*:"                                                  # {"customer": (JSON)
+    r"|\{\{\s*[A-Za-z_][A-Za-z0-9_.]{0,60}\s*\}\}"                                   # {{WHATSAPP_CHANNEL}}
+    r"|@media\s*[^{}\s][^{}]{0,120}\{"                                              # @media (...) {
+    r"|(?<![A-Za-z0-9_.#-])(?:[A-Za-z][A-Za-z0-9]*)?(?:[.#][A-Za-z_][A-Za-z0-9_-]*)+"
+    r"(?:\s*[>+~]?\s*[A-Za-z][A-Za-z0-9]{0,10}(?:[.#][A-Za-z_][A-Za-z0-9_-]*)*){0,3}"
+    r"(?::{1,2}[A-Za-z-]+)?\s*\{\s*[A-Za-z-]+\s*:"                                  # #x p {height:
+)
+_CR_TAIL = re.compile(r"(?:\s*\(\s*\))?\s*;?")
+
+def _code_run_end(s: str, i: int) -> int:
+    """End of the code run that starts at s[i]: where its brackets close (plus a trailing "();"),
+    a ";" outside brackets, or the end of the text (a truncated summary)."""
+    depth, opened, quote, j, n = 0, False, "", i, len(s)
+    while j < n:
+        c = s[j]
+        if quote:
+            if c == "\\":
+                j += 2
+                continue
+            if c == quote:
+                quote = ""
+        elif c in "\"'`":
+            quote = c
+        elif c in "([{":
+            depth += 1
+            opened = opened or c == "{"
+        elif c in ")]}":
+            depth -= 1
+            if depth < 0 or (depth == 0 and opened):
+                return _CR_TAIL.match(s, j + 1).end()
+        elif c == ";" and depth == 0:
+            return j + 1
+        j += 1
+    return n
+
+def strip_code_residue(text: str) -> str:
+    """The summary without script/style elements or plain-text code runs; "" when what is left is
+    shorter than MIN_SUMMARY_CHARS. Text without code comes back unchanged."""
+    if not text or not text.strip():
+        return text
+    t = _CR_ELEMENT.sub(" ", text)
+    cut = t != text
+    out, pos = [], 0
+    while True:
+        m = _CR_START.search(t, pos)
+        if not m:
+            break
+        out.append(t[pos:m.start()])
+        pos = max(_code_run_end(t, m.start()), m.end())
+        cut = True
+    if not cut:
+        return text
+    out.append(t[pos:])
+    # Join the prose pieces; only the seams are tidied ("text {code} ." reads "text."), never the prose.
+    s = ""
+    for piece in out:
+        p = _WS_RE.sub(" ", piece).strip()
+        if p:
+            s = p if not s else (s + p if p[0] in ".,;:!?" else s + " " + p)
+    return s if len(s) >= MIN_SUMMARY_CHARS else ""
+
+def has_code_residue(text: str) -> bool:
+    """A checker's view (tools/code_residue_check.py): the summary holds a code run or element."""
+    return bool(text) and strip_code_residue(text) != text
+
+def without_code_residue(article: dict) -> dict:
+    """The article with its summary through strip_code_residue; the same dict when it is clean."""
+    s = article.get("summary")
+    if not isinstance(s, str):
+        return article
+    c = strip_code_residue(s)
+    return article if c == s else {**article, "summary": c}
+
 # Worker feed JSON can carry LONE UTF-16 surrogate halves: some publishers encode
 # an emoji as two HTML numeric entities (&#55358;&#56596;), the JS worker passes them
 # through as "\ud83e"-style escapes (JS strings tolerate WTF-16), and Python's
@@ -679,7 +791,8 @@ def fix_surrogates(s: str) -> str:
         return s.encode("utf-16", "surrogatepass").decode("utf-16", "ignore")
 
 def sanitize_article(article: dict) -> dict:
-    return {k: (fix_surrogates(v) if isinstance(v, str) else v) for k, v in article.items()}
+    # Sep 26 2026 (JS): the summary is stored and voiced without a code run (see strip_code_residue).
+    return without_code_residue({k: (fix_surrogates(v) if isinstance(v, str) else v) for k, v in article.items()})
 
 # Sep 24 2026 (r6): a roster edition tag ("KoreanIndo (ID)", "Kenh14 Star (VN)",
 # "Investing.com France (FR)") must not be READ ALOUD. Spoken text only: the manifest
@@ -704,7 +817,9 @@ def text_for(article: dict) -> str:
     title = clean_text(article.get("title", ""))
     # Sep 26 2026 (SX): a social handle, photo credit or embed line in the summary is never voiced.
     # The appning apps plan the headline cut on the same cleaned summary (BakedHeadlineCut).
-    summary = strip_social_residue(clean_text(article.get("summary", "")))
+    # Sep 26 2026 (JS): nor a code run (a <script> body the worker left in the summary). The title is
+    # never passed through this rule. Manifest summaries are already stored without it (idempotent).
+    summary = strip_social_residue(clean_text(strip_code_residue(article.get("summary", "") or "")))
     source = spoken_source(clean_text(article.get("source", "")))
     body_parts = []
     if source:
@@ -844,6 +959,9 @@ def write_manifest(name: str, items: list[dict]) -> None:
     list and every id in it is guaranteed to have an MP3 in the same bucket."""
     # fix_surrogates is a last-resort guard here (ingest sanitizing should make it
     # a no-op): a stray surrogate must never kill the run at the final write again.
+    # Sep 26 2026 (JS): carried items and the Soundica FM merges were written by an older
+    # pass, so the code-residue rule runs here too (a no-op on clean items).
+    items = [without_code_residue(a) if isinstance(a, dict) else a for a in items]
     body = fix_surrogates(json.dumps(
         {"generatedAtMs": int(time.time() * 1000), "items": items},
         ensure_ascii=False,
