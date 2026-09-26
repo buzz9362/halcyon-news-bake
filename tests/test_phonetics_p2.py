@@ -78,6 +78,8 @@ class BollywoodEnglish(unittest.TestCase):
         self.assertEqual(say("T-Series", "bollywood"), "Tee Series")            # old: T-Series (T minus)
         self.assertEqual(say("The Vvaan", "bollywood"), "The Vaan")
         self.assertEqual(say("Yami Gautam Dhar", "bollywood"), "Yami Gautam Dar")
+        self.assertEqual(say("Ab Tak Chhappan", "bollywood"), "Ab Tak Chhappan")   # old: AB Tak (P3 finding)
+        self.assertEqual(say("Vishal Bhardwaj", "bollywood"), "Vishaal Bard Waaj")  # old: Vishaal Bhardwaaj
 
     def test_no_row_breaks_the_fragment_rules(self):
         bad = [(k, say(k, "bollywood")) for k, _ in bake.load_phonetics("bollywood")
