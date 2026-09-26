@@ -225,6 +225,23 @@ class NonWordKeyEdges(unittest.TestCase):
         self.assertIn("Jinwoo", bake.apply_phonetics("Jinwoo", "kpop_en"))
 
 
+class LngshotAndXlov(unittest.TestCase):
+    """LNGSHOT = "long shot" (Wikipedia, Korea Herald); XLOV = 엑스러브 "X-Love" (Korean name).
+    Local es/pt press writes the names as-is, so the word form is used there too."""
+    PT = "Jay Park e LNGSHOT vêm ao Brasil em 2026; saiba data e local do show"   # kpop_pt rss_1fg0pbd
+    ES = "¡XLOV llega a Madrid con su propio Fansign!"                         # kpop_es rss_1kcsivf
+
+    def test_rows_on_every_k_table(self):
+        self.assertEqual("Jay Park e Long Shot vêm ao Brasil em 2026; saiba data e local do show", bake.apply_phonetics(self.PT, "kpop_pt"))
+        self.assertEqual("¡Ex Love llega a Madrid con su propio Fansign!", bake.apply_phonetics(self.ES, "kpop_es"))
+        for slug in ("kpop_en", "tropic_en"):
+            self.assertEqual("Long Shot and Ex Love", bake.apply_phonetics("LNGSHOT and XLOV", slug))
+
+    def test_control_without_the_rows_the_caps_pass_alone_leaves_a_consonant_cluster(self):
+        slug = with_temp_table([("Zzqq", "unused")], normalize=True)
+        self.assertEqual("Lngshot and Xlov", bake.apply_phonetics("LNGSHOT and XLOV", slug))
+
+
 class ForceAppTableKey(unittest.TestCase):
     def test_every_apps_row_names_a_real_table(self):
         self.assertEqual([], [a["slug"] for a in bake.APPS if a.get("phonetics") not in bake.PHONETICS])
