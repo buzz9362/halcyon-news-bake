@@ -54,7 +54,9 @@ def rule_breaks(spoken):
         out.append("single letter + hyphen")
     frags = [f.strip(",.'\"") for f in re.split(r"[\s\-]+", spoken) if f.strip(",.'\"")]
     if not all(len(f) == 1 and f.isupper() for f in frags):
-        ok = {"a", "i", "of", "to", "in", "on", "my", "yo", "go", "by", "oh", "ah", "be", "we", "no", "so", "do"}
+        ok = {"a", "i", "of", "to", "in", "on", "my", "yo", "go", "by", "oh", "ah", "be", "we", "no", "so", "do",
+              # rulebook letter names (ADOR = "Ay Door", MV = "Em Vi") and the English name Jo
+              "ay", "ee", "em", "en", "el", "ex", "jo"}
         out += [f"fragment {f}" for f in frags if len(f) <= 2 and f.isalpha() and not f.isupper() and f.lower() not in ok]
     out += [f"digraph {f}" for f in frags if re.fullmatch(r"(Bh|Dh|Gh|Jh)[a-z]{0,2}", f)]
     return out
