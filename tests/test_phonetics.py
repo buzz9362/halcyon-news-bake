@@ -179,6 +179,28 @@ class ShortWordsAndShouting(unittest.TestCase):
         for t in ("CEO", "USA", "UFC", "OMG", "OST", "NCT", "TXT"):
             self.assertEqual(f"Big {t} News Today", bake.normalize_caps(f"BIG {t} NEWS TODAY", "en"))
 
+    def test_v21_other_scripts_count_and_p2_acronyms(self):
+        # A Hindi line with Latin acronyms does not shout (Devanagari words count).
+        hi = "RBI New FD rules: 1 अक्टूबर से बदलने जा रहे हैं FD के नियम"
+        self.assertEqual(hi, bake.normalize_caps(hi, "hi"))
+        self.assertEqual("BTS का नया Album For The Fans", bake.normalize_caps("BTS का नया ALBUM FOR THE FANS", "hi"))
+        self.assertEqual("FRANKFURT (dpa-AFX)".replace("FRANKFURT", "Frankfurt"), bake.normalize_caps("FRANKFURT (dpa-AFX)", "de"))
+        self.assertEqual("UP man ties the knot", bake.normalize_caps("UP man ties the knot", "en"))
+
+    def test_control_v2_counted_only_cased_words(self):
+        # The v2 denominator (cased words only) made the Hindi line shout: RBI -> "Rbi".
+        hi = "RBI New FD rules: 1 अक्टूबर से बदलने जा रहे हैं FD के नियम"
+        cased = [w for w in hi.split() if len(w) >= 2 and w.lower() != w.upper()]
+        caps = [w for w in cased if w.isupper()]
+        self.assertGreaterEqual(len(caps) / len(cased), bake.SHOUT_SHARE)
+
+    def test_every_manifest_table_file_is_mapped(self):
+        import os
+        missing = [m["phonetics"] for m in bake.MANIFESTS
+                   if os.path.exists(os.path.join(ROOT, "phonetics", m["phonetics"] + ".csv")) and m["phonetics"] not in bake.PHONETICS]
+        self.assertEqual([], missing)
+        self.assertIn("circuitly_en", bake.PHONETICS)
+
     def test_apply_phonetics_uses_the_manifest_language(self):
         self.assertEqual("es", bake._slug_lang("kpop_es"))
         self.assertEqual("en", bake._slug_lang("bollywood"))

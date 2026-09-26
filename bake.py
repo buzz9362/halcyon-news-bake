@@ -178,6 +178,12 @@ PHONETICS = {
     "tickerly_id": "phonetics/tickerly_id.csv",
     "tickerly_vi": "phonetics/tickerly_vi.csv",
 }
+# Every manifest whose table file exists is mapped (P2 added audited header-only tables for
+# the 13 circuitly/tickerly manifests), so no manifest is voiced without its table.
+for _m in MANIFESTS:
+    _rel = f"phonetics/{_m['phonetics']}.csv"
+    if _m["phonetics"] not in PHONETICS and os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), _rel)):
+        PHONETICS[_m["phonetics"]] = _rel
 
 # Sep 26 2026 (owner: "names in capital letters are read as letters"; "apply the
 # existing rules properly"). For these tables the text is prepared the way the apps'
@@ -222,6 +228,8 @@ LETTER_ACRONYMS = {
     "BTS", "NCT", "TXT", "UFC", "CEO", "USA", "OMG", "OST", "EP", "LP", "AI", "IA", "UK", "US", "EU", "UE",
     "UN", "IPO", "ETF", "AAA", "MMA", "SMA", "AOA", "INI", "JYP", "EUA", "GDA", "KST", "OTT", "IFA", "UPI",
     "EMI", "ATM", "ID", "IU", "OK", "UV", "EV",
+    # P2 pools (v2 review): letter-style in their headlines and datelines.
+    "RBI", "SBI", "KYC", "SME", "MSI", "PMI", "AFX",
 }
 _VOWELS = set("AEIOU")
 # FORCE_APP="bollywood" (or "all") re-bakes that app ignoring the R2 cache +
@@ -270,7 +278,7 @@ SHORT_WORDS = {
            "HER", "HIM", "SHE", "YOU", "ITS", "CAN", "GET", "GOT", "NEW", "BIG", "HIT", "TOP", "ONE", "TWO",
            "SIX", "TEN", "WIN", "WON", "ALL", "OUT", "NOW", "OFF", "DAY", "BOY", "MAN", "OLD", "RED", "HOT",
            "POP", "FAN", "SET", "SAY", "SEE", "LET", "YES", "WAY", "OF", "IN", "ON", "TO", "AT", "IS", "IT",
-           "BE", "AS", "BY", "OR", "AN", "MY", "WE", "HE", "UP", "SO", "NO", "DO", "GO", "ME", "IF"},
+           "BE", "AS", "BY", "OR", "AN", "MY", "WE", "HE", "SO", "NO", "DO", "GO", "ME", "IF"},  # not UP: Uttar Pradesh
     "es": {"EL", "LA", "LOS", "LAS", "UN", "UNA", "DE", "DEL", "AL", "EN", "CON", "POR", "QUE", "SE", "SU",
            "SUS", "NO", "ES", "LO", "LE", "MÁS", "MAS", "SIN", "HOY", "YA", "MUY", "SI", "SÍ", "MI", "TU", "YO",
            "ESO", "ESA", "VA", "VAN", "FUE", "SON", "HAY"},
@@ -288,20 +296,22 @@ SHORT_WORDS = {
     "it": {"IL", "LO", "LA", "LE", "GLI", "DI", "DA", "IN", "CON", "SU", "PER", "UN", "UNA", "CHE", "NON",
            "DEL", "DEI"},
 }
-# A segment (sentence) is SHOUTING when it has >= 3 cased words of 2+ letters and at least
+# A segment (sentence) is SHOUTING when it has >= 3 words of 2+ characters (any script: a
+# Devanagari word counts, so a Hindi line with one Latin acronym never shouts) and at least
 # this share of them is in capitals; then every capitals word of 2+ letters is Title-cased,
 # except LETTER_ACRONYMS, words without a vowel and bracketed tokens.
 SHOUT_SHARE = 0.6
 
 def _caps_tokens(text: str):
-    """(start, end, token) for runs that start with a letter: letters, digits, and an
-    apostrophe followed by a letter ("PROJECT'S")."""
+    """(start, end, token) for runs that start with a letter: letters, combining marks
+    (Devanagari vowel signs), digits, and an apostrophe followed by a letter ("PROJECT'S")."""
     i, n = 0, len(text)
     while i < n:
         if not text[i].isalpha():
             i += 1; continue
         j = i
         while j < n and (text[j].isalpha() or text[j].isdigit()
+                         or unicodedata.category(text[j]).startswith("M")
                          or (text[j] == "'" and j + 1 < n and text[j + 1].isalpha())):
             j += 1
         yield i, j, text[i:j]
@@ -323,15 +333,15 @@ def normalize_caps(text: str, lang: str = "en") -> str:
     short = SHORT_WORDS.get(lang, set())
     toks = list(_caps_tokens(text))
     seg_of = _segment_ids(text)
-    cased, caps = {}, {}
+    words, caps = {}, {}
     for i, j, tok in toks:
         word = tok.split("'")[0]
-        if len(word) >= 2 and word.lower() != word.upper():
+        if len(word) >= 2:
             sg = seg_of[i]
-            cased[sg] = cased.get(sg, 0) + 1
-            if word.isalpha() and word.upper() == word:
+            words[sg] = words.get(sg, 0) + 1
+            if word.isalpha() and word.upper() == word and word.lower() != word:
                 caps[sg] = caps.get(sg, 0) + 1
-    shouting = {sg for sg, c in cased.items() if c >= 3 and caps.get(sg, 0) / c >= SHOUT_SHARE}
+    shouting = {sg for sg, c in words.items() if c >= 3 and caps.get(sg, 0) / c >= SHOUT_SHARE}
     out = list(text)
     for i, j, tok in toks:
         word = tok.split("'")[0]   # "PROJECT'S" is judged on "PROJECT"
