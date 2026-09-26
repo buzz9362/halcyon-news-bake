@@ -1,0 +1,5 @@
+Name,Phonetic
+# circuitly_es: audited Sep 26 2026 (P2) against the pronunciation rulebook on 140 items
+# (baked manifest + live feed). No row-level misread: gTTS reads the text as written.
+# Stray ALL-CAPS words are handled by bake.py normalize_caps, not by rows here.
+# Add a row only for a word the engine gets wrong (rulebook: only respell what it misreads).

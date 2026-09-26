@@ -20,21 +20,24 @@ Yash Raj Films,Yash Raj Films
 SLB,S L B
 T-Series,Tee Series
 T Series,Tee Series
+# Sep 26 2026 (lint PR04): letter-style acronyms spell their letters as letter NAMES
+# (rulebook: BTS = Bee Tee Ess); a bare A or I can be read as a word. K Jo keeps the
+# English name Jo whole (PR01) and still keeps the inline twin from firing.
 KJo,KJo
-K Jo,K Joh
+K Jo,K Jo
 KWK,K W K
 RRR,R R R
 KGF,K G F
 KKR,K K R
 AAP,A A P
-AIB,A I B
+AIB,Ay Eye Bee
 FWICE,FWICE
 IMPPA,Impa
-IFTDA,I F T D A
+IFTDA,Eye Eff Tee Dee Ay
 CBFC,C B F C
-MIB,M I B
+MIB,Em Eye Bee
 I&B,I and B
-IIFA,I I F A
+IIFA,Eye Eye Eff Ay
 MAMI,Maami
 # === People — male leads ===
 Shah Rukh Khan,Shaah Rookh Khaan

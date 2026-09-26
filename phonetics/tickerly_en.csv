@@ -2,16 +2,17 @@ Name,Phonetic
 NASDAQ,Naz Dak
 S&P 500,S and P five hundred
 S&P,S and P
-CPI,C P I
+# Sep 26 2026 (lint PR04): letter names, not bare vowels (rulebook: BTS = Bee Tee Ess).
+CPI,See Pee Eye
 GDP,G D P
-IPO,I P O
+IPO,Eye Pee Oh
 ETF,E T F
 EUR/USD,Euro U S Dollar
 GBP/USD,Pound U S Dollar
 USD/JPY,U S Dollar Yen
-FOMC,F O M C
+FOMC,Eff Oh Em See
 ECB,E C B
-NYSE,N Y S E
+NYSE,En Why Ess Ee
 FTSE,Footsie
 DAX,Dax
 M&A,Mergers and Acquisitions
