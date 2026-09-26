@@ -3,7 +3,8 @@ halcyon-news-bake — pre-bake MP3s for the 6 Halcyon Audio news apps so the
 Android Automotive OS flavors play real audio URLs through ExoPlayer (no
 system TTS dependency, no MainActivity wake-up, no audio-focus shims).
 
-Uses gTTS (Google Translate TTS, free, no auth, works from any IP) — we
+Uses gTTS (Google Translate TTS, free, no auth; it does answer 429 to a busy
+datacenter IP, see ThrottleBreaker) — we
 switched from edge-tts because Microsoft blocks the Edge synthesis endpoint
 from GitHub Actions / cloud datacenter IPs (403 WSServerHandshakeError).
 
@@ -21,6 +22,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import random
 import re
 import sys
 import time
@@ -560,8 +562,9 @@ def synth_to_mp3(text: str, lang: str, tld: str) -> bytes:
 
 # ---------- Per-app bake loop ----------------------------------------------
 
-def bake_app(app: dict[str, Any]) -> tuple[int, int]:
-    """Returns (baked_count, skipped_count) for logging."""
+def bake_app(app: dict[str, Any], breaker: "ThrottleBreaker | None" = None) -> tuple[int, int]:
+    """Returns (baked_count, skipped_count) for logging. With a breaker (main()), its
+    gTTS calls share the pass's 429 breaker and stop when it opens."""
     slug = app["slug"]
     lang = app["lang"]
     tld = app["tld"]
@@ -608,13 +611,16 @@ def bake_app(app: dict[str, Any]) -> tuple[int, int]:
                 continue
 
             try:
-                mp3 = synth_to_mp3(text, lang, tld)
+                mp3 = breaker.synth(text, lang, tld, who=slug) if breaker else synth_to_mp3(text, lang, tld)
                 upload(key, mp3)
                 baked += 1
                 print(f"[{slug}] baked {aid[:40]}... -> {key} ({len(mp3)} bytes)")
             except Exception as e:
                 print(f"[{slug}] bake failed for {aid[:30]}: {e}")
-                traceback.print_exc()
+                if breaker and breaker.tripped:
+                    return baked, skipped
+                if not is_throttle(e):
+                    traceback.print_exc()
                 continue
 
             if not force and baked >= MAX_NEW_BAKES_PER_APP:
@@ -689,19 +695,93 @@ def write_manifest(name: str, items: list[dict]) -> None:
 
 # Sep 26 2026 (GC4 handoff): a gTTS throttle and a stalled run look the same from outside:
 # every synth fails, carry-forward keeps the manifest full, and the car hears day-old news.
-# A manifest that had fresh stories to bake, baked none of them and had synth failures is
-# recorded here; main() prints it and exits non-zero so the pass shows as FAILED.
+# A manifest that had fresh stories to bake and baked none of them (they failed, or the
+# 429 breaker deferred them) is recorded here; main() prints it and exits non-zero so the
+# pass shows as FAILED. The workflow loop survives a failed pass.
 _STARVED: list = []
+MIN_MANIFEST_ITEMS = 5
 
-def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
-    """Fetch the EXACT feed url the appning app reads, bake any missing MP3, then
-    write a manifest listing ONLY ids whose MP3 is CONFIRMED in R2. An article is
-    appended to the manifest ONLY after its upload succeeds (or it already exists),
-    never on the text-length check alone — so the manifest can never list an
-    un-baked id. The manifest object is written LAST, after all uploads in the run."""
+# ---------- gTTS throttle circuit breaker ----------------------------------
+# Sep 26 2026 (BK). Run 36174562701 (Sep 25, 10 passes over 5 h): gTTS answered
+# "429 (Too Many Requests)" to the runner IP after ~476 synths in pass 1 and never let up.
+# Passes 2-10 baked 0 stories and still sent 540-694 synth requests each (every excluded
+# story retried on every pass, in every manifest, plus the re-voice): 5,908 failures in one
+# run. Now a 429 gets ONE retry after a short jittered sleep, and THROTTLE_TRIP_429S 429s in
+# a row open the breaker: no synth (fresh or re-voice) is attempted for the rest of the pass,
+# the manifests are written with what is confirmed in R2, and the next pass tries again.
+# The voice, language, tld and engine are unchanged.
+THROTTLE_TRIP_429S = 3
+THROTTLE_RETRY_BASE_S = 4.0
+THROTTLE_RETRY_JITTER_S = 4.0
+_sleep = time.sleep   # tests replace this
+_THROTTLE_CODE = re.compile(r"\b429\b")
+
+def is_throttle(e: BaseException) -> bool:
+    """A gTTS 429: the HTTP status when gTTS kept the response, else its message."""
+    if getattr(getattr(e, "rsp", None), "status_code", None) == 429:
+        return True
+    s = str(e)
+    return bool(_THROTTLE_CODE.search(s)) and "too many requests" in s.lower()
+
+class BreakerOpen(Exception):
+    """Raised instead of a synth request once the breaker is open for this pass."""
+
+class ThrottleBreaker:
+    """Every gTTS call of a pass goes through one instance of this."""
+
+    def __init__(self, trip_after: int = THROTTLE_TRIP_429S):
+        self.trip_after = trip_after
+        self.consecutive = 0   # 429s since the last successful synth
+        self.total_429 = 0     # 429s this pass
+        self.attempts = 0      # synth calls made this pass (a retry is a call)
+        self.tripped = False
+
+    def synth(self, text: str, lang: str, tld: str, who: str = "", retry: bool = True) -> bytes:
+        tries = 2 if retry else 1
+        for n in range(tries):
+            if self.tripped:
+                raise BreakerOpen("gTTS breaker open for this pass")
+            self.attempts += 1
+            try:
+                mp3 = synth_to_mp3(text, lang, tld)
+            except Exception as e:
+                if not is_throttle(e):
+                    raise
+                self.total_429 += 1
+                self.consecutive += 1
+                if self.consecutive >= self.trip_after:
+                    self.tripped = True
+                    print(f"[throttle] {self.consecutive} gTTS 429s in a row (last at {who}): breaker OPEN, "
+                          "no more synth this pass; manifests keep what is confirmed, the next pass retries")
+                    raise
+                if n + 1 < tries:
+                    _sleep(THROTTLE_RETRY_BASE_S + random.uniform(0, THROTTLE_RETRY_JITTER_S))
+                    continue
+                raise
+            self.consecutive = 0
+            return mp3
+        raise BreakerOpen("unreachable")
+
+# ---------- Pass order: plan, fresh round-robin, write, re-voice -----------
+# Sep 26 2026 (BK): a pass is now plan -> fresh round-robin -> write -> re-voice, across ALL
+# manifests, instead of bake-then-write one manifest at a time. Before, the first manifests
+# in the rotation drained the gTTS budget (Sep 25 pass 1: tickerly vi/id/de/fr/it baked 60
+# each, then the throttle hit and 16 manifests baked none). Now each round bakes ONE fresh
+# story per manifest, newest first, stalest manifest first, until the pending lists, the
+# per-manifest cap or the breaker end it, so every car gets its newest story before any
+# manifest gets a second one.
+MANIFEST_FLUSH_S = 300   # re-write manifests that gained stories after round 1, then this often
+
+def _pub_ms(a: dict) -> int:
+    try:
+        return int(a.get("publishedAtMs") or 0)
+    except (TypeError, ValueError):
+        return 0
+
+def plan_manifest(m: dict[str, Any]) -> dict | None:
+    """Fetch the EXACT feed url the appning app reads and sort its items into confirmed
+    (MP3 in R2) and pending (to synth, newest first). No synth happens here."""
     name = m["manifest"]
-    lang = m["lang"]
-    tld = m["tld"]
     phon = m["phonetics"]
     force = FORCE_APP in (name, name.split("_")[0], "all")
     try:
@@ -711,13 +791,8 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
     except Exception as e:
         # Do NOT rewrite the manifest on a fetch failure — leave the last good one.
         print(f"[{name}] feed fetch failed: {e}; manifest left unchanged")
-        return 0, 0
+        return None
     print(f"[{name}] feed has {len(items)} items (force={force})")
-    manifest_items: list[dict] = []
-    baked = 0
-    skipped = 0
-    excluded = 0
-    seen: set[str] = set()
     # Re-voice modes for this manifest: (cutover_ms, listed ids or None = every window item,
     # baked-after ms or None). An item is redone when its MP3 predates a mode's cutover and
     # the mode selects it.
@@ -731,8 +806,12 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
         c = retext_cutover_ms(RETEXT_TARGETED_TAG)
         if c is not None:
             retext_modes.append((c, set(tgt["manifests"][name]), int(tgt.get("generated_ms", 0))))
-    retexted = 0
+    window: list[dict] = []
+    confirmed: set[str] = set()
+    pending: list[tuple[dict, str, str, bool]] = []   # (article, key, text, mp3 already in R2)
     retext_candidates: list[tuple[str, str, dict]] = []
+    seen: set[str] = set()
+    skipped = 0
     for article in items:
         aid = article.get("id")
         if not aid or aid in seen:
@@ -744,93 +823,182 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
         except Exception as e:
             print(f"[{name}] head_object failed {aid[:30]}: {e}")
             continue
+        window.append(article)
         if exists and not force:
-            # Re-voice candidates are collected here and voiced AFTER the manifest
-            # is written (Sep 24 2026): freshness never waits on re-synthesis.
             if retext_modes:
                 retext_candidates.append((aid, key, article))
-            manifest_items.append(article)   # confirmed present
+            confirmed.add(aid)   # confirmed present
             skipped += 1
             continue
-        # Need to (re)bake. Respect the cap for NEW synths, but still keep any
-        # already-present item in the manifest (so it stays complete).
-        if not force and baked >= MAX_NEW_HINDI_BAKES:
-            if exists:
-                manifest_items.append(article)
-            continue
+        if exists:
+            confirmed.add(aid)   # FORCE re-bake: the old MP3 stays listed until the new one lands
         text = apply_phonetics(text_for(article), phon)
         if len(text) < MIN_TEXT_LEN:
-            if exists:
-                manifest_items.append(article)
-            else:
+            if not exists:
                 print(f"[{name}] skip {aid[:30]}: text too short ({len(text)})")
             continue
-        try:
-            mp3 = synth_to_mp3(text, lang, tld)
-            upload(key, mp3)
-            baked += 1
-            manifest_items.append(article)   # ONLY after a confirmed upload
-            print(f"[{name}] baked {aid[:40]} -> {key} ({len(mp3)} bytes)")
-        except Exception as e:
-            print(f"[{name}] bake FAILED {aid[:30]}: {e}; EXCLUDED from manifest")
-            traceback.print_exc()
-            excluded += 1
-    if excluded and not baked:
-        _STARVED.append((name, excluded))
-        print(f"[{name}] STARVED: {excluded} fresh stories failed to bake, 0 baked this pass")
-    # Carry-forward union: keep the previous manifest's items whose ids rotated out
-    # of the live window (MP3s confirmed in R2 by construction — see CARRY_MAX_AGE_MS
-    # note). After a FORCE re-voice, carried items keep the old audio until they age
-    # out (<=72h) — acceptable. Window items always win on id collision via `seen`.
+        pending.append((article, key, text, exists))
+    pending.sort(key=lambda j: _pub_ms(j[0]), reverse=True)   # newest first
+    prev_items: list = []
     if not force:
         try:
             prev = s3.get_object(Bucket=R2_BUCKET, Key=f"{name}.json")
             prev_items = json.loads(prev["Body"].read().decode("utf-8")).get("items", [])
         except Exception:
             prev_items = []
+    # What the car plays now: the newest confirmed story in the window or the live manifest.
+    head_ms = max([_pub_ms(a) for a in window if a["id"] in confirmed]
+                  + [_pub_ms(a) for a in prev_items if isinstance(a, dict)], default=0)
+    return {
+        "name": name, "lang": m["lang"], "tld": m["tld"], "phon": phon, "force": force,
+        "window": window, "seen": seen, "confirmed": confirmed, "pending": pending,
+        "fresh_total": sum(1 for j in pending if not j[3]), "prev_items": prev_items,
+        "head_ms": head_ms, "retext_modes": retext_modes, "retext_candidates": retext_candidates,
+        "skipped": skipped, "baked": 0, "fresh_baked": 0, "failed": 0, "retexted": 0,
+        "dirty": False, "flushed": False, "written": False, "size": 0,
+    }
+
+def _bake_one(p: dict, job: tuple, breaker: ThrottleBreaker) -> None:
+    """Synth + upload one story. It joins the manifest ONLY after a confirmed upload."""
+    article, key, text, exists = job
+    name, aid = p["name"], article["id"]
+    try:
+        mp3 = breaker.synth(text, p["lang"], p["tld"], who=name)
+        upload(key, mp3)
+    except Exception as e:
+        p["failed"] += 1
+        print(f"[{name}] bake FAILED {aid[:30]}: {e}; {'old audio kept' if exists else 'EXCLUDED from manifest'}")
+        if not (is_throttle(e) or isinstance(e, BreakerOpen)):
+            traceback.print_exc()
+        return
+    p["baked"] += 1
+    if not exists:
+        p["fresh_baked"] += 1
+    p["confirmed"].add(aid)
+    p["dirty"] = True
+    print(f"[{name}] baked {aid[:40]} -> {key} ({len(mp3)} bytes)")
+
+def bake_fresh(plans: list[dict], breaker: ThrottleBreaker) -> None:
+    """Round-robin: each round bakes the newest pending story of every manifest (stalest
+    manifest first). Keeps the per-manifest cap (MAX_NEW_HINDI_BAKES; FORCE ignores it)
+    and stops the moment the breaker opens."""
+    order = sorted(plans, key=lambda p: p["head_ms"])   # stable: rotation breaks ties
+    rnd, last_flush = 0, time.monotonic()
+    while not breaker.tripped:
+        rnd += 1
+        took = False
+        for p in order:
+            if breaker.tripped:
+                break
+            if not p["pending"] or (not p["force"] and p["baked"] >= MAX_NEW_HINDI_BAKES):
+                continue
+            took = True
+            _bake_one(p, p["pending"].pop(0), breaker)
+        if not took:
+            break
+        if rnd == 1 or time.monotonic() - last_flush >= MANIFEST_FLUSH_S:
+            for p in plans:
+                if p["dirty"]:
+                    try:
+                        finalize_manifest(p)
+                    except Exception as e:   # main() writes it again after the fresh phase
+                        print(f"[{p['name']}] manifest flush failed: {e}")
+            last_flush = time.monotonic()
+
+def finalize_manifest(p: dict) -> None:
+    """Write the manifest: the confirmed window items (feed order) plus the carry-forward.
+    Never an un-baked id; never a thin manifest over a good one."""
+    name = p["name"]
+    items = [a for a in p["window"] if a["id"] in p["confirmed"]]
+    # Carry-forward union: keep the previous manifest's items whose ids rotated out
+    # of the live window (MP3s confirmed in R2 by construction — see CARRY_MAX_AGE_MS
+    # note). After a FORCE re-voice, carried items keep the old audio until they age
+    # out (<=72h) — acceptable. Window items always win on id collision via `seen`.
+    if not p["force"]:
         now_ms = int(time.time() * 1000)
         carried = [
-            a for a in prev_items
-            if isinstance(a, dict) and a.get("id") and a["id"] not in seen
+            a for a in p["prev_items"]
+            if isinstance(a, dict) and a.get("id") and a["id"] not in p["seen"]
             and 0 <= now_ms - int(a.get("publishedAtMs") or 0) <= CARRY_MAX_AGE_MS
         ]
         if carried:
-            manifest_items.extend(carried)
-            manifest_items.sort(key=lambda a: int(a.get("publishedAtMs") or 0), reverse=True)
-            del manifest_items[MAX_MANIFEST_ITEMS:]
-            print(f"[{name}] carried {len(carried)} prior items forward (total {len(manifest_items)})")
+            items.extend(carried)
+            items.sort(key=lambda a: int(a.get("publishedAtMs") or 0), reverse=True)
+            del items[MAX_MANIFEST_ITEMS:]
+            print(f"[{name}] carried {len(carried)} prior items forward (total {len(items)})")
     # MIN floor: a successful-but-empty/thin feed (a transient worker hiccup on a
     # quiet language) must NOT clobber the last good manifest with an empty or
     # near-empty one, which would blank or 1-item the car language section. Skip
     # the write and leave the previous good manifest in place; the next cron bake
     # retries once the feed recovers. (A healthy manifest is dozens of items.)
-    MIN_MANIFEST_ITEMS = 5
-    if len(manifest_items) < MIN_MANIFEST_ITEMS:
-        print(f"[{name}] manifest only {len(manifest_items)} items (< {MIN_MANIFEST_ITEMS}); leaving last good manifest unchanged")
-        return baked, skipped
-    write_manifest(name, manifest_items)
-    # Re-voice pass, after the fresh manifest is live: at most RETEXT_MAX_PER_PASS
-    # items whose MP3 predates the cutover. A failure keeps the old audio.
-    for aid, key, article in retext_candidates:
-        if retexted >= RETEXT_MAX_PER_PASS:
-            break
-        mod = r2_modified_ms(key)
-        if mod is None or not any(
-            mod < cut and (ids is None or aid in ids or (after is not None and mod >= after))
-            for cut, ids, after in retext_modes
-        ):
+    if len(items) < MIN_MANIFEST_ITEMS:
+        print(f"[{name}] manifest only {len(items)} items (< {MIN_MANIFEST_ITEMS}); leaving last good manifest unchanged")
+        p["dirty"], p["flushed"] = False, True
+        return
+    write_manifest(name, items)
+    p["dirty"], p["flushed"], p["written"], p["size"] = False, True, True, len(items)
+
+def report_starved(plans: list[dict]) -> None:
+    for p in plans:
+        if p["fresh_total"] and not p["fresh_baked"]:
+            deferred = sum(1 for j in p["pending"] if not j[3])
+            _STARVED.append((p["name"], p["fresh_total"]))
+            print(f"[{p['name']}] STARVED: {p['fresh_total']} fresh stories, 0 baked this pass "
+                  f"({p['failed']} failed, {deferred} deferred by the 429 breaker)")
+
+def revoice(plans: list[dict], breaker: ThrottleBreaker) -> None:
+    """r6/r7 re-voice, AFTER every manifest is written, and only in a pass that saw no
+    gTTS 429: re-voicing old stories must never spend the budget that fresh stories need.
+    At most RETEXT_MAX_PER_PASS per manifest; a failure keeps the old audio."""
+    if breaker.total_429 or breaker.tripped:
+        if any(p["retext_candidates"] for p in plans):
+            print(f"[retext] skipped this pass: {breaker.total_429} gTTS 429s seen; fresh stories first")
+        return
+    for p in plans:
+        if not p["written"]:
             continue
-        rtext = apply_phonetics(text_for(article), phon)
-        if len(rtext) < MIN_TEXT_LEN:
-            continue
-        try:
-            upload(key, synth_to_mp3(rtext, lang, tld))
-            retexted += 1
-            print(f"[{name}] re-voiced {aid[:40]} -> {key}")
-        except Exception as e:
-            print(f"[{name}] re-voice FAILED {aid[:30]}: {e}; old audio kept")
-    print(f"[{name}] done: manifest={len(manifest_items)} baked={baked} skipped={skipped} (force={force}) re-voiced={retexted}")
-    return baked, skipped
+        name = p["name"]
+        for aid, key, article in p["retext_candidates"]:
+            if p["retexted"] >= RETEXT_MAX_PER_PASS:
+                break
+            mod = r2_modified_ms(key)
+            if mod is None or not any(
+                mod < cut and (ids is None or aid in ids or (after is not None and mod >= after))
+                for cut, ids, after in p["retext_modes"]
+            ):
+                continue
+            rtext = apply_phonetics(text_for(article), p["phon"])
+            if len(rtext) < MIN_TEXT_LEN:
+                continue
+            try:
+                upload(key, breaker.synth(rtext, p["lang"], p["tld"], who=name, retry=False))
+                p["retexted"] += 1
+                print(f"[{name}] re-voiced {aid[:40]} -> {key}")
+            except Exception as e:
+                print(f"[{name}] re-voice FAILED {aid[:30]}: {e}; old audio kept")
+                if breaker.total_429 or breaker.tripped:
+                    print("[retext] stopped for this pass after a gTTS 429")
+                    return
+
+def _done_line(p: dict) -> str:
+    deferred = sum(1 for j in p["pending"] if not j[3])
+    return (f"[{p['name']}] done: manifest={p['size']} baked={p['baked']} skipped={p['skipped']} "
+            f"failed={p['failed']} deferred={deferred} (force={p['force']}) re-voiced={p['retexted']}")
+
+def bake_manifest(m: dict[str, Any], breaker: ThrottleBreaker | None = None) -> tuple[int, int]:
+    """One manifest on its own (ad hoc runs and tests): the same plan -> fresh -> write ->
+    re-voice steps main() runs across all manifests."""
+    breaker = breaker or ThrottleBreaker()
+    p = plan_manifest(m)
+    if p is None:
+        return 0, 0
+    bake_fresh([p], breaker)
+    if p["dirty"] or not p["flushed"]:
+        finalize_manifest(p)
+    report_starved([p])
+    revoice([p], breaker)
+    print(_done_line(p))
+    return p["baked"], p["skipped"]
 
 # ---------- Soundica FM merged manifests ------------------------------------
 # Aug 14 2026. Soundica FM's appning (FORVIA car) flavor is a multi-topic super
@@ -899,45 +1067,73 @@ def merge_soundicafm() -> None:
 
 def main() -> int:
     started = time.monotonic()
-    total_baked = 0
-    total_skipped = 0
+    _STARVED.clear()
+    breaker = ThrottleBreaker()   # one per pass: every gTTS call of this pass goes through it
     # Manifest passes FIRST: the appning app reads these R2 manifests directly.
     # Each lists ONLY ids whose MP3 is confirmed in R2, so the car never 404s,
     # regardless of which Cloudflare colo the baker vs the car hit.
     # Jul 11 2026 — rotate the starting manifest each run so late-list apps
     # (tickerly, 9 manifests at the tail) get first claim on the gTTS/time
     # budget as often as the early ones; a fixed order starved them.
+    # Sep 26 2026 (BK): the rotation is now only the tie-break; bake_fresh() orders each
+    # round stalest manifest first and bakes one story per manifest per round.
     off = int(time.time() // 1800) % len(MANIFESTS)
+    plans: list[dict] = []
     for m in MANIFESTS[off:] + MANIFESTS[:off]:
         # One manifest crashing must not kill the rest of the run (the Jul 2 2026
         # surrogate crash at circuitly_pt silently skipped every tickerly pass).
         try:
-            b, s = bake_manifest(m)
+            p = plan_manifest(m)
         except Exception as e:
             print(f"[{m['manifest']}] manifest pass CRASHED: {e}; continuing with next app")
             traceback.print_exc()
             continue
-        total_baked += b
-        total_skipped += s
-    # Soundica FM merged manifests LAST, so they see this run's freshly written
-    # component manifests. Pure R2 reads + one write per language; never bakes.
+        if p is not None:
+            plans.append(p)
+    try:
+        bake_fresh(plans, breaker)
+    except Exception as e:
+        print(f"[fresh] round-robin CRASHED: {e}; writing the manifests with what is confirmed")
+        traceback.print_exc()
+    for p in plans:
+        if p["dirty"] or not p["flushed"]:
+            try:
+                finalize_manifest(p)
+            except Exception as e:
+                print(f"[{p['name']}] manifest write CRASHED: {e}; continuing with next app")
+                traceback.print_exc()
+    report_starved(plans)
+    # Soundica FM merged manifests right after the component manifests are written (before
+    # the re-voice, which changes audio, not manifests). Pure R2 reads + one write per
+    # language; never bakes.
     try:
         merge_soundicafm()
     except Exception as e:
         print(f"[soundicafm] merge pass CRASHED: {e}; component manifests unaffected")
         traceback.print_exc()
+    try:
+        revoice(plans, breaker)
+    except Exception as e:
+        print(f"[retext] re-voice CRASHED: {e}; manifests unaffected")
+        traceback.print_exc()
+    for p in plans:
+        print(_done_line(p))
+    total_baked = sum(p["baked"] for p in plans)
+    total_skipped = sum(p["skipped"] for p in plans)
     # All apps are now manifest-driven (the appning app reads the R2 manifest, not
     # broad per-category baking). Skip the broad APPS loop in normal runs to avoid
     # wasted synth + gTTS rate-limit pressure; still runnable via FORCE_APP=<slug>/all.
     for app in APPS:
         if FORCE_APP in (app["slug"], "all"):
-            b, s = bake_app(app)
+            b, s = bake_app(app, breaker)
             total_baked += b
             total_skipped += s
     elapsed = time.monotonic() - started
-    print(f"\nSummary: {total_baked} baked, {total_skipped} already-cached, {elapsed:.1f}s")
+    print(f"\nSummary: {total_baked} baked, {total_skipped} already-cached, {elapsed:.1f}s, "
+          f"gTTS 429s={breaker.total_429}, synth attempts={breaker.attempts}, "
+          f"breaker={'OPEN' if breaker.tripped else 'closed'}")
     if _STARVED:
-        print("STARVED manifests (fresh stories, none baked): " + ", ".join(f"{n} ({c} failed)" for n, c in _STARVED))
+        print("STARVED manifests (fresh stories, none baked): " + ", ".join(f"{n} ({c} fresh)" for n, c in _STARVED))
         return 1
     return 0
 
