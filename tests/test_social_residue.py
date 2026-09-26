@@ -1,7 +1,7 @@
 """Sep 26 2026 (SX): the social-handle rule on the baked path (owner, Appning car: "LE SSERAFIM's
 Chaewon | @_chaechae_1/Instagram" was read aloud). GENERATED from the shared vectors that every news app's
-SocialHandleRuleTest and the workers' backend/test/social_residue.test.mjs also pin (real summaries from the
-baked manifests, worker feeds and raw RSS of every served language, plus one synthetic case per shape).
+SocialHandleRuleTest also pins (real summaries from the baked manifests, worker feeds and raw RSS of every
+served language, plus one synthetic case per shape).
 
 Run from the repo root:  python -m unittest discover -s tests
 Positive control: every non-keep vector is voiced with a handle or credit line by the pre-SX text_for.
