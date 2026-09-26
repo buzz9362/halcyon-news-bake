@@ -129,6 +129,62 @@ class AllCapsWords(unittest.TestCase):
         self.assertEqual("Scoop: rupees 60 crore", bake.apply_phonetics("SCOOP: Rs. 60 crore", "bollywood"))
 
 
+def old_normalize_caps(text):
+    """The first Sep 26 version (>= 4 letters only), kept here as the positive control."""
+    out, i, n = [], 0, len(text)
+    while i < n:
+        if not text[i].isalpha():
+            out.append(text[i]); i += 1; continue
+        j = i
+        while j < n and (text[j].isalpha() or text[j].isdigit() or (text[j] == "'" and j + 1 < n and text[j + 1].isalpha())):
+            j += 1
+        tok = text[i:j]; word = tok.split("'")[0]
+        if len(word) >= 4 and word.isalpha() and word.isupper() and word.upper() not in bake.LETTER_ACRONYMS and bake._has_vowel(word):
+            tok = tok[0] + tok[1:].lower()
+        out.append(tok); i = j
+    return "".join(out)
+
+
+class ShortWordsAndShouting(unittest.TestCase):
+    """Coordinator review: short capital words (THE, OF, LA, DAN) and shouting headlines."""
+    # Real headlines from the Sep 26 manifests (kpop_en, kpop_en, tropic_id).
+    SHOUT_EN = "THE ARCHITECTURE OF EASE: HOW ALLDAY PROJECT'S ANNIE IS REDEFINING GLOBAL POP CULTURE"
+    SLASH_EN = "Number_i Release EP, REBON / BUGS LIFE / DIGITAL GIRL"
+    SHOUT_ID = "ALLDAY PROJECT Rilis Video Musik 'DO IT LIKE THIS'"
+
+    def test_real_shouting_headlines(self):
+        self.assertEqual("The Architecture Of Ease: How Allday Project's Annie Is Redefining Global Pop Culture",
+                         bake.normalize_caps(self.SHOUT_EN, "en"))
+        self.assertEqual("Number_i Release EP, Rebon / Bugs Life / Digital Girl", bake.normalize_caps(self.SLASH_EN, "en"))
+        self.assertEqual("Allday Project Rilis Video Musik 'Do It Like This'", bake.normalize_caps(self.SHOUT_ID, "id"))
+
+    def test_control_the_old_function_left_short_words_in_capitals(self):
+        old = old_normalize_caps(self.SHOUT_EN)
+        for w in ("THE", "OF", "HOW", "IS", "POP"):
+            self.assertIn(w, old.split())
+        self.assertIn("'DO IT", old_normalize_caps(self.SHOUT_ID))
+
+    def test_short_words_per_language_outside_a_shouting_headline(self):
+        self.assertEqual("The Boyz and NCT on the Top chart, AI and US news",
+                         bake.normalize_caps("THE BOYZ and NCT on the TOP chart, AI and US news", "en"))
+        self.assertEqual("Un concierto de la ONU y la UE", bake.normalize_caps("UN concierto de la ONU y la UE", "es"))
+        self.assertEqual("Konser BTS Dan TXT", bake.normalize_caps("Konser BTS DAN TXT", "id"))
+
+    def test_acronyms_survive_shouting_and_who_is_ambiguous(self):
+        self.assertEqual("WHO warns BTS fans", bake.normalize_caps("WHO warns BTS fans", "en"))
+        self.assertEqual("Who Says BTS Is Back", bake.normalize_caps("WHO SAYS BTS IS BACK", "en"))
+        self.assertEqual("La Nueva Era De BTS", bake.normalize_caps("LA NUEVA ERA DE BTS", "es"))
+        self.assertEqual("Twice e BTS No Brasil: O Que Saber", bake.normalize_caps("TWICE e BTS NO BRASIL: O QUE SABER", "pt"))
+        self.assertEqual("Nóng: Công Bố Mới Của BTS", bake.normalize_caps("NÓNG: CÔNG BỐ MỚI CỦA BTS", "vi"))
+        for t in ("CEO", "USA", "UFC", "OMG", "OST", "NCT", "TXT"):
+            self.assertEqual(f"Big {t} News Today", bake.normalize_caps(f"BIG {t} NEWS TODAY", "en"))
+
+    def test_apply_phonetics_uses_the_manifest_language(self):
+        self.assertEqual("es", bake._slug_lang("kpop_es"))
+        self.assertEqual("en", bake._slug_lang("bollywood"))
+        self.assertEqual("Be Te Ese: La Gira", bake.apply_phonetics("BTS: LA GIRA", "kpop_es"))
+
+
 class NonWordKeyEdges(unittest.TestCase):
     def test_keys_starting_or_ending_with_punctuation_now_fire(self):
         self.assertEqual("Jee Eye Dul and And Team", bake.apply_phonetics("(G)I-DLE and &TEAM", "kpop_en"))
@@ -160,7 +216,7 @@ class JapaneseAndOtherLanguages(unittest.TestCase):
         self.assertEqual("Aoki Den-shoh Welsh", bake.apply_phonetics("Aoki Denshou Welsh", "anime_en"))
         self.assertEqual("Moo-shoh-koo Ten-say Season 3", bake.apply_phonetics("Mushoku Tensei Season 3", "anime_en"))
         self.assertEqual("Masami Oh-bah-ree", bake.apply_phonetics("Masami Ōbari", "anime_en"))
-        self.assertEqual("Sekiro: NO Defeat", bake.apply_phonetics("SEKIRO: NO DEFEAT", "anime_en"))  # 2-letter words keep caps
+        self.assertEqual("Sekiro: No Defeat", bake.apply_phonetics("SEKIRO: NO DEFEAT", "anime_en"))  # "NO" is an en short word
 
     def test_control_anime_had_no_table(self):
         slug = with_temp_table([("Zzqq", "unused")], normalize=False)

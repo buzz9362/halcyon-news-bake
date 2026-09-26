@@ -70,16 +70,11 @@ Kpop,Ka Pốp
 # the engine would otherwise mangle as English. Use Vietnamese
 # orthography with diacritics so the engine reads each syllable cleanly.
 # Format: Source name,Phonetic — applied via word-boundary regex.
-NewJeans,Niu Din
 aespa,Ép Spa
 Aespa,Ép Spa
 AESPA,Ép Spa
-LE SSERAFIM,Le Sờ Ra Phim
-Le Sserafim,Le Sờ Ra Phim
 ENHYPEN,En Hai Phen
 Enhypen,En Hai Phen
-ATEEZ,Ây Tít
-Ateez,Ây Tít
 SEVENTEEN,Sê Vần Tin
 ZEROBASEONE,Di Rô Bây Oăn
 ZB1,Di Bi Oăn
@@ -89,8 +84,6 @@ ILLIT,Il Lít
 Illit,Il Lít
 PLAVE,Pờ Lây
 Plave,Pờ Lây
-ITZY,Ít Di
-Itzy,Ít Di
 2NE1,Tu Nai Oăn
 BIGBANG,Bích Beng
 Bigbang,Bích Beng

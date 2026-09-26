@@ -216,6 +216,12 @@ LETTER_ACRONYMS = {
     "NTRA", "NVDA", "ORCL", "PSEL", "PTFI", "PYPL", "SPBU", "TSLA", "UBND", "UKOIL", "UMKM", "USDC", "USDT",
     "USGS", "USTR", "WDAY", "WEGZY", "ANTV", "BPOM", "ITDC", "OOTD", "RCTI", "TVRI", "NSƯT", "TAND",
     "IRCTC", "NHTSA", "USMCA", "NAACP", "AICTE", "UPITS", "UEFA", "OPEC",
+    # Short (2-3 letter) acronyms that keep their letters even in a shouting headline. WHO is
+    # deliberately absent: it is the organization or the word "who", so it keeps its capitals
+    # in a normal sentence (not a short word) and becomes "Who" only when the headline shouts.
+    "BTS", "NCT", "TXT", "UFC", "CEO", "USA", "OMG", "OST", "EP", "LP", "AI", "IA", "UK", "US", "EU", "UE",
+    "UN", "IPO", "ETF", "AAA", "MMA", "SMA", "AOA", "INI", "JYP", "EUA", "GDA", "KST", "OTT", "IFA", "UPI",
+    "EMI", "ATM", "ID", "IU", "OK", "UV", "EV",
 }
 _VOWELS = set("AEIOU")
 # FORCE_APP="bollywood" (or "all") re-bakes that app ignoring the R2 cache +
@@ -257,26 +263,89 @@ def _has_vowel(tok: str) -> bool:
             return True
     return False
 
-def normalize_caps(text: str) -> str:
-    """Title-case stray ALL-CAPS words (see SPEECH_NORMALIZE). Length-preserving."""
-    out = []
+# Common 2-3 letter words that are Title-cased when written in capitals ("THE", "LA", "DAN");
+# short acronyms (BTS, CEO, USA, AI, IA) are NOT in these lists. One list per voice language.
+SHORT_WORDS = {
+    "en": {"THE", "AND", "FOR", "BUT", "NOT", "NOR", "ARE", "WAS", "HAS", "HAD", "HOW", "WHY", "OUR", "HIS",
+           "HER", "HIM", "SHE", "YOU", "ITS", "CAN", "GET", "GOT", "NEW", "BIG", "HIT", "TOP", "ONE", "TWO",
+           "SIX", "TEN", "WIN", "WON", "ALL", "OUT", "NOW", "OFF", "DAY", "BOY", "MAN", "OLD", "RED", "HOT",
+           "POP", "FAN", "SET", "SAY", "SEE", "LET", "YES", "WAY", "OF", "IN", "ON", "TO", "AT", "IS", "IT",
+           "BE", "AS", "BY", "OR", "AN", "MY", "WE", "HE", "UP", "SO", "NO", "DO", "GO", "ME", "IF"},
+    "es": {"EL", "LA", "LOS", "LAS", "UN", "UNA", "DE", "DEL", "AL", "EN", "CON", "POR", "QUE", "SE", "SU",
+           "SUS", "NO", "ES", "LO", "LE", "MÁS", "MAS", "SIN", "HOY", "YA", "MUY", "SI", "SÍ", "MI", "TU", "YO",
+           "ESO", "ESA", "VA", "VAN", "FUE", "SON", "HAY"},
+    "pt": {"OS", "AS", "DE", "DO", "DA", "DOS", "DAS", "EM", "NO", "NA", "NOS", "NAS", "UM", "UMA", "COM",
+           "POR", "QUE", "SE", "SEU", "SUA", "AO", "AOS", "NÃO", "SÃO", "JÁ", "MEU", "TEM", "VAI", "SEM", "BOM",
+           "TÁ", "ELE", "ELA", "FOI"},
+    "id": {"DAN", "DI", "KE", "INI", "ITU", "ADA", "APA", "DIA", "AKU", "KAU", "TAK", "YA"},
+    "vi": {"VÀ", "LÀ", "CÓ", "CỦA", "CHO", "VỚI", "KHI", "ĐÃ", "SẼ", "BỊ", "MỚI", "NÀY", "CÁC", "MỘT", "TỪ",
+           "ĐI", "RA", "VỀ", "LẠI", "CÒN", "SAO", "GÌ", "ANH", "EM", "CÔ", "BÀ", "ÔNG", "HAY", "NHƯ", "ĐỂ",
+           "TẠI", "SAU"},
+    "de": {"DER", "DIE", "DAS", "UND", "IST", "MIT", "VON", "DEN", "DEM", "EIN", "AUF", "FÜR", "IM", "AM",
+           "ZU", "ES", "ER"},
+    "fr": {"LE", "LA", "LES", "DE", "DU", "DES", "UN", "UNE", "ET", "EN", "AU", "AUX", "EST", "SUR", "PAR",
+           "QUI", "QUE", "IL"},
+    "it": {"IL", "LO", "LA", "LE", "GLI", "DI", "DA", "IN", "CON", "SU", "PER", "UN", "UNA", "CHE", "NON",
+           "DEL", "DEI"},
+}
+# A segment (sentence) is SHOUTING when it has >= 3 cased words of 2+ letters and at least
+# this share of them is in capitals; then every capitals word of 2+ letters is Title-cased,
+# except LETTER_ACRONYMS, words without a vowel and bracketed tokens.
+SHOUT_SHARE = 0.6
+
+def _caps_tokens(text: str):
+    """(start, end, token) for runs that start with a letter: letters, digits, and an
+    apostrophe followed by a letter ("PROJECT'S")."""
     i, n = 0, len(text)
     while i < n:
         if not text[i].isalpha():
-            out.append(text[i]); i += 1; continue
+            i += 1; continue
         j = i
         while j < n and (text[j].isalpha() or text[j].isdigit()
                          or (text[j] == "'" and j + 1 < n and text[j + 1].isalpha())):
             j += 1
-        tok = text[i:j]
-        word = tok.split("'")[0]   # "PROJECT'S" is judged on "PROJECT"
-        # A token wrapped exactly in brackets is a ticker or acronym gloss: "(ELSA)", "(CBFC)".
-        bracketed = i > 0 and text[i - 1] == "(" and j < n and text[j] == ")"
-        if (len(word) >= 4 and word.isalpha() and word.upper() == word and word.lower() != word
-                and word.upper() not in LETTER_ACRONYMS and _has_vowel(word) and not bracketed):
-            tok = tok[0] + "".join(c.lower() for c in tok[1:])
-        out.append(tok)
+        yield i, j, text[i:j]
         i = j
+
+def _segment_ids(text: str) -> list:
+    """Segment number per character: a new segment starts after ". ", "! ", "? " or a newline."""
+    ids, seg = [], 0
+    for k, ch in enumerate(text):
+        ids.append(seg)
+        if ch == "\n" or (ch in ".!?" and k + 1 < len(text) and text[k + 1].isspace()):
+            seg += 1
+    return ids
+
+def normalize_caps(text: str, lang: str = "en") -> str:
+    """Title-case stray ALL-CAPS words (see SPEECH_NORMALIZE). Length-preserving.
+    >= 4 letters: always; 2-3 letters: when the word is in SHORT_WORDS[lang] or its
+    segment is shouting. Never: LETTER_ACRONYMS, no vowel, bracketed "(ELSA)"."""
+    short = SHORT_WORDS.get(lang, set())
+    toks = list(_caps_tokens(text))
+    seg_of = _segment_ids(text)
+    cased, caps = {}, {}
+    for i, j, tok in toks:
+        word = tok.split("'")[0]
+        if len(word) >= 2 and word.lower() != word.upper():
+            sg = seg_of[i]
+            cased[sg] = cased.get(sg, 0) + 1
+            if word.isalpha() and word.upper() == word:
+                caps[sg] = caps.get(sg, 0) + 1
+    shouting = {sg for sg, c in cased.items() if c >= 3 and caps.get(sg, 0) / c >= SHOUT_SHARE}
+    out = list(text)
+    for i, j, tok in toks:
+        word = tok.split("'")[0]   # "PROJECT'S" is judged on "PROJECT"
+        if not (len(word) >= 2 and word.isalpha() and word.upper() == word and word.lower() != word):
+            continue
+        # A token wrapped exactly in brackets is a ticker or acronym gloss: "(ELSA)", "(CBFC)".
+        if i > 0 and text[i - 1] == "(" and j < len(text) and text[j] == ")":
+            continue
+        # The language's own short word wins over the global acronym set (es "UN" is "un").
+        if word.upper() in short or (
+                word.upper() not in LETTER_ACRONYMS and _has_vowel(word)
+                and (len(word) >= 4 or seg_of[i] in shouting)):
+            for k in range(i + 1, j):
+                out[k] = text[k].lower() if len(text[k].lower()) == 1 else text[k]
     return "".join(out)
 
 def _key_pattern(frm: str) -> str:
@@ -284,10 +353,20 @@ def _key_pattern(frm: str) -> str:
     end = r"(?!\w)" if _re.match(r"\w", frm[-1]) else ""
     return start + _re.escape(frm) + end
 
+def _slug_lang(slug: str) -> str:
+    """Voice language of a table key, derived from MANIFESTS / APPS (the SSOT)."""
+    for m in MANIFESTS:
+        if m["phonetics"] == slug:
+            return m["lang"]
+    for a in APPS:
+        if a.get("phonetics") == slug:
+            return a["lang"]
+    return slug.rsplit("_", 1)[-1] if "_" in slug else "en"
+
 def apply_phonetics(text: str, slug: str) -> str:
     if slug in SPEECH_NORMALIZE:
         text = text.replace("\u2019", "'").replace("\u2018", "'").replace("\u02bc", "'")
-        text = normalize_caps(text)
+        text = normalize_caps(text, _slug_lang(slug))
         for frm, to in load_phonetics(slug):
             text = _re.sub(_key_pattern(frm), lambda _m, _to=to: _to, text, flags=_re.IGNORECASE)
         return text
