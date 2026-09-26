@@ -499,6 +499,136 @@ def clean_text(t: str) -> str:
     t = _WS_RE.sub(" ", t).strip()
     return t
 
+# ---------- Social residue (Sep 26 2026, SX): the apps' SocialResidue.kt, mirrored ----------
+# Owner, Sep 26 (Appning car, KPop Today): "LE SSERAFIM's Chaewon | @_chaechae_1/Instagram" was
+# read aloud. "We also made a set of rules about reading the social ids, why did you do this
+# again?" The Sep 23 rules covered tweet credits only. Rule: a raw social handle is never spoken.
+# The worker feed carries photo and embed credits in summaries ("Name | @handle/Instagram",
+# "View this post on Instagram A post shared by Name (@handle)", "Soompi (@soompi) September 21,
+# 2026", "Reproducao/Instagram", instagram.com/p/... links, a lone "@handle"; counts from 7,203
+# harvested summaries in R/reports/SX_report.md). strip_social_residue() runs the same rules in
+# the same order as stripSocialResidue() in every news app (vectors pinned in
+# tests/test_social_residue.py and in each app's SocialResidueTest), so the voiced text and the
+# text the app shows and plans its headline cut on stay the same. Not here: the apps' and the
+# workers' unserved-script rule, which needs the app's served scripts; the worker has already
+# applied it to this feed. Kept: prose that names a platform ("posted on Instagram"), e-mail
+# addresses, "@34" age markers. Word edges are spelled out ([A-Za-z0-9_] look-arounds, never \b):
+# Python, ICU (device) and the JVM (app unit tests) disagree on \b next to a non-ASCII letter.
+_SR_B0 = r"(?<![A-Za-z0-9_])"
+_SR_B1 = r"(?![A-Za-z0-9_])"
+_SR_PLAT = (r"(?:Instagram|IG|X|Twitter|TikTok|Tiktok|Weibo|Facebook|FB|Threads|YouTube|Youtube|Pinterest|Naver|"
+            r"Weverse|Bluesky|Snapchat)")
+_SR_PLATW = r"(?:Instagram|Twitter|TikTok|Tiktok|Weibo|Facebook|Threads|YouTube|Youtube|Pinterest|Naver|Weverse)"
+_SR_H = (r"@(?=[A-Za-z0-9_.]*[A-Za-z])(?![A-Za-z0-9_.]*\.(?:com|net|org|edu|gov)(?![A-Za-z0-9_]))"
+         r"[A-Za-z0-9_](?:[A-Za-z0-9_.]*[A-Za-z0-9_])?")
+# A handle as a checker sees it (tools/social_handle_check.py): not the tail of an e-mail or URL.
+SOCIAL_HANDLE_RE = re.compile(r"(?<![A-Za-z0-9_.@/])" + _SR_H)
+_SR_SOCIAL_DOMAIN = (r"(?:www\.|m\.|mobile\.|vm\.)?(?:instagram\.com|instagr\.am|twitter\.com|x\.com|t\.co|tiktok\.com|"
+                     r"threads\.net|threads\.com|facebook\.com|fb\.watch|weibo\.com|youtube\.com|youtu\.be|bsky\.app)"
+                     r"/[^\s)\]]*")
+_SR_SOCIAL_URL = r"(?:https?://" + _SR_SOCIAL_DOMAIN + r"|(?<![A-Za-z0-9_.-])" + _SR_SOCIAL_DOMAIN + r")"
+_SR_MONTH = (r"(?:January|February|March|April|May|June|July|August|September|October|November|December|"
+             r"Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)")
+_SR_CREDIT_KW = (r"(?:[Pp]hotos?|PHOTOS?|[Ff]otos?|FOTOS?|[Ii]mages?|IMAGES?|[Ii]magem|[Ii]magen|[\u1ea2\u1ea3]nh|\u1ea2NH|"
+                 r"[Nn]gu\u1ed3n|[Cc]redits?|[Cc]r[\u00e9e]ditos?|[Cc]r[\u00e9e]dit|[Ss]umber|[Ff]onte|[Ff]uente|[Qq]uelle|"
+                 r"[Bb]ild|[Ss]ource)")
+_SR_CREDIT_HEAD = (_SR_CREDIT_KW + r"(?:\s*[:\uff1a]|\s+(?:[Cc]redits?|[Cc]ourtesy(?:\s+of)?|by|oleh|de|via|[Cc]r\.)"
+                   r"(?:\s*[:\uff1a])?)")
+_SR_CRED = (r"(?:" + _SR_H + r"(?:\s*/\s*" + _SR_PLAT + _SR_B1 + r")?|" + _SR_PLAT + r"\s*/\s*" + _SR_H + r"|" + _SR_PLATW +
+            r"(?!\s+(?:Music|Shorts|Premium|Originals|TV|Live|Reels|Stories)" + _SR_B1 + r"))")
+_SR_RULES_1 = [
+    # "Instagram: @handle", "X (Japan): @handle", "Official X (Twitter): x.com/handle"
+    re.compile(r"(?:" + _SR_B0 + r"Official\s+)?" + _SR_B0 + _SR_PLAT + r"(?:\s*\([^()\n]{1,24}\))?\s*[:\uff1a]\s*(?:" +
+               _SR_H + r"|" + _SR_SOCIAL_URL + r")"),
+    # instagram.com/p/..., x.com/..., t.co/..., youtu.be/... (pic.twitter is the Sep 23 rule)
+    re.compile(_SR_SOCIAL_URL),
+    # embed boilerplate, per served language
+    re.compile(r"View this post on (?:Instagram|TikTok|Threads|X|Twitter|Facebook|YouTube)|View on (?:Threads|Instagram)|"
+               r"Lihat postingan ini di Instagram|Ver esta publicaci[\u00f3o]n en Instagram|"
+               r"Ver (?:essa|esta) (?:publica[\u00e7c][\u00e3a]o|foto) no Instagram|Voir cette publication sur Instagram|"
+               r"Diesen Beitrag auf Instagram ansehen|Visualizza questo post su Instagram|"
+               r"Xem b\u00e0i vi\u1ebft n\u00e0y tr\u00ean Instagram"),
+    re.compile(r"(?:A (?:post|photo|video) (?:shared|posted) by|Sebuah kiriman dibagikan oleh|"
+               r"Una publicaci[\u00f3o]n compartida (?:por|de)|Uma publica[\u00e7c][\u00e3a]o compartilhada por|"
+               r"Um post compartilhado por|Une publication partag[\u00e9e]e par|Ein Beitrag geteilt von|"
+               r"Un post condiviso da|B\u00e0i vi\u1ebft do)"
+               r"(?:\s*[^()\n@]{0,60}?\s*\(\s*" + _SR_H + r"\s*\)|\s*" + _SR_H + r")?(?:\s+chia s\u1ebb)?"),
+    re.compile(_SR_B0 + r"Post by\s+" + _SR_H),
+    # a tweet credit that lost its dash: "Soompi (@soompi) September 21, 2026"
+    re.compile(r"(?:[A-Z0-9][^\s()]*\s+){0,4}\(\s*" + _SR_H + r"\s*\)\s+" + _SR_MONTH + r"\.?\s+\d{1,2},\s+\d{4}"),
+    # "Follow NCT WISH: TikTok | X | Instagram | YouTube"
+    re.compile(r"(?:" + _SR_B0 + r"(?:Follow|FOLLOW|Siga|Sigue|Ikuti|Suivez|Folgt)\s+[^|\n:]{0,40}?:?\s*)?(?:" + _SR_PLATW +
+               r"|X)(?:\s*\|\s*(?:" + _SR_PLATW + r"|X|Spotify|Apple Music|Website|Tickets)" + _SR_B1 + r")+(?:\s*\|)?"),
+]
+# A photo caption credit at a sentence start goes with its caption: "LE SSERAFIM's Chaewon | @_chaechae_1/Instagram"
+_SR_CAPTION = re.compile(r"(^|[.!?\u2026\"\u201d\u2019)\]]\s+)(?:[^.!?|\n]{1,60}?\s+)?\|\s*" + _SR_CRED +
+                         r"(?:\s*\|\s*" + _SR_CRED + r")*(?=\s|$)")
+_SR_RULES_2 = [
+    # the same credit mid-sentence: only the credit goes
+    re.compile(r"\s*\|\s*" + _SR_CRED + r"(?:\s*\|\s*" + _SR_CRED + r")*(?=\s|$)"),
+    # "(Foto: Instagram/@handle)", "(Imagem: Reproducao/YouTube/...)", "(Anh: @handle)"
+    re.compile(r"\(\s*" + _SR_CREDIT_HEAD + r"[^()\n]{0,60}?(?:" + _SR_H + r"|" + _SR_B0 + _SR_PLAT + _SR_B1 +
+               r")[^()\n]{0,60}\)"),
+    # "Foto: Instagram/@handle", "Photo: @handle", "Anh: @handle"
+    re.compile(_SR_B0 + _SR_CREDIT_HEAD + r"\s*(?:(?:[Dd]ok\.?\s*)?" + _SR_PLAT + r"\s*[/:]?\s*)?" + _SR_H + r"(?:\s*/\s*" +
+               _SR_PLAT + _SR_B1 + r")?"),
+    # "Foto: Instagram", "Source: X"
+    re.compile(_SR_B0 + _SR_CREDIT_KW + r"\s*[:\uff1a]\s*(?:[Dd]ok\.?\s*)?" + _SR_PLAT + r"(?=[\s.,;)]|$)"),
+    # "Reproducao/Instagram/Roberta Miranda", "Reproducao/TikTok"
+    re.compile(_SR_B0 + r"(?:Reprodu[\u00e7c][\u00e3a]o|REPRODU[\u00c7C][\u00c3A]O|Divulga[\u00e7c][\u00e3a]o|"
+               r"DIVULGA[\u00c7C][\u00c3A]O|Reproducci[\u00f3o]n|Captura(?: de tela| de pantalla)?|Screenshot|"
+               r"Tangkapan layar)\s*/\s*" + _SR_PLAT + _SR_B1 +
+               r"(?:\s*/\s*(?:[A-Z\u00c0-\u00dd][^\s/()]*(?:\s+[A-Z\u00c0-\u00dd][^\s/()]{2,})?|[^\s/()]+))?"),
+    # "@handle/Instagram", "Instagram/@handle"
+    re.compile(_SR_H + r"\s*/\s*" + _SR_PLAT + _SR_B1 + r"|" + _SR_B0 + _SR_PLAT + r"\s*/\s*" + _SR_H),
+    # "(@handle)", "(via @handle)", "(Instagram @handle)"
+    re.compile(r"\(\s*(?:(?:via|" + _SR_PLAT + r")\s*:?\s*)?" + _SR_H + r"(?:\s*/\s*" + _SR_PLAT + _SR_B1 + r")?\s*\)"),
+    re.compile(_SR_B0 + r"[Vv]ia\s+" + _SR_H),
+    # any handle left, with the run it heads: "@a, @b and @c"
+    re.compile(r"(?<![A-Za-z0-9_.@/])" + _SR_H + r"(?:(?:\s*,\s*|\s+(?:(?:and|&|e|y|et|und|dan|v\u00e0|ou|o)\s+)?)" +
+               _SR_H + r")*"),
+]
+# Tidy, only when a social rule removed something (clean text keeps its exact form).
+_SR_TIDY = [
+    (re.compile(r"[(\[]\s*[,.;:/|&-]*\s*[)\]]"), " "),
+    (re.compile(r"\s+"), " "),
+    (re.compile(r"\s*\|\s*(?=\||$)|^\s*\|\s*"), " "),
+    (re.compile(r"([,;:])(?:\s*[,;:])+"), r"\1"),
+    (re.compile(r"[,;:]\s*(?=[.!?])"), ""),
+    (re.compile(r"^[\s,;:|/-]+"), ""),
+]
+# The Sep 23 rules (the apps' and workers' first version): pic.twitter tokens, dashed tweet credits,
+# "[#label]" tags and hashtag-only runs.
+_SR_PIC_TWITTER = re.compile(r"(?:https?://)?pic\.twitter(?:\.com)?(?:/\S*)?\.?", re.I)
+_SR_TWEET_CREDIT = re.compile(r"\s[\u2014\u2013-]\s*(?:[^()\n@]{1,60}\s)?\(?@\w{1,15}\)?(?:\s*\(?(?:[A-Z][a-z]{2,8}\.? "
+                              r"\d{1,2}(?:, \d{4})?|\d{1,2}/\d{1,2}/\d{2,4})\)?)?")
+_SR_BRACKET_HASHTAG = re.compile(r"\[#[^\]\n]{1,40}\]")
+_SR_HASHTAG_RUN = re.compile(r"(?:#\w+[\s,]*){2,}")
+_SR_SPACE_BEFORE_PUNCT = re.compile(r"\s+([.,;:!?])")
+
+def strip_social_handles(t: str) -> str:
+    """The Sep 26 handle, photo-credit and embed rules; clean text comes back unchanged."""
+    s = t
+    for rx in _SR_RULES_1:
+        s = rx.sub(" ", s)
+    s = _SR_CAPTION.sub(lambda m: m.group(1) or " ", s)
+    for rx in _SR_RULES_2:
+        s = rx.sub(" ", s)
+    if s == t:
+        return t
+    for rx, rep in _SR_TIDY:
+        s = rx.sub(rep, s)
+    return s
+
+def strip_social_residue(text: str) -> str:
+    """stripSocialResidue() of the apps, minus the unserved-script rule (see the block note)."""
+    if not text or not text.strip():
+        return text
+    t = _SR_TWEET_CREDIT.sub(" ", _SR_PIC_TWITTER.sub(" ", text))
+    t = strip_social_handles(t)
+    t = _SR_HASHTAG_RUN.sub(" ", _SR_BRACKET_HASHTAG.sub(" ", t))
+    return _SR_SPACE_BEFORE_PUNCT.sub(r"\1", _WS_RE.sub(" ", t)).strip()
+
 # Worker feed JSON can carry LONE UTF-16 surrogate halves: some publishers encode
 # an emoji as two HTML numeric entities (&#55358;&#56596;), the JS worker passes them
 # through as "\ud83e"-style escapes (JS strings tolerate WTF-16), and Python's
@@ -540,7 +670,9 @@ def spoken_source(name: str) -> str:
 
 def text_for(article: dict) -> str:
     title = clean_text(article.get("title", ""))
-    summary = clean_text(article.get("summary", ""))
+    # Sep 26 2026 (SX): a social handle, photo credit or embed line in the summary is never voiced.
+    # The appning apps plan the headline cut on the same cleaned summary (BakedHeadlineCut).
+    summary = strip_social_residue(clean_text(article.get("summary", "")))
     source = spoken_source(clean_text(article.get("source", "")))
     body_parts = []
     if source:
