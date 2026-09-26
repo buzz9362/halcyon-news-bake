@@ -1435,7 +1435,8 @@ def retext_ids_pass(ids: list[str]) -> int:
     already list). Each id is voiced once, from the first manifest (MANIFESTS order) whose live
     feed window holds it, else whose live manifest carries it, with that manifest's language and
     table; ids in neither are reported. The r8 cutover is set first, so a forced story counts as done for the priority
-    list. Every synth goes through the 429 breaker. Exit 1 unless every id was voiced."""
+    list. Every synth goes through the 429 breaker. Exit 1 on a failed synth or an unknown id
+    (no MP3 anywhere); an id that left every window is a notice (no car plays it)."""
     started = time.monotonic()
     breaker = ThrottleBreaker()
     want = list(dict.fromkeys(ids))
@@ -1493,11 +1494,25 @@ def retext_ids_pass(ids: list[str]) -> int:
             continue
         voiced.append(aid)
         print(f"[retext_ids] [{m['manifest']}] re-voiced {aid} -> {key}")
+    # Sep 26 2026 (run 36233549008): a story can age out of every feed window AND every live
+    # manifest between the id list being built and the dispatch. It has an MP3 in R2 (it was
+    # voiced once) but no car plays it any more, so there is nothing to re-voice: a notice, not
+    # a red run that mails the owner. An id with no MP3 at all never existed (a typo): red.
+    aged, unknown = [], []
+    for aid in missing:
+        try:
+            (aged if r2_exists(article_key(aid)) else unknown).append(aid)
+        except Exception:
+            unknown.append(aid)   # cannot tell: fail closed
+    if aged:
+        print(f"::notice::retext_ids: {len(aged)} id(s) left every window (no car plays them), "
+              f"nothing to re-voice: {', '.join(aged)}")
     print(f"\nSummary: retext_ids voiced {len(voiced)}/{len(want)}; failed={failed or 0}; "
-          f"not in any window={missing or 0}; {time.monotonic() - started:.1f}s, "
+          f"left every window={aged or 0}; unknown id={unknown or 0}; "
+          f"{time.monotonic() - started:.1f}s, "
           f"gTTS 429s={breaker.total_429}, synth attempts={breaker.attempts}, "
           f"breaker={'OPEN' if breaker.tripped else 'closed'}")
-    return 0 if len(voiced) == len(want) else 1
+    return 1 if failed or unknown else 0
 
 def main() -> int:
     if RETEXT_IDS:

@@ -198,7 +198,8 @@ class RetextIds(unittest.TestCase):
         run(w2, tts2, **busy)
         self.assertTrue({"zza_en-o4", "zza_en-f0", "zzb_en-f0"} <= set(tts2.calls), tts2.calls)
 
-    def test_an_id_in_no_window_is_reported_and_fails_the_run(self):
+    def test_an_unknown_id_is_reported_and_fails_the_run(self):
+        # "nope" has no MP3 in R2 and is in no window: it never existed (a typo), so the run is red.
         w = self.world()
         tts = tt.FakeTTS(ok=10 ** 6)
         rc, out = run(w, tts, retext_ids=["nope", "zza_en-o0"])
@@ -209,18 +210,35 @@ class RetextIds(unittest.TestCase):
         rc2, _ = run(self.world(), tt.FakeTTS(ok=10 ** 6), retext_ids=["zza_en-o0"])
         self.assertEqual(0, rc2)
 
+    def test_an_id_that_left_every_window_is_a_notice_not_a_failure(self):
+        # Sep 26 run 36233549008: 17/20 re-voiced, failed=0, but 3 ids had aged out of every feed
+        # window AND every live manifest between the list being built and the dispatch. No car
+        # plays them, so there is nothing to re-voice; the run went red and mailed the owner.
+        w = self.world()
+        w.s3.objs[bake.article_key("zzb_en-gone")] = (b"old", tt.OLD_MP3)   # voiced once, now in no window
+        tts = tt.FakeTTS(ok=10 ** 6)
+        rc, out = run(w, tts, retext_ids=["zzb_en-gone", "zza_en-o0"])
+        self.assertEqual((0, ["zza_en-o0"]), (rc, tts.calls))
+        self.assertIn("::notice::", out)
+        self.assertIn("zzb_en-gone", out)
+        # Control: the same dispatch with a real synth failure is still red.
+        rc2, _ = run(self.world(), tt.FakeTTS(ok=0), retext_ids=["zza_en-o0"])
+        self.assertEqual(1, rc2)
+
     def test_retext_ids_reaches_a_story_that_left_the_feed_window(self):
         w = self.world()
         carry(w, "zzb_en", "zzb_en-c0", 600)
         tts = tt.FakeTTS(ok=10 ** 6)
         rc, _ = run(w, tts, retext_ids=["zzb_en-c0"])
         self.assertEqual((0, ["zzb_en-c0"]), (rc, tts.calls))
-        # Control: not in any feed and not in any live manifest -> not voiced, red run.
+        # Control: not in any feed and not in any live manifest -> not voiced (no car plays it,
+        # so the run stays green and says so in a notice).
         w2 = self.world()
         w2.s3.objs[bake.article_key("zzb_en-c0")] = (b"old", tt.OLD_MP3)
         tts2 = tt.FakeTTS(ok=10 ** 6)
-        rc2, _ = run(w2, tts2, retext_ids=["zzb_en-c0"])
-        self.assertEqual((1, []), (rc2, tts2.calls))
+        rc2, out2 = run(w2, tts2, retext_ids=["zzb_en-c0"])
+        self.assertEqual((0, []), (rc2, tts2.calls))
+        self.assertIn("left every window", out2)
 
     def test_the_breaker_stops_a_retext_ids_pass(self):
         w = self.world()
