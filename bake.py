@@ -25,6 +25,7 @@ import re
 import sys
 import time
 import traceback
+import unicodedata
 from io import BytesIO
 from typing import Any
 
@@ -46,6 +47,7 @@ R2_BUCKET = os.environ.get("R2_BUCKET", "halcyon-news-tts")
 APPS: list[dict[str, Any]] = [
     {
         "slug": "kpop",
+        "phonetics": "kpop_en",
         "feed_url": "https://kpop-today.soundica.app/feed",
         "lang": "en",
         "tld": "us",
@@ -55,6 +57,7 @@ APPS: list[dict[str, Any]] = [
     # truth for the appning app), so it is intentionally NOT in the broad APPS loop.
     {
         "slug": "anime",
+        "phonetics": "anime_en",
         "feed_url": "https://anime-brief.soundica.app/feed",
         "lang": "en",
         "tld": "us",
@@ -62,6 +65,7 @@ APPS: list[dict[str, Any]] = [
     },
     {
         "slug": "tropic",
+        "phonetics": "tropic_en",
         "feed_url": "https://kpop-tropic.soundica.app/feed",
         "lang": "en",
         "tld": "us",
@@ -69,6 +73,7 @@ APPS: list[dict[str, Any]] = [
     },
     {
         "slug": "hype",
+        "phonetics": "hype_id",
         "feed_url": "https://hype-id.soundica.app/feed",
         "lang": "id",
         "tld": "co.id",
@@ -76,6 +81,7 @@ APPS: list[dict[str, Any]] = [
     },
     {
         "slug": "tinh",
+        "phonetics": "tinh_vi",
         "feed_url": "https://tinh-tu.soundica.app/feed",
         "lang": "vi",
         "tld": "com.vn",
@@ -165,9 +171,53 @@ PHONETICS = {
     "tropic_vi": "phonetics/tropic_vi.csv",
     "hype_id": "phonetics/hype_id.csv",
     "tinh_vi": "phonetics/tinh_vi.csv",
-    # anime_en intentionally has no CSV (no Japanese-romaji table yet) — apply_phonetics
-    # is a no-op for an unknown key, so anime bakes with no respellings.
+    # Sep 26 2026: anime_en now has a table (the Anime Brief app's own respellings plus
+    # the Japanese names with ou/ei/uu or macron vowels that English TTS misreads).
+    "anime_en": "phonetics/anime_en.csv",
+    "tickerly_en": "phonetics/tickerly_en.csv",
+    "tickerly_id": "phonetics/tickerly_id.csv",
+    "tickerly_vi": "phonetics/tickerly_vi.csv",
 }
+
+# Sep 26 2026 (owner: "names in capital letters are read as letters"; "apply the
+# existing rules properly"). For these tables the text is prepared the way the apps'
+# device preprocess prepares it before the table runs:
+#   1. the curly apostrophe is folded to the straight one the table keys use
+#      ("Girls’ Generation" never matched the key "Girls' Generation");
+#   2. a stray ALL-CAPS word ("EXCLUSIVE", "JENNIE", "SEKIRO") becomes Title case so
+#      gTTS reads it as a word, not letter by letter. Short tokens (<= 3 letters),
+#      tokens without a vowel (BTS, NCT, SNSD, JTBC) and the letter-style acronyms
+#      below keep their capitals. Table keys match case-insensitively, so a caps key
+#      ("BLACKPINK", "AKMU") still gets its respelling;
+#   3. a key that starts or ends with a non-word character ("&TEAM", "(G)I-DLE",
+#      "D.O.", "f(x)") is anchored with lookarounds; `\b` next to such a character
+#      only matched when a letter touched it, so those rows never fired.
+# Opt-in per table so other apps' tables change only when their lane opts them in.
+SPEECH_NORMALIZE = {
+    "kpop_en", "kpop_es", "kpop_pt", "anime_en", "tropic_en", "tropic_id", "tropic_vi",
+    # P2 lane tables (opted in by P2, Sep 26 2026). A manifest without a table still
+    # gets the apostrophe fold and the caps pass.
+    "bollywood", "bollywood_hi", "hype_id", "tinh_vi",
+    "circuitly_en", "circuitly_es", "circuitly_pt", "circuitly_vi", "circuitly_de", "circuitly_fr", "circuitly_it",
+    "tickerly_en", "tickerly_es", "tickerly_pt", "tickerly_vi", "tickerly_id", "tickerly_de", "tickerly_fr",
+    "tickerly_it", "tickerly_hi",
+}
+# Letter-style acronyms of 4+ letters that contain a vowel (the rest keep their caps anyway).
+# K-pop / anime (P1), plus the device keep-sets of the P2 apps and Soundica FM (P3), so
+# the baked car audio and the phone/AAOS TTS keep the same capitals.
+LETTER_ACRONYMS = {
+    "BTOB", "AOMG", "ADHD", "CSAT", "RIAJ", "SPOTV", "KCON", "NCAA", "OECD", "IPTV", "IIFA",
+    "BCCI", "FWICE", "ICICI", "IMAX", "IMDB",
+    "AMOLED", "ANPD", "AOSP", "ASML", "BMVI", "CATL", "EEUU", "HDMI", "ICLR", "IEEE", "IPAD", "JMGO", "OCDE",
+    "OLED", "POLED", "PUBG", "QLED", "RDNA", "RGEV", "RTVE", "TGIQF", "UEFI", "USAF", "WLAN",
+    "AAHL", "AAPL", "ADBE", "AMRT", "APUS", "AVGO", "BASF", "BBCA", "BBVA", "BCRA", "BIDV", "BPER", "DPIIT",
+    "EBUS", "EMEA", "EPFO", "ESDM", "FSSAI", "FTSE", "GOOG", "GOOGL", "HOFC", "IBGE", "IBJA", "IBOV", "ICMS",
+    "IFIX", "IHSG", "INDFUT", "INKP", "INPS", "INTC", "IPCA", "IRDAI", "ISIN", "MBMA", "MSCI", "MSME", "NPCI",
+    "NTRA", "NVDA", "ORCL", "PSEL", "PTFI", "PYPL", "SPBU", "TSLA", "UBND", "UKOIL", "UMKM", "USDC", "USDT",
+    "USGS", "USTR", "WDAY", "WEGZY", "ANTV", "BPOM", "ITDC", "OOTD", "RCTI", "TVRI", "NSƯT", "TAND",
+    "IRCTC", "NHTSA", "USMCA", "NAACP", "AICTE", "UPITS", "UEFA", "OPEC",
+}
+_VOWELS = set("AEIOU")
 # FORCE_APP="bollywood" (or "all") re-bakes that app ignoring the R2 cache +
 # per-app cap, so a pronunciation/voice change overwrites the old audio.
 FORCE_APP = os.environ.get("FORCE_APP", "").strip().lower()
@@ -200,7 +250,47 @@ def load_phonetics(slug: str) -> list:
     _phon_cache[slug] = rules
     return rules
 
+def _has_vowel(tok: str) -> bool:
+    for i, ch in enumerate(tok):
+        base = unicodedata.normalize("NFD", ch)[0].upper()
+        if base in _VOWELS or (base == "Y" and i > 0):
+            return True
+    return False
+
+def normalize_caps(text: str) -> str:
+    """Title-case stray ALL-CAPS words (see SPEECH_NORMALIZE). Length-preserving."""
+    out = []
+    i, n = 0, len(text)
+    while i < n:
+        if not text[i].isalpha():
+            out.append(text[i]); i += 1; continue
+        j = i
+        while j < n and (text[j].isalpha() or text[j].isdigit()
+                         or (text[j] == "'" and j + 1 < n and text[j + 1].isalpha())):
+            j += 1
+        tok = text[i:j]
+        word = tok.split("'")[0]   # "PROJECT'S" is judged on "PROJECT"
+        # A token wrapped exactly in brackets is a ticker or acronym gloss: "(ELSA)", "(CBFC)".
+        bracketed = i > 0 and text[i - 1] == "(" and j < n and text[j] == ")"
+        if (len(word) >= 4 and word.isalpha() and word.upper() == word and word.lower() != word
+                and word.upper() not in LETTER_ACRONYMS and _has_vowel(word) and not bracketed):
+            tok = tok[0] + "".join(c.lower() for c in tok[1:])
+        out.append(tok)
+        i = j
+    return "".join(out)
+
+def _key_pattern(frm: str) -> str:
+    start = r"(?<!\w)" if _re.match(r"\w", frm[0]) else ""
+    end = r"(?!\w)" if _re.match(r"\w", frm[-1]) else ""
+    return start + _re.escape(frm) + end
+
 def apply_phonetics(text: str, slug: str) -> str:
+    if slug in SPEECH_NORMALIZE:
+        text = text.replace("\u2019", "'").replace("\u2018", "'").replace("\u02bc", "'")
+        text = normalize_caps(text)
+        for frm, to in load_phonetics(slug):
+            text = _re.sub(_key_pattern(frm), lambda _m, _to=to: _to, text, flags=_re.IGNORECASE)
+        return text
     for frm, to in load_phonetics(slug):
         text = _re.sub(r"\b" + _re.escape(frm) + r"\b", to, text, flags=_re.IGNORECASE)
     return text
@@ -244,13 +334,33 @@ RETEXT_TAG = "r6-2026-09-24"
 RETEXT_APPS = {"anime", "kpop", "circuitly", "bollywood", "tickerly", "tropic"}
 RETEXT_MAX_PER_PASS = 5   # Sep 24 2026: 30 made a pass take hours and starved fresh bakes
 RETEXT_TTL_MS = 7 * 24 * 3600 * 1000   # 5/pass needs more passes; auto-terminates when done
-_retext_cut: list = []
+_retext_cut: dict = {}
 
-def retext_cutover_ms() -> int | None:
-    if _retext_cut:
-        return _retext_cut[0]
+# Sep 26 2026 (r7, P1 pronunciation round): a TARGETED re-voice for the K-pop, tropic and
+# anime manifests. The ids file lists, per manifest, the stories whose spoken text changes
+# under the Sep 26 tables and apply_phonetics (generated from the live manifests at
+# generated_ms). A window item of a listed manifest is redone once, after the r7 cutover,
+# when it is listed OR its MP3 was baked after generated_ms (baked with the old rules
+# before this change was deployed). Same per-pass budget, TTL and keep-old-audio rule.
+RETEXT_TARGETED_TAG = "r7-2026-09-26"
+RETEXT_TARGETED_FILE = "retext/r7-2026-09-26.json"
+_targeted: list = []
+
+def retext_targeted() -> dict:
+    if not _targeted:
+        try:
+            with open(RETEXT_TARGETED_FILE, encoding="utf-8") as f:
+                _targeted.append(json.load(f))
+        except Exception as e:
+            print(f"[retext] targeted list unavailable: {e}")
+            _targeted.append({})
+    return _targeted[0]
+
+def retext_cutover_ms(tag: str = RETEXT_TAG) -> int | None:
+    if tag in _retext_cut:
+        return _retext_cut[tag]
     cut = None
-    key = f"_retext/{RETEXT_TAG}.json"
+    key = f"_retext/{tag}.json"
     try:
         try:
             obj = s3.get_object(Bucket=R2_BUCKET, Key=key)
@@ -267,7 +377,7 @@ def retext_cutover_ms() -> int | None:
     except Exception as e:
         print(f"[retext] disabled for this pass: {e}")
         cut = None
-    _retext_cut.append(cut)
+    _retext_cut[tag] = cut
     return cut
 
 def r2_modified_ms(key: str) -> int | None:
@@ -402,7 +512,8 @@ def bake_app(app: dict[str, Any]) -> tuple[int, int]:
                 continue
 
             text = text_for(article)
-            text = apply_phonetics(text, slug)
+            # Sep 26 2026: the table key, not the slug ("hype" has no table; "hype_id" does).
+            text = apply_phonetics(text, app.get("phonetics", slug))
             if len(text) < MIN_TEXT_LEN:
                 print(f"[{slug}] skipping {aid[:30]}: text too short ({len(text)} chars)")
                 continue
@@ -487,6 +598,12 @@ def write_manifest(name: str, items: list[dict]) -> None:
     )
     print(f"[{name}] wrote manifest {name}.json ({len(items)} items, {len(body)} bytes)")
 
+# Sep 26 2026 (GC4 handoff): a gTTS throttle and a stalled run look the same from outside:
+# every synth fails, carry-forward keeps the manifest full, and the car hears day-old news.
+# A manifest that had fresh stories to bake, baked none of them and had synth failures is
+# recorded here; main() prints it and exits non-zero so the pass shows as FAILED.
+_STARVED: list = []
+
 def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
     """Fetch the EXACT feed url the appning app reads, bake any missing MP3, then
     write a manifest listing ONLY ids whose MP3 is CONFIRMED in R2. An article is
@@ -510,8 +627,21 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
     manifest_items: list[dict] = []
     baked = 0
     skipped = 0
+    excluded = 0
     seen: set[str] = set()
-    retext_cut = retext_cutover_ms() if name.split("_")[0] in RETEXT_APPS else None
+    # Re-voice modes for this manifest: (cutover_ms, listed ids or None = every window item,
+    # baked-after ms or None). An item is redone when its MP3 predates a mode's cutover and
+    # the mode selects it.
+    retext_modes: list[tuple[int, set | None, int | None]] = []
+    if name.split("_")[0] in RETEXT_APPS:
+        c = retext_cutover_ms()
+        if c is not None:
+            retext_modes.append((c, None, None))
+    tgt = retext_targeted()
+    if name in tgt.get("manifests", {}):
+        c = retext_cutover_ms(RETEXT_TARGETED_TAG)
+        if c is not None:
+            retext_modes.append((c, set(tgt["manifests"][name]), int(tgt.get("generated_ms", 0))))
     retexted = 0
     retext_candidates: list[tuple[str, str, dict]] = []
     for article in items:
@@ -528,7 +658,7 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
         if exists and not force:
             # Re-voice candidates are collected here and voiced AFTER the manifest
             # is written (Sep 24 2026): freshness never waits on re-synthesis.
-            if retext_cut is not None:
+            if retext_modes:
                 retext_candidates.append((aid, key, article))
             manifest_items.append(article)   # confirmed present
             skipped += 1
@@ -555,6 +685,10 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
         except Exception as e:
             print(f"[{name}] bake FAILED {aid[:30]}: {e}; EXCLUDED from manifest")
             traceback.print_exc()
+            excluded += 1
+    if excluded and not baked:
+        _STARVED.append((name, excluded))
+        print(f"[{name}] STARVED: {excluded} fresh stories failed to bake, 0 baked this pass")
     # Carry-forward union: keep the previous manifest's items whose ids rotated out
     # of the live window (MP3s confirmed in R2 by construction — see CARRY_MAX_AGE_MS
     # note). After a FORCE re-voice, carried items keep the old audio until they age
@@ -592,7 +726,10 @@ def bake_manifest(m: dict[str, Any]) -> tuple[int, int]:
         if retexted >= RETEXT_MAX_PER_PASS:
             break
         mod = r2_modified_ms(key)
-        if mod is None or mod >= retext_cut:
+        if mod is None or not any(
+            mod < cut and (ids is None or aid in ids or (after is not None and mod >= after))
+            for cut, ids, after in retext_modes
+        ):
             continue
         rtext = apply_phonetics(text_for(article), phon)
         if len(rtext) < MIN_TEXT_LEN:
@@ -710,6 +847,9 @@ def main() -> int:
             total_skipped += s
     elapsed = time.monotonic() - started
     print(f"\nSummary: {total_baked} baked, {total_skipped} already-cached, {elapsed:.1f}s")
+    if _STARVED:
+        print("STARVED manifests (fresh stories, none baked): " + ", ".join(f"{n} ({c} failed)" for n, c in _STARVED))
+        return 1
     return 0
 
 if __name__ == "__main__":

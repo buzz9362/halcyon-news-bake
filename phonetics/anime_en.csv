@@ -1,0 +1,163 @@
+Name,Phonetic
+# Anime Brief (anime_en) respellings for gTTS English. Sep 26 2026.
+# Source: the Anime Brief app's own table (media/TtsPronunciation.kt englishRules), minus
+# rows that break the pronunciation rules (native English words such as Madhouse, Bebop,
+# Abyss, simulcast, Fullmetal stay whole; no-op rows dropped), plus Japanese names from
+# the live pool whose ou / ei / uu digraphs or macron vowels English TTS misreads
+# (ou -> "ow", ei -> "ee", macrons unknown), respelled the way the app table already does
+# it (Toei -> Toh-ay, shounen -> shoh-nen, seiyuu -> say-yoo).
+# The app's case-sensitive rows (WIT, ANN, OVA, ONA) are not copied: this loader is
+# case-insensitive and "Ann" / "wit" / "ova" are ordinary words.
+# ─── Studios ───
+Toei Animation,Toh-ay Animation
+Toei,Toh-ay
+Kyoto Animation,Kyoh-toh Animation
+KyoAni,Kyo-Ah-nee
+Ufotable,Yoo-foh-table
+MAPPA,Mah-puh
+Pierrot,Pyair-oh
+Studio Pierrot,Studio Pyair-oh
+J.C. Staff,Jay-See Staff
+JC Staff,Jay-See Staff
+A-1 Pictures,Ay-One Pictures
+P.A. Works,Pee-Ay Works
+PA Works,Pee-Ay Works
+Studio Ghibli,Studio Jee-blee
+Ghibli,Jee-blee
+CloverWorks,Clover Works
+OLM,Oh-El-Em
+# ─── Publishers ───
+Shueisha,Shoo-ay-shah
+Kodansha,Koh-dahn-shah
+Kadokawa,Kah-doh-kah-wah
+Shogakukan,Shoh-gah-koo-kahn
+# ─── Streaming ───
+HIDIVE,High-Dive
+# ─── Genre / industry vocabulary ───
+seiyuu,say-yoo
+shounen,shoh-nen
+shonen,shoh-nen
+Shōnen,Shoh-nen
+shoujo,shoh-joh
+shojo,shoh-joh
+seinen,say-nen
+josei,joh-say
+isekai,ee-seh-kai
+otaku,oh-tah-koo
+kawaii,kah-wah-ee
+mangaka,mahn-gah-kah
+doujin,doh-jeen
+tankobon,tahn-koh-bon
+# ─── Titles ───
+Kimetsu no Yaiba,Kee-met-soo no Yah-ee-bah
+Jujutsu Kaisen,Joo-joot-soo Kai-sen
+Kaguya-sama,Kah-goo-yah-sah-mah
+Sousou no Frieren,Soh-soh no Free-ren
+Frieren,Free-ren
+Dandadan,Dan-dah-dan
+Kaiju No. 8,Kai-joo Number Eight
+Kaiju No 8,Kai-joo Number Eight
+Bocchi the Rock,Boh-chee the Rock
+Mushoku Tensei,Moo-shoh-koo Ten-say
+Tensei,Ten-say
+Re:Zero,Reh Zero
+Steins;Gate,Steens Gate
+Tonari no Totoro,Toh-nah-ree no Toh-toh-roh
+Bungou Stray Dogs,Boon-go Stray Dogs
+Bungo Stray Dogs,Boon-go Stray Dogs
+Boku no Hero Academia,Boh-koo no Hero Academia
+Shingeki no Kyojin,Shin-geh-kee no Kyoh-jeen
+Spy×Family,Spy Family
+Spy x Family,Spy Family
+Oshi no Ko,Oh-shee no Koh
+Mob Psycho 100,Mob Psycho One Hundred
+Yuu Yuu Hakusho,Yoo Yoo Hah-koo-shoh
+Yu Yu Hakusho,Yoo Yoo Hah-koo-shoh
+Hunter × Hunter,Hunter Hunter
+Hunter x Hunter,Hunter Hunter
+Code Geass,Code Gee-ahss
+Neon Genesis Evangelion,Neon Genesis Eh-van-gel-ee-on
+Evangelion,Eh-van-gel-ee-on
+Denshou,Den-shoh
+Denshō,Den-shoh
+Hyouken,Hyoh-ken
+Houseki,Hoh-seh-kee
+Settei,Set-tay
+Musou,Moo-soh
+Gotei,Goh-tay
+# ─── Characters ───
+Tanjiro,Tahn-jee-roh
+Tanjirou,Tahn-jee-roh
+Nezuko,Nez-oo-koh
+Zenitsu,Zen-ee-tsoo
+Inosuke,Ee-noh-soo-kay
+Muzan,Moo-zahn
+Rengoku,Ren-goh-koo
+Gojo Satoru,Goh-joh Sah-toh-roo
+Satoru Gojo,Sah-toh-roo Goh-joh
+Yuji Itadori,Yoo-jee Ee-tah-doh-ree
+Itadori,Ee-tah-doh-ree
+Megumi Fushiguro,Meh-goo-mee Foo-shee-goo-roh
+Nobara Kugisaki,Noh-bah-rah Koo-ghee-sah-kee
+Sukuna,Soo-koo-nah
+Eren Yeager,Air-en Yay-gher
+Eren Jaeger,Air-en Yay-gher
+Mikasa,Mee-kah-sah
+Levi Ackerman,Lee-vai Ackerman
+Armin Arlert,Ar-min Ar-lert
+Naruto,Nah-roo-toh
+Sasuke,Sahs-keh
+Kakashi,Kah-kah-shee
+Itachi,Ee-tah-chee
+Hinata,Hee-nah-tah
+Luffy,Loo-fee
+Monkey D. Luffy,Monkey Dee Loo-fee
+Roronoa Zoro,Roh-roh-noh-ah Zoh-roh
+Sanji,Sahn-jee
+Vegeta,Veh-geh-tah
+Saiyan,Sai-yen
+Saiya-jin,Sai-yah-jeen
+Frieza,Free-zah
+Piccolo,Pee-koh-loh
+Izuku Midoriya,Ee-zoo-koo Mee-doh-ree-yah
+Midoriya,Mee-doh-ree-yah
+Bakugo,Bah-koo-goh
+Bakugou,Bah-koo-goh
+Todoroki,Toh-doh-roh-kee
+# ─── Given names ───
+Asuka,Ahs-kah
+Yuki,Yoo-kee
+Yuuki,Yoo-kee
+Eiko,Ay-koh
+Reika,Ray-kah
+Saori,Sah-oh-ree
+Hayato,Hah-yah-toh
+Hideo,Hee-deh-oh
+Yōhei,Yoh-hay
+Youhei,Yoh-hay
+Jirou,Jee-roh
+Shirou,Shee-roh
+Shirō,Shee-roh
+Shōya,Shoh-yah
+Yuuko,Yoo-koh
+Yūko,Yoo-koh
+Yōko,Yoh-koh
+Yuumi,Yoo-mee
+Yuuji,Yoo-jee
+Kyuu,Kyoo
+Ryusei,Ryoo-say
+Hōchū,Hoh-choo
+Itō,Ee-toh
+Ōtsuka,Oh-tsoo-kah
+Ōbari,Oh-bah-ree
+Kaihō,Kai-hoh
+# ─── Voice actors ───
+Megumi Hayashibara,Meh-goo-mee Hah-yah-shee-bah-rah
+Mamoru Miyano,Mah-moh-roo Mee-yah-noh
+Aoi Yuki,Ah-oh-ee Yoo-kee
+Yuki Kaji,Yoo-kee Kah-jee
+Daisuke Ono,Dai-soo-kay Oh-noh
+Maaya Sakamoto,Mah-ah-yah Sah-kah-moh-toh
+Junichi Suwabe,Joon-ee-chee Soo-wah-bay
+Hiroshi Kamiya,Hee-roh-shee Kah-mee-yah
+Tomokazu Sugita,Toh-moh-kah-zoo Soo-ghee-tah
