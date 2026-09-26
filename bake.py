@@ -447,6 +447,38 @@ def retext_targeted() -> dict:
             _targeted.append({})
     return _targeted[0]
 
+# Sep 26 2026 (r8, lane RV): a PRIORITY re-voice. The owner heard the OLD Sep 25 MP3s of the
+# exact stories he had flagged (Tiffany, Karina): r7 re-voices 5 per manifest per pass in
+# window order and yields on any 429, so a flagged story could wait days behind the bulk.
+# retext/r8-2026-09-26.json lists {manifest, id, tier} entries:
+#   tier 1 = owner-flagged. Re-voiced right after planning, BEFORE the fresh round-robin, up to
+#            RETEXT_T1_MAX_PER_PASS stories per pass across all manifests;
+#   tier 2 = stories whose spoken text changed (NX names, SX handles), then
+#   tier 3 = r7 leftovers. Tier 2 and 3 (and tier 1 beyond its cap) run in the post-fresh,
+#            429-free re-voice step at RETEXT_MAX_PER_PASS per manifest, ahead of r6/r7.
+# An entry is done when its MP3 Last-Modified is at or after the r8 cutover (_retext/<tag>.json
+# in R2, set by the first pass of this code, like r6/r7), or at or after its own done_after_ms
+# when the file gives one. Ids no longer in the feed window are skipped; the TTL ends the mode.
+# The 429 breaker stops tier 1 like every other synth.
+RETEXT_PRIORITY_TAG = "r8-2026-09-26"
+RETEXT_PRIORITY_FILE = "retext/r8-2026-09-26.json"
+RETEXT_T1_MAX_PER_PASS = 10
+_priority: list = []
+
+def retext_priority() -> dict:
+    if not _priority:
+        try:
+            with open(RETEXT_PRIORITY_FILE, encoding="utf-8") as f:
+                _priority.append(json.load(f))
+        except Exception as e:
+            print(f"[retext] priority list unavailable: {e}")
+            _priority.append({})
+    return _priority[0]
+
+# workflow_dispatch input retext_ids (comma list): a one-shot re-voice of exactly these ids,
+# one pass, no loop, no fresh bakes, no manifest writes. See retext_ids_pass().
+RETEXT_IDS = list(dict.fromkeys(s.strip() for s in os.environ.get("RETEXT_IDS", "").split(",") if s.strip()))
+
 def retext_cutover_ms(tag: str = RETEXT_TAG) -> int | None:
     if tag in _retext_cut:
         return _retext_cut[tag]
@@ -938,6 +970,16 @@ def plan_manifest(m: dict[str, Any]) -> dict | None:
         c = retext_cutover_ms(RETEXT_TARGETED_TAG)
         if c is not None:
             retext_modes.append((c, set(tgt["manifests"][name]), int(tgt.get("generated_ms", 0))))
+    # r8 priority entries of this manifest: id -> (tier, file order, done-after ms).
+    prio_map: dict[str, tuple[int, int, int]] = {}
+    pr_entries = retext_priority().get("entries") or []
+    if any(isinstance(e, dict) and e.get("manifest") == name for e in pr_entries):
+        c = retext_cutover_ms(RETEXT_PRIORITY_TAG)
+        if c is not None:
+            for i, e in enumerate(pr_entries):
+                if isinstance(e, dict) and e.get("manifest") == name and e.get("id") and e["id"] not in prio_map:
+                    prio_map[e["id"]] = (int(e.get("tier", 3)), i, int(e.get("done_after_ms") or c))
+    prio: list[tuple[int, int, str, str, dict, int]] = []   # (tier, order, id, key, article, done-after)
     window: list[dict] = []
     confirmed: set[str] = set()
     pending: list[tuple[dict, str, str, bool]] = []   # (article, key, text, mp3 already in R2)
@@ -959,6 +1001,9 @@ def plan_manifest(m: dict[str, Any]) -> dict | None:
         if exists and not force:
             if retext_modes:
                 retext_candidates.append((aid, key, article))
+            if aid in prio_map:
+                t, i, after = prio_map[aid]
+                prio.append((t, i, aid, key, article, after))
             confirmed.add(aid)   # confirmed present
             skipped += 1
             continue
@@ -978,6 +1023,17 @@ def plan_manifest(m: dict[str, Any]) -> dict | None:
             prev_items = json.loads(prev["Body"].read().decode("utf-8")).get("items", [])
         except Exception:
             prev_items = []
+    # r8 entries the car still plays from the carry-forward (out of the feed window, still in the
+    # live manifest, <= CARRY_MAX_AGE_MS old; finalize_manifest keeps exactly these). Sep 26: 4 of
+    # the 5 owner-flagged stories had already left the feed window, so a window-only rule would
+    # never have re-voiced them. Their MP3 is in R2 by construction.
+    if prio_map:
+        now_ms = int(time.time() * 1000)
+        for a in prev_items:
+            if (isinstance(a, dict) and a.get("id") in prio_map and a["id"] not in seen
+                    and 0 <= now_ms - _pub_ms(a) <= CARRY_MAX_AGE_MS):
+                t, i, after = prio_map[a["id"]]
+                prio.append((t, i, a["id"], article_key(a["id"]), sanitize_article(a), after))
     # What the car plays now: the newest confirmed story in the window or the live manifest.
     head_ms = max([_pub_ms(a) for a in window if a["id"] in confirmed]
                   + [_pub_ms(a) for a in prev_items if isinstance(a, dict)], default=0)
@@ -986,6 +1042,7 @@ def plan_manifest(m: dict[str, Any]) -> dict | None:
         "window": window, "seen": seen, "confirmed": confirmed, "pending": pending,
         "fresh_total": sum(1 for j in pending if not j[3]), "prev_items": prev_items,
         "head_ms": head_ms, "retext_modes": retext_modes, "retext_candidates": retext_candidates,
+        "prio": sorted(prio, key=lambda c: (c[0], c[1])), "t1_revoiced": 0,
         "skipped": skipped, "baked": 0, "fresh_baked": 0, "failed": 0, "retexted": 0,
         "dirty": False, "flushed": False, "written": False, "size": 0,
     }
@@ -1078,23 +1135,73 @@ def report_starved(plans: list[dict]) -> None:
             print(f"[{p['name']}] STARVED: {p['fresh_total']} fresh stories, 0 baked this pass "
                   f"({p['failed']} failed, {deferred} deferred by the 429 breaker)")
 
+def revoice_priority(plans: list[dict], breaker: ThrottleBreaker,
+                     cap: int | None = None) -> int:
+    """r8 tier 1 (owner-flagged), BEFORE the fresh round-robin: at most `cap` stories
+    (RETEXT_T1_MAX_PER_PASS) across all manifests, in file order. Each goes through the
+    pass's breaker (one retry on a 429; the breaker opening stops it). A failure keeps the
+    old audio; the entry stays pending for the next pass. Returns the number re-voiced."""
+    cap = RETEXT_T1_MAX_PER_PASS if cap is None else cap
+    jobs = sorted(((c, p) for p in plans for c in p.get("prio", []) if c[0] == 1),
+                  key=lambda cp: cp[0][1])
+    done_keys: set[str] = set()
+    n = 0
+    for (tier, _i, aid, key, article, after), p in jobs:
+        if n >= cap or breaker.tripped:
+            break
+        if key in done_keys:
+            continue
+        mod = r2_modified_ms(key)
+        if mod is None or mod >= after:
+            continue   # re-voiced already (or gone): done
+        rtext = apply_phonetics(text_for(article), p["phon"])
+        if len(rtext) < MIN_TEXT_LEN:
+            continue
+        try:
+            upload(key, breaker.synth(rtext, p["lang"], p["tld"], who=p["name"]))
+        except Exception as e:
+            print(f"[{p['name']}] tier-1 re-voice FAILED {aid[:30]}: {e}; old audio kept")
+            if not (is_throttle(e) or isinstance(e, BreakerOpen)):
+                traceback.print_exc()
+            continue
+        done_keys.add(key)
+        n += 1
+        p["t1_revoiced"] += 1
+        print(f"[{p['name']}] tier-1 re-voiced {aid[:40]} -> {key}")
+    if jobs:
+        print(f"[retext] tier 1: {n} re-voiced before fresh stories (cap {cap})")
+    return n
+
 def revoice(plans: list[dict], breaker: ThrottleBreaker) -> None:
-    """r6/r7 re-voice, AFTER every manifest is written, and only in a pass that saw no
-    gTTS 429: re-voicing old stories must never spend the budget that fresh stories need.
-    At most RETEXT_MAX_PER_PASS per manifest; a failure keeps the old audio."""
+    """r8 tier 1 leftovers, tier 2, tier 3, then r6/r7, AFTER every manifest is written, and
+    only in a pass that saw no gTTS 429: re-voicing old stories must never spend the budget
+    that fresh stories need. At most RETEXT_MAX_PER_PASS per manifest; a failure keeps the
+    old audio."""
     if breaker.total_429 or breaker.tripped:
-        if any(p["retext_candidates"] for p in plans):
+        if any(p["retext_candidates"] or p.get("prio") for p in plans):
             print(f"[retext] skipped this pass: {breaker.total_429} gTTS 429s seen; fresh stories first")
         return
     for p in plans:
         if not p["written"]:
             continue
         name = p["name"]
-        for aid, key, article in p["retext_candidates"]:
+        # r8 entries first (tier, then file order; done-after ms), then the r6/r7 candidates.
+        queue = [(aid, key, article, after) for _t, _i, aid, key, article, after in p.get("prio", [])]
+        queue += [(aid, key, article, None) for aid, key, article in p["retext_candidates"]]
+        tried: set[str] = set()
+        for aid, key, article, prio_after in queue:
             if p["retexted"] >= RETEXT_MAX_PER_PASS:
                 break
+            if aid in tried:
+                continue
+            tried.add(aid)
             mod = r2_modified_ms(key)
-            if mod is None or not any(
+            if mod is None:
+                continue
+            if prio_after is not None:
+                if mod >= prio_after:
+                    continue
+            elif not any(
                 mod < cut and (ids is None or aid in ids or (after is not None and mod >= after))
                 for cut, ids, after in p["retext_modes"]
             ):
@@ -1115,7 +1222,8 @@ def revoice(plans: list[dict], breaker: ThrottleBreaker) -> None:
 def _done_line(p: dict) -> str:
     deferred = sum(1 for j in p["pending"] if not j[3])
     return (f"[{p['name']}] done: manifest={p['size']} baked={p['baked']} skipped={p['skipped']} "
-            f"failed={p['failed']} deferred={deferred} (force={p['force']}) re-voiced={p['retexted']}")
+            f"failed={p['failed']} deferred={deferred} (force={p['force']}) re-voiced={p['retexted']}"
+            f" tier1={p.get('t1_revoiced', 0)}")
 
 def bake_manifest(m: dict[str, Any], breaker: ThrottleBreaker | None = None) -> tuple[int, int]:
     """One manifest on its own (ad hoc runs and tests): the same plan -> fresh -> write ->
@@ -1124,6 +1232,7 @@ def bake_manifest(m: dict[str, Any], breaker: ThrottleBreaker | None = None) -> 
     p = plan_manifest(m)
     if p is None:
         return 0, 0
+    revoice_priority([p], breaker)
     bake_fresh([p], breaker)
     if p["dirty"] or not p["flushed"]:
         finalize_manifest(p)
@@ -1197,7 +1306,84 @@ def merge_soundicafm() -> None:
 
 # ---------- Main -----------------------------------------------------------
 
+def _feed_items(url: str) -> list[dict]:
+    r = requests.get(url, timeout=FEED_TIMEOUT_S)
+    r.raise_for_status()
+    return [sanitize_article(a) for a in r.json().get("items", []) if isinstance(a, dict)]
+
+def retext_ids_pass(ids: list[str]) -> int:
+    """workflow_dispatch retext_ids: re-voice EXACTLY these ids, one pass. No fresh bakes, no
+    manifest writes (a re-voice replaces the audio under the same key, which the manifests
+    already list). Each id is voiced once, from the first manifest (MANIFESTS order) whose live
+    feed window holds it, else whose live manifest carries it, with that manifest's language and
+    table; ids in neither are reported. The r8 cutover is set first, so a forced story counts as done for the priority
+    list. Every synth goes through the 429 breaker. Exit 1 unless every id was voiced."""
+    started = time.monotonic()
+    breaker = ThrottleBreaker()
+    want = list(dict.fromkeys(ids))
+    print(f"[retext_ids] one-shot re-voice of {len(want)} ids: {', '.join(want)}")
+    if retext_priority().get("entries"):
+        retext_cutover_ms(RETEXT_PRIORITY_TAG)
+    found: dict[str, tuple[dict, dict]] = {}
+    for m in MANIFESTS:
+        if len(found) == len(want):
+            break
+        try:
+            items = _feed_items(m["feed_url"])
+        except Exception as e:
+            print(f"[retext_ids] [{m['manifest']}] feed fetch failed: {e}")
+            continue
+        for a in items:
+            aid = a.get("id")
+            if aid in want and aid not in found:
+                found[aid] = (m, a)
+    # Then the live manifests: a story that left the feed window is still played by the car from
+    # the carry-forward, with the same article fields.
+    for m in MANIFESTS:
+        if len(found) == len(want):
+            break
+        try:
+            obj = s3.get_object(Bucket=R2_BUCKET, Key=f"{m['manifest']}.json")
+            items = json.loads(obj["Body"].read().decode("utf-8")).get("items", [])
+        except Exception as e:
+            print(f"[retext_ids] [{m['manifest']}] manifest read failed: {e}")
+            continue
+        for a in items:
+            aid = a.get("id") if isinstance(a, dict) else None
+            if aid in want and aid not in found:
+                found[aid] = (m, sanitize_article(a))
+    voiced, failed, missing = [], [], []
+    for aid in want:
+        if aid not in found:
+            missing.append(aid)
+            print(f"[retext_ids] {aid}: not in any feed window or live manifest; skipped")
+            continue
+        m, article = found[aid]
+        key = article_key(aid)
+        text = apply_phonetics(text_for(article), m["phonetics"])
+        if len(text) < MIN_TEXT_LEN:
+            failed.append(aid)
+            print(f"[retext_ids] [{m['manifest']}] {aid}: text too short ({len(text)}); skipped")
+            continue
+        try:
+            upload(key, breaker.synth(text, m["lang"], m["tld"], who=m["manifest"]))
+        except Exception as e:
+            failed.append(aid)
+            print(f"[retext_ids] [{m['manifest']}] {aid}: re-voice FAILED: {e}; old audio kept")
+            if not (is_throttle(e) or isinstance(e, BreakerOpen)):
+                traceback.print_exc()
+            continue
+        voiced.append(aid)
+        print(f"[retext_ids] [{m['manifest']}] re-voiced {aid} -> {key}")
+    print(f"\nSummary: retext_ids voiced {len(voiced)}/{len(want)}; failed={failed or 0}; "
+          f"not in any window={missing or 0}; {time.monotonic() - started:.1f}s, "
+          f"gTTS 429s={breaker.total_429}, synth attempts={breaker.attempts}, "
+          f"breaker={'OPEN' if breaker.tripped else 'closed'}")
+    return 0 if len(voiced) == len(want) else 1
+
 def main() -> int:
+    if RETEXT_IDS:
+        return retext_ids_pass(RETEXT_IDS)
     started = time.monotonic()
     _STARVED.clear()
     breaker = ThrottleBreaker()   # one per pass: every gTTS call of this pass goes through it
@@ -1222,6 +1408,12 @@ def main() -> int:
             continue
         if p is not None:
             plans.append(p)
+    # r8 tier 1 BEFORE the fresh round-robin: the owner is listening to these stories now.
+    try:
+        revoice_priority(plans, breaker)
+    except Exception as e:
+        print(f"[retext] tier-1 re-voice CRASHED: {e}; continuing with fresh stories")
+        traceback.print_exc()
     try:
         bake_fresh(plans, breaker)
     except Exception as e:

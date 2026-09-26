@@ -1,0 +1,6010 @@
+{
+ "tag": "r8-2026-09-26",
+ "generated": "2026-09-26 07:47 UTC",
+ "generated_ms": 1790408840855,
+ "why": "Sep 26 2026 lane RV: the owner heard the OLD Sep 25 MP3s (r7 re-voices 5 per manifest per pass and yields on any 429). Tier 1 (owner-flagged) is re-voiced before fresh stories, up to RETEXT_T1_MAX_PER_PASS per pass; tier 2 then tier 3 after the fresh stories at the per-manifest cap. An entry is done when its MP3 Last-Modified is at or after the r8 cutover (_retext/r8-2026-09-26.json in R2), or after done_after_ms when given. Ids no longer in the feed window are skipped.",
+ "r7_cutover_ms": 1790397753631,
+ "entries": [
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1oweqv3",
+   "tier": 1,
+   "why": "owner: Girls' Generation Tiffany read as 't f n a'",
+   "from": "owner"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1oweqv3",
+   "tier": 1,
+   "why": "owner: Girls' Generation Tiffany read as 't f n a'",
+   "from": "owner"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_16ou9u0",
+   "tier": 1,
+   "why": "owner: Karina read as 'Ka ah ree Na'",
+   "from": "owner"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_16ou9u0",
+   "tier": 1,
+   "why": "owner: Karina read as 'Ka ah ree Na'",
+   "from": "owner"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1xvqood",
+   "tier": 1,
+   "why": "owner: GOT7 Jackson Wang read Korean-style 'Jack son'",
+   "from": "owner"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1xvqood",
+   "tier": 1,
+   "why": "owner: GOT7 Jackson Wang read Korean-style 'Jack son'",
+   "from": "owner"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_o2biu8",
+   "tier": 1,
+   "why": "owner: NCT Johnny read as 'Jo Nae'",
+   "from": "owner"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_o2biu8",
+   "tier": 1,
+   "why": "owner: NCT Johnny read as 'Jo Nae'",
+   "from": "owner"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1km17bp",
+   "tier": 1,
+   "why": "owner: social ID '@_chaechae_1/Instagram' read aloud (Chaewon photo credit)",
+   "from": "owner"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1km17bp",
+   "tier": 1,
+   "why": "owner: social ID '@_chaechae_1/Instagram' read aloud (Chaewon photo credit)",
+   "from": "owner"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1uvv9ob",
+   "tier": 2,
+   "why": "NX: English names stay English / local convention",
+   "from": "NX_revoice.json"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1m57xc6",
+   "tier": 2,
+   "why": "NX: English names stay English / local convention",
+   "from": "NX_revoice.json"
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_ynz9vf",
+   "tier": 2,
+   "why": "NX: English names stay English / local convention",
+   "from": "NX_revoice.json"
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_76i8f6",
+   "tier": 2,
+   "why": "NX: English names stay English / local convention",
+   "from": "NX_revoice.json"
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_sarau9",
+   "tier": 2,
+   "why": "NX: English names stay English / local convention",
+   "from": "NX_revoice.json"
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_11jzfrl",
+   "tier": 2,
+   "why": "NX: English names stay English / local convention",
+   "from": "NX_revoice.json"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1uvv9ob",
+   "tier": 2,
+   "why": "NX: English names stay English / local convention",
+   "from": "NX_revoice.json"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1m57xc6",
+   "tier": 2,
+   "why": "NX: English names stay English / local convention",
+   "from": "NX_revoice.json"
+  },
+  {
+   "manifest": "tropic_vi",
+   "id": "rss_tv4r24",
+   "tier": 2,
+   "why": "NX: English names stay English / local convention",
+   "from": "NX_revoice.json"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_wohzj",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_v9qg4d",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1fgovw7",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_dkucxt",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1gpfy6z",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1m7nekr",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_v9qg4d",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1fgovw7",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_dkucxt",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1gpfy6z",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1m7nekr",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_av3c02",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_2jpey8",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "tickerly_fr",
+   "id": "rss_mfw4yh",
+   "tier": 2,
+   "why": "SX: handle in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_18ph32r",
+   "tier": 2,
+   "why": "SX: credit line in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1li37tu",
+   "tier": 2,
+   "why": "SX: credit line in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_76b52f",
+   "tier": 2,
+   "why": "SX: credit line in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_18ph32r",
+   "tier": 2,
+   "why": "SX: credit line in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1li37tu",
+   "tier": 2,
+   "why": "SX: credit line in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_10vnz7u",
+   "tier": 2,
+   "why": "SX: credit line in baked text",
+   "from": "SX_revoice.json"
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_14y658i",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_a77e7g",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_ovz2b",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_1ptyt9k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_17gb5rj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_14mq92i",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_18d2y15",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_1in7fnz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_1b2rz78",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_mf73bs",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_1h7wtdu",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_xidtaa",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_4kiiz6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_10txp85",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_1mmejfj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_9zk2fo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_14n5rcg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_en",
+   "id": "rss_mwwu3k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_1r1ep7z",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_40187y",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_1benlnj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_1cqujp4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_1maaau6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_tbbrq0",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_2bt9az",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_fe1u3l",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_jmvcue",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_mzv1n9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_m7iinf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_1gzsz6z",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_r2e4o1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_k6vl5w",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_m57awa",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "bollywood_hi",
+   "id": "rss_1rj5uws",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_15xxjej",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1jf77lk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_sqix76",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_s2tr2z",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_ys9dfh",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_luscxj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_hdu78z",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_8etfpx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_2ck3ov",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1frxak1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1d4pydg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_xxfnqs",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_z9sy70",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_oisgm4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_n8elsk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_1su3o75",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_14qbs5l",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_gs5m39",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_ksxpym",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_x1mz5e",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_y92hrv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_en",
+   "id": "rss_3eh9wn",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_qcoks6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_1aqhw3b",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_1w7ytd5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_5kltlg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_1ovrk8a",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_1grwgk3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_nnrcc9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_e5p6b4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_nvotq5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_1kcsivf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_1w6sgrv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_1l4x2r4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_qoojtr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_aumkuu",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_vg5h4n",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_1h81ll1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_es",
+   "id": "rss_1nz053v",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_19xwwb5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_1tlwo49",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_1sx0cnn",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_yrouel",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_1agwdxv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_1qkpllk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_9ept2l",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_11yg01y",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_fn69ts",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_12eaucj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_12kpa9s",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_3ugan4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_c2jumf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_pz74fz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_usig26",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_vdlv5k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_1x6xizi",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_1h8lwgi",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_rqb10w",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_wm9a0h",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_1tlcodz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_nvjjng",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_obl0xd",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_z8fpqp",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_1fg0pbd",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_84gcix",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_lbp6cg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_18yuh09",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "kpop_pt",
+   "id": "rss_1mwkp6i",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_qg37an",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_1yvfp9i",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_12k8taq",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_1d86tr6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_dz9ekd",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_1snac1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_1tmw2k3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_v9w6wp",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_1lr3d4n",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_32tb2y",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_kzcbgo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_1xmslb9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_1xltubx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_1gq50ie",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_1l9722o",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_bjdf88",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "anime_en",
+   "id": "rss_1gt0f27",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_15xxjej",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1jf77lk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_sqix76",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_s2tr2z",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_ys9dfh",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_8etfpx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_2ck3ov",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1d4pydg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_xxfnqs",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_z9sy70",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_n8elsk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_1su3o75",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_14qbs5l",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_ksxpym",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_en",
+   "id": "rss_3eh9wn",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_yf1wbv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_1rlhfsb",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_13ud3d2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_xhi6m3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_11mxvb3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_459xhr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_pm6urd",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_18lqthp",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_lelj0r",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_5quy46",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_9yk9l0",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_13qo0r6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_1kf668z",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_1yw3zql",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_k9k5ts",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_1vfqn2m",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_11ksy2f",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_u9fct7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_1w3cmix",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_yupqt2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_31hhg0",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_1b8xp1s",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_eqnend",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_1gzo3ru",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_kft1dr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_1ngj6aw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_df053q",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_id",
+   "id": "rss_qmpqw9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_vi",
+   "id": "rss_fe2w7n",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tropic_vi",
+   "id": "rss_1m8h65r",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1j8cjm8",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_ypvgdu",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_41tm32",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1vhqljo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1rlikfm",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_3pnrdk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_579luj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1p52zzm",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_15wzsmj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1y56zci",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_19p9jet",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1k3skay",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_xrn0z",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1p5hsx4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_hd5eqy",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_jec2qr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_13d5z6w",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1lg4ug4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_pu3v0a",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_n6uhmg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1ufcpxx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_4oy4xm",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_syxucq",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_3ud62c",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_q12bb4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_gqulw5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_fefum7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_hacpnx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_14g2lvv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1ez6mur",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1glz6k4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_fj35w4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1oyfi8t",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_wc4t91",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_h487ow",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_19fjg5x",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_ub53th",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_155aiwu",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_b2ck9b",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_3ulb05",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_106jqy4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_3hkuux",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1d3iu3b",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_66jztk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_p46v1c",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1g2ii19",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_yf1wbv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_1rlhfsb",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "hype_id",
+   "id": "rss_13ud3d2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_l4fe4f",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1e1pur1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_93tlsw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_ptnnd2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_bmyuxl",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_163z1be",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_bnyr8s",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_4t19d1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_7vumfr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_pp65vw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_plk1lh",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_11x993l",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_6e11y4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1ctgpdw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1q95muv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1in9lf1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_kwytwq",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1d7ho8q",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_2jmayc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_4mrvaq",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_19cum9p",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_7574k4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_h7z9r5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_17xv64u",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_13wfx0u",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_e2gi6c",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1k56pqf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_12q3efr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_17uhutz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_xc3ene",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1h735vg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_191ci0g",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1gdzk0o",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1nqxi5m",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_q2a83s",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_tqdn6z",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_s72ks8",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_ngiunb",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_vybagx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_12zaypc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_l5ql5k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_iov820",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1536fxi",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_8bdsx7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_d4qizn",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_6jzrm2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1uf1qhd",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1blttyj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1kv5494",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_fe2w7n",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_m7yptx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_ii8uon",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_16fpkua",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_14mgn0h",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1jd8bxm",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1qfnh20",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_8a8tcm",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_z5t11k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1tj9dss",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tinh_vi",
+   "id": "rss_1t3xxd7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1ahft7m",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_n84g8j",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_bxm9o",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_188g471",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_152dkjy",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1kyhqok",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_a49wsi",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1s5g3fm",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_3cezwm",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1x2bqe8",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_okij83",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_reuopz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1n78um3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1uo031v",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_k0kj2v",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_122zq02",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1nxtzvy",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_18bfl63",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1o86x7v",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_6qyou8",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1aujxpq",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_12ry2vf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_122hdy3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1xc0g08",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_hi8vs4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_opgcrt",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_luq7h",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_mvplim",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_idw00t",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1pn074y",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_pu8j2p",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_wmkl7o",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1caqfej",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1sme5d5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_hh4kns",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1070k9c",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1flswnv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1173wh9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1o5hna9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_gaks0k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1qpttw6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1gcvp34",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1eulfgu",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_113zxt2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_h0vcw3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1fwb2kz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_z2bizz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_htt747",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1kad2f",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_10nsh5j",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_j7bfa9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_ufa1nw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1ki7wko",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_8un815",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_ppavi5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1buiiod",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_eqrqde",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_1hr3wd2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_eejy9w",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_km3p82",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_en",
+   "id": "rss_2g6dyd",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_1wakij5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_1p7scg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_1xjc0e6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_39a8y8",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_t67248",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_ibjp2j",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_ujfzvk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_1uuo1s7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_1yxrjw5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_ueod94",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_hpmqyc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_5nv3ld",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_lwx7tw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_1mwd964",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_mvcpzs",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_es",
+   "id": "rss_13nrncg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_1jhrakj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_1tjgm21",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_1do97z6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_1hk86dr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_1msakrg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_2i1hgf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_13934oe",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_1ni81h9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_zcb6l6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_kbz6ue",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_1452jrt",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_1ncjg9m",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_1yvpd1p",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_1bnqh5w",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_16eafx9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_pt",
+   "id": "rss_kc6utf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_10thgji",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_wqu36k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_a5mipg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_160ip9g",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_128uq35",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_rimn12",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_wwperv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_1xtdowy",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_ra0men",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_aluo93",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_q7a1a5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_1wyn5jj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_1oq08th",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_1wmyoxb",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_1f1t0bo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_bxqywr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_1rynvdq",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_f3i13b",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_1hq253i",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_jiqx9w",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_1wnt2mn",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_1eg4ycp",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_i7l19p",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_10b1z9h",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_1x79odc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_18zmurz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_rarvp",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_vi",
+   "id": "rss_srlkdi",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1cpgso",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_k4t16n",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_y4o0m0",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_lncc8p",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1l5y7yi",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_168a8wo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1uzn8oo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_q3qflr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_89plh7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1edqno5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1c5spok",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1qkhw73",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_bzjz3i",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_118q8po",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1px734u",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1926q55",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_18icjx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1b24f3h",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_dnlq29",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_xnzi7u",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_zr54um",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1ul978k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_325wr5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_10k95u7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1p9wa2l",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1uokay3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_9fjs39",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_107vrln",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_s77cuc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_126dupc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1rpz2bs",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_hvgddr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1dg08gd",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_fcmmfz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_74a4uq",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1uq2bt1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_19c0vc3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_9d27fp",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1hyrqc3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_11r4cp0",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_j1s5zn",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1pevnv9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_19qowkl",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_lynrpp",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_18g3ag3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1ji9tp3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_sytign",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_100d7qr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1edc9q3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1mup8f5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_15uw273",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_nyeohf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1ojjun2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_mgasn2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1xzrat7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_14en5zd",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_170lg47",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1g7z89k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1drp0ag",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_1gqdufz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_129e810",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_12n7zet",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_lxn8lc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_v5m801",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_de",
+   "id": "rss_8tr27b",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1203ada",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1n1n9f7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_zc8c8c",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_87jiv8",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_h1q4gl",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1f716rf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_ea8utw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_6ncnsj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_bti0n3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1ntq1ak",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1qaltvc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_8sgbjo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1moh2d1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1fwx59o",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_4uk3et",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1p4rcxm",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_35bdk4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_995hkf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1jlnh8c",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1owsf59",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1f8aaxb",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_9e5mj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_12v9605",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_dvo9cb",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_sc4buo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_b7mqf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1o7l4wk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_cr3s3o",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_9tyani",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1mrvxet",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_ag42hc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_wrlqw5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_3uqjao",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_abr1hk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_15r5o6p",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_hpxm3h",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_4dsxjm",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_2i925z",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_hhsajy",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_c33803",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_zwxd6i",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_z1zj82",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_jwpywk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1jh5rcs",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_wcl3vp",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_w25r5r",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_xjvtnv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1huplzi",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_rqydfw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1h37hs8",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1uu1nkv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_1kam342",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_fr",
+   "id": "rss_u4o9zo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_vbuooa",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_mqhrzw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_oykezo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_hs5y9v",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1o1mkqo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1jfsvpk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_sgypza",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_3fot4h",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1b0oay6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_8d8jnx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_17nk70f",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1x2m27m",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1ugafeh",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1d220lw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_hc2nfd",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_ncnuks",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_tvlwfo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_13kchlc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1twdcxc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1g5973w",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_76pv6w",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_dfkpsr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1ck9w4o",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_lp5iqi",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_da0u1h",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_j1cbob",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_128qrmg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_falg5k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1hlplpu",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_sykp5b",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_14fg6hm",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1netkcr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_17hlpyr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_f7nse",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_15wcw21",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_xu1azs",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_29kwi1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_ey99am",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_8pzkok",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1g6v1iq",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1plxjyg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1j2qg3y",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_q8ykt5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "circuitly_it",
+   "id": "rss_1hhtasx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1uuj4my",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1axucqw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_pnyx8i",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1kzdgiv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1y2wfiz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_mbhofq",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_10l23p3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_uruowh",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_eegpej",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_lrrtht",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_3uies6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_19uq0gj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_uue8gf",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1q2t5u0",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1ude0bs",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1qetv2o",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1fxl19l",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_6iz71i",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_10bu077",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1qnvm40",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_11cp4gn",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1813aj2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_ks6nka",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_15l5z5f",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1uenz25",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_18xm18v",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1ytblju",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_a199up",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1db7mkn",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_gs6jpz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_n3bzas",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1uptrb5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1ncnho2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_a652n9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_q874b3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1ubvpxz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_4f8sfk",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_aa9zd5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1c2yuv9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_12uh8u3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_11jc07t",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1tpf4n2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_i4r2dt",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1hriks3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_j5xob3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1vv3itz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_2p9x82",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_18tytob",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1ypf8cp",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_1udnbbl",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_en",
+   "id": "rss_bzr3yi",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_3kkni5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_2e67cy",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_zuhqt5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_9fstrg",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1edvd4f",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1qbr2vo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1gjtvh7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1qif4ta",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_44mqy1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1fb6avx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_urq3np",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1yeti0v",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1oa5wle",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1pvfijo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1bwes53",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1deldta",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_73y3jh",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1yi4fqx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_pt",
+   "id": "rss_1f90qr6",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1uss842",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1qqn5jw",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_9eq5ln",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1lfqbvm",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_a4u8sl",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1tdzmkz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_15pgo4m",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1dyere1",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_6djgpu",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1quqepv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_10qdtbb",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1wimbxa",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1bv8ilo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_4cd2n4",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1u1w0jv",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1703j3r",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_lem8u7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_18hebpz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_d5yj7",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_d6c4d8",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_4f7rnc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_6szsdj",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1rghkal",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_mo175o",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1i3vszq",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_7zouz8",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1eywu99",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1stj1kt",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_iaackc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1je9amc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_m6lyf0",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_uqsj2a",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_4crpev",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_cx8y63",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1o5eqf8",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1dx5316",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1skvkv5",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_mmwkq9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_18w4k29",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_xk82sr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_1eexv9l",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_17a0lu9",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_vi",
+   "id": "rss_ejya5u",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_b1jz1c",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_v8mwcl",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_m31abb",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_4irss8",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_1yrkyei",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_h8sgej",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_x1z2oz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_1wsv02k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_5hu93g",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_pk5l8k",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_1k45ak2",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_pemn4i",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_51nltz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_1htxd25",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_1l0duom",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_21xg3r",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_id",
+   "id": "rss_7ddd5s",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_de",
+   "id": "rss_1eb3zth",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_de",
+   "id": "rss_1pkku0a",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_de",
+   "id": "rss_hqh4we",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_de",
+   "id": "rss_s3pimx",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_fr",
+   "id": "rss_1iw9lmi",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_fr",
+   "id": "rss_1txj99m",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_ozvq88",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_fhchmi",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_14rojxp",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_18zg475",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_8gkjyo",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_2kymik",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_111s6pc",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_8zp7oy",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_1tt06ac",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_9ewvd3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_kfc958",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_z495my",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_15zv25p",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_1fhf1p0",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_1wivgry",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_s0aobp",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_1s7lvs3",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_1fly6pr",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_186y79z",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_tzl8lz",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_mmqqhl",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_it",
+   "id": "rss_t1n69p",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_hi",
+   "id": "rss_1rl0lfs",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  },
+  {
+   "manifest": "tickerly_hi",
+   "id": "rss_1eq9hhb",
+   "tier": 3,
+   "why": "r7 (P1/P2 tables) not re-voiced yet",
+   "from": "r7-2026-09-26.json",
+   "done_after_ms": 1790397753631
+  }
+ ]
+}

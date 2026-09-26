@@ -19,9 +19,17 @@ on:
         description: 'Re-bake (ignore R2 cache + cap) for this app slug, or "all". Empty = normal incremental bake.'
         required: false
         default: ''
+      retext_ids:
+        description: 'One-shot re-voice of exactly these article ids (comma list, e.g. rss_1oweqv3,rss_16ou9u0): one pass, no loop, no fresh bakes, no manifest writes. Empty = normal bake.'
+        required: false
+        default: ''
 
 concurrency:
-  group: bake
+  # Sep 26 2026 (RV): a retext_ids dispatch gets its own group, so it runs NOW instead of
+  # queueing behind a 5-hour loop job (and being cancelled as an older pending run when the
+  # next schedule event arrives). It only re-uploads the MP3s of the ids it is given and never
+  # writes a manifest, so it cannot race the loop's manifest writes.
+  group: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.retext_ids != '' && 'bake-retext' || 'bake' }}
   cancel-in-progress: false
   # EXPECTED SIDE EFFECT of the long looping job below: while one is running, each
   # scheduled trigger becomes a PENDING run, and GitHub cancels an older pending run
@@ -54,6 +62,7 @@ jobs:
           R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
           R2_BUCKET: halcyon-news-tts
           FORCE_APP: ${{ github.event.inputs.force_app }}
+          RETEXT_IDS: ${{ github.event.inputs.retext_ids }}
           # One trigger, many bakes. 300 minutes of looping at a 30-minute cadence
           # turns an unreliable trigger into a reliable one from the app's point of
           # view: the car flavors read baked manifests, so a 5-hour-old manifest is a
@@ -62,6 +71,10 @@ jobs:
           INTERVAL_MINUTES: '30'
         run: |
           set -o pipefail
+          if [ -n "${RETEXT_IDS}" ]; then
+            echo "manual dispatch, RETEXT_IDS=${RETEXT_IDS}: one-shot re-voice, one pass, no loop"
+            exec python bake.py
+          fi
           if [ -n "${FORCE_APP}" ]; then
             echo "manual dispatch, FORCE_APP=${FORCE_APP}: one pass, no loop"
             exec python bake.py
