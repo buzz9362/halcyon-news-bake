@@ -1,0 +1,13 @@
+# Tickerly phonetic overrides for vi-VN system TTS (finance/markets).
+# Format: original,phonetic-rendering
+# Lines beginning with # are ignored. Empty lines skipped.
+# Word-boundary matched, case-insensitive. Add new rows freely.
+
+# ─── Finance abbreviations ───────────────────────────────────────────────
+VN-Index,Vê En Index
+VNIndex,Vê En Index
+GDP,Gờ Đê Pê
+NASDAQ,Nát Đắc
+IPO,I Pê O
+SBV,Ngân hàng Nhà nước
+HOSE,Hô Sê

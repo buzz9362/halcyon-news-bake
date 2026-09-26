@@ -4,19 +4,23 @@
 # Word-boundary matched, case-insensitive. Add new rows freely.
 
 # ─── Publishers / sources ────────────────────────────────────────────────
-VnExpress,Vê Nờ Ép Sờ Prét
+# ORDER MATTERS: list the domain form (vnexpress.net) BEFORE the bare brand
+# (VnExpress). Rules apply top-to-bottom; if the bare brand ran first it would
+# consume "vnexpress" inside "vnexpress.net" and leave the orphan ".net", which
+# the TTS then reads as "chấm net". Domain-first keeps the suffix from leaking.
 vnexpress.net,Vê Nờ Ép Sờ Prét
-Kenh14,Kê Mười Bốn
+VnExpress,Vê Nờ Ép Sờ Prét
 kenh14.vn,Kê Mười Bốn
-Znews,Zét Niu Sờ
-ZNews,Zét Niu Sờ
+Kenh14,Kê Mười Bốn
 znews.vn,Zét Niu Sờ
-Dân Trí,Dân Trí
+ZNews,Zét Niu Sờ
+Znews,Zét Niu Sờ
 DanTri,Dân Trí
-Thanh Niên,Thanh Niên
+Dân Trí,Dân Trí
 ThanhNien,Thanh Niên
-Tuổi Trẻ,Tuổi Trẻ
+Thanh Niên,Thanh Niên
 TuoiTre,Tuổi Trẻ
+Tuổi Trẻ,Tuổi Trẻ
 VietnamNet,Việt Nam Nét
 Soha,Sô Ha
 
@@ -24,17 +28,22 @@ Soha,Sô Ha
 MV,Em Vi
 MC,Em Xê
 DJ,Đi Giây
-OST,Ô Eo Tê
+OST,Ô Ét Tê
 PV,Pê Vê
 TV,Ti Vi
 CEO,Si I Ô
 CD,Si Đi
 DVD,Đi Vi Đi
-HD,Ếch Đi
+HD,Hát Đê
 3D,Ba Đê
 EP,I Pi
 LP,En Pê
 DOP,Đi O Pi
+
+# Sep 26 2026: honorific titles read before artists' names; spelled out letter by letter
+# they are not how Vietnamese press reads them (11 + 7 hits in 140 live items).
+NSND,Nghệ sĩ Nhân dân
+NSƯT,Nghệ sĩ Ưu tú
 
 # ─── K-pop names commonly mentioned in Vietnamese press ─────────────────
 BTS,Bi Ti Ét Sờ
@@ -50,7 +59,8 @@ ATEEZ,Ây Tin Sờ
 
 # ─── V-pop & Vietnamese stars that benefit from a written-out pronunciation
 M-TP,Em Tê Pê
-HIEUTHUHAI,Hi Yu Thư Hai
+# Sep 26 2026: the stage name is the Vietnamese "Hiếu thứ hai"; the old row read "hi yu".
+HIEUTHUHAI,Hiếu Thứ Hai
 MONO,Mô Nô
 AMEE,A Mi
 GREY D,Gờ Rây Đi

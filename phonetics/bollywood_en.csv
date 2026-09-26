@@ -17,7 +17,7 @@ KKHH,KKHH
 YRF,Y R F
 Yash Raj Films,Yash Raj Films
 SLB,S L B
-T-Series,T-Series
+T-Series,Tee Series
 T Series,Tee Series
 KJo,KJo
 K Jo,K Joh
@@ -61,8 +61,8 @@ Kartik,Kartik
 Sidharth Malhotra,Siddharth Malhotra
 Sidharth,Siddharth
 Siddharth Malhotra,Siddharth Malhotra
-Varun Dhawan,Varun Dhawan
-Varun,Varun
+Varun Dhawan,Vah Roon Dah Waan
+Varun,Vah Roon
 Ranbir,Ranbir
 Ranveer,Ranveer
 Tiger Shroff,Tiger Shroff
@@ -71,12 +71,14 @@ Ajay Devgan,Ajay Devgun
 Anil Kapoor,Anil Kapoor
 Sanjay Dutt,Sanjay Dutt
 Govinda,Govinda
-Dharmendra,Dharmendra
+Dharmendra,Dar Men Dra
 Boman Irani,Boman Irani
 Naseeruddin Shah,Naseeruddin Shah
 Manoj Bajpayee,Manoj Bajpayee
 Manoj Bajpai,Manoj Bajpai
 Anupam Kher,Anupam Kher
+# Sep 26 2026: short Dh-onset tokens are read as letters (digraph rule, Jun 14).
+Dhar,Dar
 Irrfan Khan,Irfan Khan
 Irrfan,Irfan
 Diljit Dosanjh,Diljit Dosanjh
@@ -104,8 +106,8 @@ Rani Mukerji,Rani Mukerjee
 Rani Mukerjee,Rani Mukerjee
 Karisma Kapoor,Karisma Kapoor
 Karisma,Karisma
-Bhumi Pednekar,Bhumi Pednekar
-Bhumi,Bhumi
+Bhumi Pednekar,Boo Mee Ped Nay Kar
+Bhumi,Boo Mee
 Parineeti Chopra,Parineeti Chopra
 Parineeti,Parineeti
 Konkona Sen Sharma,Konkona Sen Sharma
@@ -136,11 +138,11 @@ Allu Arjun,Allu Arjun
 Mahesh Babu,Mahesh Babu
 Prabhas,Prabhas
 Vijay Deverakonda,Vijay Deverakonda
-Yash,Yush
+# Sep 26 2026: Yash,Yush removed (Jul 24 ruling: it turned Yash Raj Films into Yush Raj Films).
 Rajinikanth,Rajinikanth
 Kamal Haasan,Kamal Haasan
 Vijay,Vijay
-Dhanush,Dhanush
+Dhanush,Dah Noosh
 Jr NTR,Junior N T R
 Ram Charan,Ram Charan
 SS Rajamouli,S S Rajamouli
@@ -150,15 +152,15 @@ AR Rahman,A R Rahman
 A.R. Rahman,A R Rahman
 Arijit Singh,Arijeet Singh
 Arijit,Arijeet
-Shreya Ghoshal,Shreya Ghoshal
+Shreya Ghoshal,Shray Yaa Go Shaal
 Pritam,Pritam
 Vishal Mishra,Vishal Mishra
 Vishal-Shekhar,Vishal-Shekhar
-Shankar Mahadevan,ShankarMa haadevan
+Shankar Mahadevan,Shankar Mahaa Dayvan
 Sonu Nigam,Sonoo Nigam
 Atif Aslam,Atif Aslam
-Lata Mangeshkar,La taMangeshkar
-Asha Bhosle,Aasha Bhosle
+Lata Mangeshkar,Lataa Mangeshkar
+Asha Bhosle,Aasha Bos Lay
 Jubin Nautiyal,Joobin Nowtiyal
 Neha Kakkar,Neha Kakkar
 Badshah,Badshah
@@ -166,15 +168,15 @@ Honey Singh,Honey Singh
 Yo Yo Honey Singh,Yo Yo Honey Singh
 Mohammed Rafi,Mohammed Raafee
 # === Directors ===
-Sanjay Leela Bhansali,Sunjay Leela Bhansaalee
-Bhansali,Bhansali
+Sanjay Leela Bhansali,Sunjay Leela Ban Saa Lee
+Bhansali,Ban Saa Lee
 Karan Johar,Karan Johar
 Rohit Shetty,Rohit Shettee
 Anurag Kashyap,Anurag Kashyap
 Imtiaz Ali,Imtiyaaz Ali
 Farhan Akhtar,Farhaan Akhtar
 Zoya Akhtar,Zoya Akhtar
-Vishal Bhardwaj,Vishaal Bhardwaaj
+Vishal Bhardwaj,Vishaal Bard Waaj
 Kabir Khan,Kabeer Khaan
 Ayan Mukerji,Ayan Mukerjee
 Mani Ratnam,Manee Ratnam
@@ -184,12 +186,14 @@ Pathaan,Pathaan
 Jawan,Jawan
 Dunki,Dunki
 Pushpa,Pushpa
-Bhool Bhulaiyaa,Bhool Bhulayaa
+Bhool Bhulaiyaa,Bool Boo Lay Yaa
 Stree,Stree
 Animal,Animal
 Kalki,Kalki
 Devara,Devara
 Tiger 3,Tiger Three
+# Sep 26 2026: film title in the live pool (The Vvaan); the doubled V onset is not a word shape.
+Vvaan,Vaan
 # === OTT Platforms ===
 JioCinema,JioCinema
 Jio Cinema,Jio Cinema
@@ -204,8 +208,6 @@ Disney+,Disney Plus
 # === Box-office abbreviations + Indian-currency idioms ===
 BO,BO
 WW,worldwide
-cr.,crore
-Cr.,crore
 Cr,crore
 CR,crore
 cr,crore
@@ -214,10 +216,11 @@ Cr+,crore plus
 L+,lakh plus
 Lakh,lakh
 LAKH,lakh
+# Sep 26 2026: cr. / Cr. / the rupee sign rows removed; they never matched under the old word-boundary
+# anchors and would now drop a sentence full stop or glue "rupees" to the number.
 Rs.,rupees
 Rs,rupees
 INR,rupees
-₹, rupees
 100K,100K
 nett,net
 # === Awards ===
@@ -229,7 +232,7 @@ Star Screen,Star Screen
 Diwali,Diwali
 Eid,Eed
 Holi,Holi
-Karwa Chauth,Kar waChowth
+Karwa Chauth,Kar Waa Chowth
 Raksha Bandhan,Raksha Bandhan
 Navratri,Navratri
 # === Cities / neighbourhoods ===
@@ -250,7 +253,7 @@ Ahmedabad,Ahmedabad
 Varanasi,Varanasi
 Goa,Goa
 # === Languages / industries ===
-Bhojpuri,Bhojpuri
+Bhojpuri,Boj Poo Ree
 Marathi,Marathi
 Gujarati,Gujarati
 Punjabi,Punjabi
@@ -263,7 +266,7 @@ Book My Show,Book My Show
 BMS,BMS
 FDFS,FDFS
 # === Hindi/Sanskrit honorifics + relational terms ===
-Bhai,Bhai
+Bhai,Bye
 Behan,Behan
 Beti,Beti
 Beta,Beta
@@ -273,15 +276,15 @@ Sahib,Sahib
 Babu,Babu
 Ammi,Ammi
 Abbu,Abbu
-Bhajan,Bhajan
+Bhajan,Bah Jun
 Qawwali,Qawwali
-Ghazal,Ghazal
+Ghazal,Gah Zul
 Mehfil,Mehfil
 Sangeet,Sangeet
 Naach,Nahch
 Yaar,Yaar
-Bhaijaan,Bhaijaan
-Bhaiya,Bhaiya
+Bhaijaan,Bye Jaan
+Bhaiya,Bye Yah
 Didi,Didi
 Chacha,Chacha
 Mama,Mama
@@ -289,7 +292,7 @@ Bua,Bua
 Daadi,Daadi
 Naani,Naani
 # === Cross-political crossover ===
-Bharat,Bharat
+Bharat,Bah Rut
 Hindustan,Hindustan
 Sarkar,Sarkar
 Mantri,Mantri

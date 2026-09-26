@@ -1,0 +1,13 @@
+# Tickerly phonetic overrides for id-ID system TTS (finance/markets).
+# Format: original,phonetic-rendering
+# Lines beginning with # are ignored. Empty lines skipped.
+# Word-boundary matched, case-insensitive. Add new rows freely.
+
+# ─── Finance abbreviations ───────────────────────────────────────────────
+IHSG,I H S G
+NASDAQ,Nas Dak
+GDP,Ji Di Pi
+PDB,Pe De Be
+IPO,I Pe O
+BI,Bank Indonesia
+OJK,O Je Ka

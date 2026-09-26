@@ -1,0 +1,24 @@
+Name,Phonetic
+NASDAQ,Naz Dak
+S&P 500,S and P five hundred
+S&P,S and P
+CPI,C P I
+GDP,G D P
+IPO,I P O
+ETF,E T F
+EUR/USD,Euro U S Dollar
+GBP/USD,Pound U S Dollar
+USD/JPY,U S Dollar Yen
+FOMC,F O M C
+ECB,E C B
+NYSE,N Y S E
+FTSE,Footsie
+DAX,Dax
+M&A,Mergers and Acquisitions
+YoY,Year over Year
+QoQ,Quarter over Quarter
+bps,basis points
+bn,billion
+tn,trillion
+# Sep 26 2026: source name read before every PYMNTS story; no vowel, so it was spelled out.
+PYMNTS,Payments
