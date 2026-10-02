@@ -637,6 +637,47 @@ _SR_TWEET_CREDIT = re.compile(r"\s[\u2014\u2013-]\s*(?:[^()\n@]{1,60}\s)?\(?@\w{
 _SR_BRACKET_HASHTAG = re.compile(r"\[#[^\]\n]{1,40}\]")
 _SR_HASHTAG_RUN = re.compile(r"(?:#\w+[\s,]*){2,}")
 _SR_SPACE_BEFORE_PUNCT = re.compile(r"\s+([.,;:!?])")
+# r1005 (Oct 2 2026, owed since Sep 26): a SINGLE hashtag before a letter-led tag is read as a word: the
+# "#" goes and a CamelCase tag is split ("#SongYuqi" -> "Song Yuqi", "#BTS" -> "BTS"); "#1" is kept, and
+# "C#", "&#38;" or "page#top" are not tags (a letter, digit, "_", "&" or "#" before the "#"). The split is a
+# character walk, not a regex, so Python and the apps (SocialResidue.kt splitHashtagWords) agree exactly.
+_SR_HASHTAG_ONE = re.compile(r"(?<![A-Za-z0-9_&#])#([^\W\d_]\w*)")
+# r1005: the Google News cluster footer ("<Publisher> See more headlines and perspectives on Google News"), every
+# served-language shape seen in the live headline feeds (Oct 2 2026), plus the older "View Full Coverage" line.
+# A space in a footer also matches a no-break space (fr/es carry "Google\u00a0Noticias").
+_SR_GN_FOOTERS = (
+    "See more headlines and perspectives on Google News", "See more headlines & perspectives on Google News",
+    "View Full Coverage on Google News", "View full coverage on Google News",
+    "Weitere Schlagzeilen und Meinungen in Google News",
+    "Ver m\u00e1s titulares y perspectivas en Google News", "Ver m\u00e1s t\u00edtulos y perspectivas en Google Noticias",
+    "Veja mais manchetes e perspectivas no Google Not\u00edcias", "Ver mais cabe\u00e7alhos e perspetivas no Google Not\u00edcias",
+    "Voir plus de titres et de points de vue sur Google Actualit\u00e9s",
+    "Visualizza altri titoli e punti di vista su Google News",
+    "Lihat judul & perspektif lainnya di Google Berita",
+    "Xem th\u00eam ti\u00eau \u0111\u1ec1 v\u00e0 g\u00f3c nh\u00ecn kh\u00e1c tr\u00ean Google Tin t\u1ee9c",
+    "Google \u0938\u092e\u093e\u091a\u093e\u0930 \u092a\u0930 \u091c\u093c\u094d\u092f\u093e\u0926\u093e "
+    "\u0939\u0947\u0921\u0932\u093e\u0907\u0928 \u0914\u0930 \u0909\u0928\u0915\u0947 \u092c\u093e\u0930\u0947 "
+    "\u092e\u0947\u0902 \u0935\u093f\u0936\u0947\u0937\u091c\u094d\u091e\u094b\u0902 \u0915\u0940 "
+    "\u0930\u093e\u092f \u0926\u0947\u0916\u0947\u0902",
+)
+_SR_GN_FOOTER = re.compile("(?:" + "|".join(re.escape(f).replace(r"\ ", r"[\s\u00a0]+") for f in _SR_GN_FOOTERS)
+                           + r")\.?")
+
+
+def split_hashtag_words(tag: str) -> str:
+    """"SongYuqi" -> "Song Yuqi", "BTSArmy" -> "BTS Army", "K_pop" -> "K pop"; the apps' splitHashtagWords."""
+    out = []
+    n = len(tag)
+    for i, c in enumerate(tag):
+        if c == "_":
+            out.append(" ")
+            continue
+        if i > 0 and c.isupper():
+            p = tag[i - 1]
+            if p.islower() or (p.isupper() and i + 1 < n and tag[i + 1].islower()):
+                out.append(" ")
+        out.append(c)
+    return "".join(out).strip()
 
 def strip_social_handles(t: str) -> str:
     """The Sep 26 handle, photo-credit and embed rules; clean text comes back unchanged."""
@@ -656,9 +697,11 @@ def strip_social_residue(text: str) -> str:
     """stripSocialResidue() of the apps, minus the unserved-script rule (see the block note)."""
     if not text or not text.strip():
         return text
-    t = _SR_TWEET_CREDIT.sub(" ", _SR_PIC_TWITTER.sub(" ", text))
+    t = _SR_GN_FOOTER.sub(" ", text)
+    t = _SR_TWEET_CREDIT.sub(" ", _SR_PIC_TWITTER.sub(" ", t))
     t = strip_social_handles(t)
     t = _SR_HASHTAG_RUN.sub(" ", _SR_BRACKET_HASHTAG.sub(" ", t))
+    t = _SR_HASHTAG_ONE.sub(lambda m: split_hashtag_words(m.group(1)), t)
     return _SR_SPACE_BEFORE_PUNCT.sub(r"\1", _WS_RE.sub(" ", t)).strip()
 
 # ---------- Code residue (Sep 26 2026, JS) -----------------------------------------------------
