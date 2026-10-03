@@ -69,6 +69,7 @@ jobs:
           # 5-hour-old car app.
           LOOP_MINUTES: '300'
           INTERVAL_MINUTES: '30'
+          IDLE_STOP: '2'
         run: |
           set -o pipefail
           if [ -n "${RETEXT_IDS}" ]; then
@@ -80,16 +81,25 @@ jobs:
             exec python bake.py
           fi
           deadline=$(( $(date +%s) + LOOP_MINUTES * 60 ))
-          n=0; ok=0
+          n=0; ok=0; idle=0
           while :; do
             n=$(( n + 1 ))
             pass_start=$(date +%s)
             echo "::group::bake pass ${n} at $(date -u +%H:%M:%SZ)"
             # A failed pass must not kill the loop: the next one re-bakes the same
             # articles, and carry-forward keeps the manifest whole meanwhile.
-            if python bake.py; then ok=$(( ok + 1 )); else echo "pass ${n} FAILED, continuing"; fi
+            if python bake.py; then ok=$(( ok + 1 )); idle=0; else echo "pass ${n} FAILED, continuing"; idle=$(( idle + 1 )); fi
             echo "::endgroup::"
             elapsed=$(( $(date +%s) - pass_start ))
+            # Oct 3 2026: gTTS 429s the runner IP after one productive pass (240-424 stories),
+            # then every later pass bakes 0 (runs 36944987663, 36970677071, 37044735549: 1 of 10
+            # passes baked, 9 idle for 4 h while the next trigger waited in the queue). A NEW run
+            # is a new runner IP and bakes a full pass at once, so after IDLE_STOP failed passes in
+            # a row following a productive one, end green and hand the runner to the queued run.
+            if [ "${ok}" -gt 0 ] && [ "${idle}" -ge "${IDLE_STOP}" ]; then
+              echo "${idle} failed passes in a row after a productive one: ending early so the next run gets a fresh runner"
+              break
+            fi
             nap=$(( INTERVAL_MINUTES * 60 - elapsed ))
             [ "${nap}" -lt 60 ] && nap=60
             if [ $(( $(date +%s) + nap )) -ge "${deadline}" ]; then break; fi
