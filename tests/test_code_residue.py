@@ -137,6 +137,20 @@ def head_plan(full, head, lang="de"):
     return k, toks
 
 
+class TruncatedSignature(unittest.TestCase):
+    """r1007 NS3 (H-4): a summary cut inside a code signature ("window.LOAD_MODULE_LA" at the very end)
+    is a code run. Same vector as the apps' CodeResidueTruncatedTest. Positive control: before NS3 the
+    window./document. signature needed "(", "=", "[" or ".x" after the name, so the fragment was voiced."""
+    PROSE = "Toncoin price history explained for new investors in 2026 and beyond, with charts."
+
+    def test_a_summary_cut_inside_a_code_signature_drops_the_fragment(self):
+        self.assertEqual(self.PROSE, bake.strip_code_residue(self.PROSE + " window.LOAD_MODULE_LA"))
+
+    def test_prose_that_names_a_window_is_kept(self):
+        s = "She looked out of the window. The view was calm and the city was quiet tonight."
+        self.assertEqual(s, bake.strip_code_residue(s))
+
+
 class StripVectors(unittest.TestCase):
     def test_every_real_shape(self):
         for name, _lang, inp, exp in VECTORS:

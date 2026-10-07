@@ -762,7 +762,7 @@ _CR_START = re.compile(
     r"|" + _CR_B0 + r"new\s+" + _CR_ID + r"(?:\." + _CR_ID + r")*\s*\(\s*[{\[]"       # new A.B( {
     r"|" + _CR_B0 + _CR_ID + r"(?:\." + _CR_ID + r")+\s*\(\s*(?:[{\[]|function(?![A-Za-z0-9_$]))"  # a.b.c({
     r"|" + _CR_B0 + r"(?:document|window|localStorage|sessionStorage|navigator|console)\."
-    + _CR_ID + r"\s*(?:[(=\[]|\.[A-Za-z_$])"                                        # document.x(
+    + _CR_ID + r"\s*(?:[(=\[]|\.[A-Za-z_$]|$)"                                        # document.x(
     r"|" + _CR_B0 + r"(?:var|let|const)\s+" + _CR_ID + r"\s*=(?!=)"                  # const debug =
     r"|" + _CR_B0 + r"(?:dataLayer|googletag|gtag|fbq|_taboola|adsbygoogle|jQuery)\s*(?:[(=\[]|\.[A-Za-z_$])"
     r"|" + _CR_B0 + r"(?:if|for|while|switch|catch)\s*\([^{}]{0,200}\)\s*\{"         # if (x) {
@@ -950,14 +950,14 @@ def decode_entities(text: str) -> str:
 
 # -- BAKER-1: FeedQuality.stripPostedFirstFooter --
 _POSTED_FIRST_FOOTER = re.compile(
-    r"(?:\bThe post\b.{1,300}?\bappeared first on\b"
+    r"(?:\bThe post\b.{1,300}?\bappeared first(?: on\b|\s*$)"
     r"|\bLa entrada\b.{1,300}?\bse public[oó] primero en\b"
     r"|\bO post\b.{1,300}?\bapareceu primeiro em\b"
     r"|\bDer Beitrag\b.{1,300}?\berschien zuerst auf\b"
     r"|\bL['’]article\b.{1,300}?\best apparu en premier sur\b"
     r"|\bL['’]articolo\b.{1,300}?\b(?:sembra essere il primo su|proviene da)\b"
     r"|\bB[àa]i vi[ếe]t\b.{1,300}?\bxu[ấa]t hi[ệe]n [đd][ầa]u ti[êe]n t[ạa]i\b)"
-    r"[^.!?]{0,80}[.!?]?(?:\s*Visit [^.!?]{1,80}? to get more [^.!?]{0,80}[.!?]?)?",
+    r"(?:[^.!?]|\.(?=[A-Za-z])){0,80}[.!?]?(?:\s*Visit [^.!?]{1,80}? to get more [^.!?]{0,80}[.!?]?)?",
     re.IGNORECASE,
 )
 _FOOTER_CUES = ("appeared first", "primero en", "primeiro em", "zuerst auf", "en premier sur",

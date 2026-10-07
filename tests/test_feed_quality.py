@@ -90,6 +90,18 @@ class Footer(unittest.TestCase):
         self.assertEqual("Texto.", bake.strip_posted_first_footer("Texto. O post Novo single apareceu primeiro em Portal."))
         self.assertEqual("Nur Text.", bake.strip_posted_first_footer("Nur Text. Der Beitrag Neues Handy erschien zuerst auf Blog."))
 
+    def test_a_dotted_site_name_and_a_cut_footer_strip_cleanly(self):   # FeedQualityTest (r1007 NS3)
+        # Positive control: the old site tail stopped at the first "." ("Fintech news today.  com.") and the
+        # old English cue needed "appeared first on" (a summary cut at "appeared first" kept the footer).
+        self.assertEqual("Fintech news today.", bake.strip_posted_first_footer(
+            "Fintech news today. The post Payments Firm Raises New Funds appeared first on PYMNTS.com."))
+        self.assertEqual("Big week for chips.", bake.strip_posted_first_footer(
+            "Big week for chips. The post Nvidia Earnings Preview appeared first"))
+        self.assertEqual("Big week for chips.", bake.strip_posted_first_footer(
+            "Big week for chips. The post Nvidia Earnings Preview appeared first on"))
+        keep = "Samsung said the feature appeared first on its foldable phones."
+        self.assertEqual(keep, bake.strip_posted_first_footer(keep))
+
     def test_ordinary_text_is_untouched(self):   # FeedQualityTest.ordinary_text_is_untouched
         s = "The first time the post office appeared on screen, fans cheered."
         self.assertEqual(s, bake.strip_posted_first_footer(s))
