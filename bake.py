@@ -157,6 +157,13 @@ MAX_NEW_HINDI_BAKES = 80     # Hindi gets a higher cap: the Amar Ujala feed rota
 # deleted) — until they age out or the cap trims them.
 CARRY_MAX_AGE_MS = 72 * 3600 * 1000  # carried items older than 72h drop off
 MAX_MANIFEST_ITEMS = 80              # newest-first cap on the merged manifest
+# Oct 8 2026 (r1007 BK, BAKER-3): a feed-window item older than this is neither baked nor listed.
+# The carry-forward already stops at 72 h, but window items had no age limit, so a slow feed kept
+# months-old stories on the car: kpop_es reached back 5,037 h (HallyuReviews roundups from May),
+# kpop_pt 6,649 h (Metropoles, March). Two weeks keeps every manifest's real recent tail (on Oct 8
+# kpop_es keeps 40 of 52 items, kpop_pt 51 of 78; no other manifest held anything past 77 h).
+# Undated items (publishedAtMs 0) are left alone. Applies to every manifest; only es/pt hit it today.
+WINDOW_MAX_AGE_MS = 14 * 24 * 3600 * 1000
 
 # Jun 9 2026 — per-app pronunciation tables (copied from each app's
 # assets/phonetics_en.csv). gTTS ignores the in-app CSV, so apply the same
@@ -463,6 +470,24 @@ def retext_targeted() -> dict:
 RETEXT_PRIORITY_TAG = "r8-2026-09-26"
 RETEXT_PRIORITY_FILE = "retext/r8-2026-09-26.json"
 RETEXT_T1_MAX_PER_PASS = 10
+
+# Oct 8 2026 (r9, r1007 BK): a SELF-SELECTING re-voice for the r1007 text rules (r1007_text). A story
+# already in R2 keeps the audio it was baked with, while the manifest now stores its r1007 text, and
+# the appning app plans the headline cut on that stored text. So every listed story (feed window or
+# carry-forward) whose VOICED text differs between the pre-r1007 sanitize and sanitize_article is
+# re-voiced once after the r9 cutover, through the r6/r7 machinery (revoice(): after the manifests
+# are written, only in a pass without a gTTS 429, RETEXT_MAX_PER_PASS per manifest, a failure keeps
+# the old audio). Stories whose change lies past the voiced snippet (a footer after 350 chars) are
+# not selected. Oct 8 live manifests: 51 stories in 10 manifests. Ends on its own after RETEXT_TTL_MS.
+RETEXT_R1007_TAG = "r9-2026-10-08"
+
+def legacy_sanitize(article: dict) -> dict:
+    """sanitize_article before r1007 (surrogates, code residue), to tell which voices change."""
+    return without_code_residue({k: (fix_surrogates(v) if isinstance(v, str) else v) for k, v in article.items()})
+
+def r1007_voice_changed(raw: dict) -> bool:
+    """True when the r1007 text rules change what text_for voices for this (worker or stored) item."""
+    return text_for(sanitize_article(raw)) != text_for(legacy_sanitize(raw))
 _priority: list = []
 
 def retext_priority() -> dict:
@@ -833,9 +858,451 @@ def fix_surrogates(s: str) -> str:
         # errors="ignore" drops any half that has no partner.
         return s.encode("utf-16", "surrogatepass").decode("utf-16", "ignore")
 
+# ---------- r1007 feed-quality rules (Oct 8 2026, lane BK): the news apps' FeedQuality.kt ----------
+# The 8 news apps (r1007 NS lane, App Market Submission commits 860c1149 .. e5684dc0) clean text and
+# drop rows on the phone and on the appning manifest that this baker still voiced. The rules below
+# mirror the apps' code line for line (data/network/FeedQuality.kt, util/TextUtils.kt decodeEntities,
+# data/model/Article.kt stripPublisherSuffixOnce), pinned by the apps' own test vectors in
+# tests/test_feed_quality.py.
+# TEXT rules run at ingest (sanitize_article), so the manifest STORES what is voiced: the appning app
+# shows the stored title and summary and plans its headline cut on them (BakedHeadlineCut.planFor
+# reads the manifest's title and summary), so a rule applied to the voice only would move the cut.
+#   decode_entities           TextUtils.decodeEntities: "&amp;apos;" is one entity (BAKER-2)
+#   strip_posted_first_footer FeedQuality.stripPostedFirstFooter (BAKER-1)
+#   repair_cut_headline       FeedQuality.repairCutHeadline: a 105-char TOI title ends at a word (BAKER-6)
+#   strip_outlet_suffix       the exact-match passes of Article.stripPublisherSuffix (BAKER-6)
+# ROW rules (BAKER-4) run in plan_manifest: a row the device drops is never baked or listed.
+#   is_low_value_story, is_profane_title: dropped from the window and the carry-forward;
+#   dedupe_near_duplicates: a story's second copy is not baked (see plan_manifest).
+# Token scans instead of regex where the apps scan; "letter or digit" is the JVM's Character
+# definition (letters and decimal digits), lower-casing is per character, as in Kotlin.
+_FQ_LD = frozenset(("Lu", "Ll", "Lt", "Lm", "Lo", "Nd"))
+
+def _fq_ld(c: str) -> bool:
+    return unicodedata.category(c) in _FQ_LD
+
+def _fq_low(c: str) -> str:
+    lc = c.lower()
+    return lc if len(lc) == 1 else lc[0]
+
+def _fq_digits(w: str) -> bool:
+    return bool(w) and all(unicodedata.category(c) == "Nd" for c in w)
+
+def fq_tokens(s: str) -> list:
+    """FeedQuality.tokensOf: lower-case letter/digit runs."""
+    out, cur = [], []
+    for c in s:
+        if _fq_ld(c):
+            cur.append(_fq_low(c))
+        elif cur:
+            out.append("".join(cur))
+            cur = []
+    if cur:
+        out.append("".join(cur))
+    return out
+
+# -- BAKER-2: TextUtils.decodeEntities (the apps' one entity decoder) --
+_DE_DOUBLE = re.compile(r"&amp;(#x?[0-9a-fA-F]+|[a-zA-Z]+);")
+_DE_NUMERIC = re.compile(r"&#(x?[0-9a-fA-F]+);")
+_DE_NAMED = re.compile(r"&([a-zA-Z]+);")
+_DE_INVISIBLES = re.compile("[​-‍  ﻿]")
+_DE_LATIN1 = {
+    "aacute": "á", "agrave": "à", "acirc": "â", "atilde": "ã", "auml": "ä", "aring": "å",
+    "aelig": "æ", "ccedil": "ç", "eacute": "é", "egrave": "è", "ecirc": "ê", "euml": "ë",
+    "iacute": "í", "igrave": "ì", "icirc": "î", "iuml": "ï", "ntilde": "ñ", "oacute": "ó",
+    "ograve": "ò", "ocirc": "ô", "otilde": "õ", "ouml": "ö", "oslash": "ø", "uacute": "ú",
+    "ugrave": "ù", "ucirc": "û", "uuml": "ü", "yacute": "ý", "yuml": "ÿ", "szlig": "ß",
+    "Aacute": "Á", "Agrave": "À", "Acirc": "Â", "Atilde": "Ã", "Auml": "Ä", "Aring": "Å",
+    "AElig": "Æ", "Ccedil": "Ç", "Eacute": "É", "Egrave": "È", "Ecirc": "Ê", "Euml": "Ë",
+    "Iacute": "Í", "Igrave": "Ì", "Icirc": "Î", "Iuml": "Ï", "Ntilde": "Ñ", "Oacute": "Ó",
+    "Ograve": "Ò", "Ocirc": "Ô", "Otilde": "Õ", "Ouml": "Ö", "Oslash": "Ø", "Uacute": "Ú",
+    "Ugrave": "Ù", "Ucirc": "Û", "Uuml": "Ü", "Yacute": "Ý", "laquo": "«", "raquo": "»",
+}
+_DE_BASIC = {"amp": "&", "lt": "<", "gt": ">", "quot": '"', "apos": "'", "nbsp": " ", "hellip": "...",
+             "mdash": ", ", "ndash": ", ", "lsquo": "'", "rsquo": "'", "ldquo": '"', "rdquo": '"'}
+
+def _de_numeric(m: re.Match) -> str:
+    raw = m.group(1)
+    try:
+        code = int(raw[1:], 16) if raw[:1] in ("x", "X") else int(raw)
+    except ValueError:
+        return ""
+    # A surrogate code point alone is not text (Kotlin would make a lone UTF-16 half).
+    if not 1 <= code <= 0x10FFFF or 0xD800 <= code <= 0xDFFF:
+        return ""
+    return chr(code)
+
+def _de_named(m: re.Match) -> str:
+    name = m.group(1)
+    return _DE_LATIN1.get(name) or _DE_BASIC.get(name.lower(), m.group(0))
+
+def decode_entities(text: str) -> str:
+    """TextUtils.decodeEntities: a double-encoded entity ("&amp;apos;", VietnamNet titles) is one
+    entity; numeric and named entities decode; an unknown name stays as written; invisibles go."""
+    if not text:
+        return text
+    out = text
+    if "&amp;" in out:
+        out = _DE_DOUBLE.sub(r"&\1;", out)
+    out = _DE_NUMERIC.sub(_de_numeric, out)
+    out = _DE_NAMED.sub(_de_named, out)
+    return _DE_INVISIBLES.sub("", out)
+
+# -- BAKER-1: FeedQuality.stripPostedFirstFooter --
+_POSTED_FIRST_FOOTER = re.compile(
+    r"(?:\bThe post\b.{1,300}?\bappeared first on\b"
+    r"|\bLa entrada\b.{1,300}?\bse public[oó] primero en\b"
+    r"|\bO post\b.{1,300}?\bapareceu primeiro em\b"
+    r"|\bDer Beitrag\b.{1,300}?\berschien zuerst auf\b"
+    r"|\bL['’]article\b.{1,300}?\best apparu en premier sur\b"
+    r"|\bL['’]articolo\b.{1,300}?\b(?:sembra essere il primo su|proviene da)\b"
+    r"|\bB[àa]i vi[ếe]t\b.{1,300}?\bxu[ấa]t hi[ệe]n [đd][ầa]u ti[êe]n t[ạa]i\b)"
+    r"[^.!?]{0,80}[.!?]?(?:\s*Visit [^.!?]{1,80}? to get more [^.!?]{0,80}[.!?]?)?",
+    re.IGNORECASE,
+)
+_FOOTER_CUES = ("appeared first", "primero en", "primeiro em", "zuerst auf", "en premier sur",
+                "il primo su", "proviene da", "u tiên t")
+
+def strip_posted_first_footer(text: str) -> str:
+    """WordPress "The post ... appeared first on <site>." footers (en/es/pt/de/fr/it/vi) and Benzinga's
+    "Visit <site> to get more ..." line: syndication boilerplate, never article text."""
+    if not text:
+        return text
+    low = text.lower()
+    if not any(c in low for c in _FOOTER_CUES):
+        return text
+    return _POSTED_FIRST_FOOTER.sub(" ", text).strip()
+
+# -- BAKER-6: FeedQuality.repairCutHeadline (Times of India titles cut at 105 chars mid-word) --
+TOI_TITLE_CUT = 105
+
+def _utf16_len(s: str) -> int:
+    return len(s.encode("utf-16-le")) // 2
+
+def repair_cut_headline(title: str, publisher: str | None) -> str:
+    """A TOI headline the site cut at 105 characters mid-word ends at its last whole word with "...";
+    every other title comes back unchanged. Lengths are the app's (UTF-16 units)."""
+    pub = (publisher or "").strip()
+    if "timesofindia" not in "".join(c for c in pub.lower() if _fq_ld(c)):
+        return title
+    suffix = " - " + pub if title.endswith(" - " + pub) else ""
+    head = title[:len(title) - len(suffix)] if suffix else title
+    if _utf16_len(head) != TOI_TITLE_CUT or not _fq_ld(head[-1]):
+        return title
+    cut = head.rfind(" ")
+    if cut < 0 or _utf16_len(head[:cut]) < 60:
+        return title
+    return head[:cut].rstrip(",;:- ") + "..." + suffix
+
+# -- BAKER-6: the exact-match passes of Article.stripPublisherSuffix (chained outlet suffix) --
+_SUFFIX_SEPS = (" - ", " — ", " – ", " | ", " · ", " :: ")
+_SQUISH = re.compile(r"[\s\-_.]+")
+
+def _strip_suffix_once(raw_title: str, source: str, allow_short_tail: bool) -> str:
+    """Article.stripPublisherSuffixOnce."""
+    title = raw_title.strip()
+    if not title:
+        return title
+    pub = source.strip().lower()
+    pub_sq = _SQUISH.sub("", pub)
+    for sep in _SUFFIX_SEPS:
+        idx = title.rfind(sep)
+        if idx <= 8:
+            continue
+        tail = title[idx + len(sep):].strip()
+        tl = tail.lower()
+        tsq = _SQUISH.sub("", tl)
+        if pub and (tl == pub or pub in tl or tl in pub or tsq == pub_sq
+                    or (len(pub_sq) >= 4 and pub_sq in tsq) or (len(tsq) >= 4 and tsq in pub_sq)):
+            return title[:idx].strip()
+        if (allow_short_tail and 2 <= len(tail) <= 40
+                and not any(ch in tail for ch in ".!?,;:")):
+            return title[:idx].strip()
+    return title
+
+def _display_source(source: str) -> str:
+    """Article.displaySource for a manifest item (no realPublisher)."""
+    return source.replace(" (English)", "").replace(" (Spanish)", "").replace(" (Portuguese)", "")
+
+def device_clean_title(title: str, source: str) -> str:
+    """Article.cleanTitle as the appning app computes it for a manifest item (the shown title): one
+    pass that may cut a short tail, then up to 2 exact passes. The apps also try the folded roster
+    credit, which the baker does not hold; on a worker source name it is the same name."""
+    src = _display_source(source)
+    t = _strip_suffix_once(title, src, True)
+    for _ in range(2):
+        n = _strip_suffix_once(t, src, False)
+        if n == t:
+            break
+        t = n
+    return t
+
+def strip_outlet_suffix(title: str, source: str) -> str:
+    """r1007 NS-19 on the voiced title: " | Outlet - Outlet" and every other trailing suffix that
+    names the item's own outlet are cut (exact passes only, up to 3), so the car does not read the
+    outlet two or three times. Kept unchanged when the cut would change the title the app SHOWS for
+    this row (its short-tail pass would then eat a real headline segment) or leave too little."""
+    src = _display_source(source)
+    names = [n for n in dict.fromkeys((src, spoken_source(src))) if n.strip()]
+    t = title
+    for _ in range(3):
+        n = t
+        for name in names:
+            n = _strip_suffix_once(n, name, False)
+        if n == t:
+            break
+        t = n
+    if t == title or len(t) < 12 or device_clean_title(t, source) != device_clean_title(title, source):
+        return title
+    return t
+
+# -- BAKER-4: FeedQuality.isLowValueStory / isProfaneTitle --
+_COMMERCE_CORE = (
+    "prime day", "prime deal day", "prime big deal days", "black friday deal", "cyber monday deal",
+    "fiesta de ofertas prime", "festa delle offerte prime", "offerte prime", "mega oferta prime",
+    "jours flash prime", "promo code", "coupon code", "codice sconto", "código de descuento",
+    "cupom de desconto", "deal alert",
+)
+_COMMERCE_SHOP = (
+    "% off", "% de descuento", "% de desconto", "% di sconto", "% rabatt", "prozent rabatt",
+    "best deals", "tech deals", "deals on", "price drop", "lowest price", "all-time low",
+    "bargain", "bargains", "chollo", "chollos", "en oferta", "em oferta", "in offerta",
+    "im angebot", "migliori offerte", "meilleures offres", "bons plans", "bon plan",
+    "tiefstpreis", "bestpreis", "mínimo histórico", "precio mínimo", "prezzo minimo",
+    "com cupom", "-angebote", "sconto del ", "minimo storico", "in promo ", "festa prime",
+)
+_COMMERCE_PREFIXES = ("anzeige:", "deal:", "deals:", "baixou:", "heise-angebot:")
+_TARGET_VERBS = (" reiterates ", " maintains ", " raises ", " cuts ", " lowers ", " boosts ", " trims ", " lifts ")
+# Apps whose manifest rule passes shopMarkers = false (a finance app reads "% off a peak" and
+# "coupon" as market vocabulary). Every other app passes true. Pinned by tests/test_feed_quality.py.
+SHOP_MARKERS_OFF_APPS = frozenset({"tickerly"})
+
+def _has_year(t: str) -> bool:
+    i = t.find("20")
+    while i >= 0:
+        end = i + 4
+        if (end <= len(t) and _fq_digits(t[i:end]) and (i == 0 or not _fq_digits(t[i - 1]))
+                and (end == len(t) or not _fq_digits(t[end]))):
+            return True
+        i = t.find("20", i + 1)
+    return False
+
+def _is_template_title(t: str) -> bool:
+    if " stock rating" in t:
+        return True
+    if " price target " in t and any(v in t for v in _TARGET_VERBS):
+        return True
+    if " declares " in t and " dividend" in t:
+        return True
+    if "sinopsis sinetron" in t:
+        return True
+    if "sinopsis " in t and (" episode " in t or " eps " in t or "bioskop trans tv" in t):
+        return True
+    if " jadwal " in t and ("bioskop trans tv" in t or "acara tv" in t):
+        return True
+    return False
+
+def _after(s: str, delim: str) -> str:
+    """Kotlin substringAfter: the whole string when the delimiter is missing."""
+    i = s.find(delim)
+    return s if i < 0 else s[i + len(delim):]
+
+def _before(s: str, delim: str) -> str:
+    i = s.find(delim)
+    return s if i < 0 else s[:i]
+
+def is_low_value_story(title: str, article_url: str, shop_markers: bool = True) -> bool:
+    """A deals post, an evergreen price-prediction page, a Benzinga /money/ guide, a dubbed
+    back-catalog episode drop, or a wire template (broker note, dividend declaration, TV listing)."""
+    t = " " + (title or "").lower().strip() + " "
+    head = t.strip()
+    if any(head.startswith(p) for p in _COMMERCE_PREFIXES):
+        return True
+    if any(m in t for m in _COMMERCE_CORE):
+        return True
+    if shop_markers and any(m in t for m in _COMMERCE_SHOP):
+        return True
+    if "price prediction" in t and _has_year(t):
+        return True
+    if "dub) - episode " in t or "dub) – episode " in t:
+        return True
+    if _is_template_title(t):
+        return True
+    u = (article_url or "").lower()
+    rest = _after(u, "://")
+    host = _before(rest, "/")
+    host = host[4:] if host.startswith("www.") else host
+    return host == "benzinga.com" and _after(rest, "/").startswith("money/")
+
+_PROFANE_WORDS = frozenset((
+    "fuck", "fucks", "fucking", "fucked", "motherfucker", "shit", "shits", "bullshit",
+    "bitch", "bitches", "asshole", "assholes", "cunt", "slut", "whore",
+    "mierda", "joder", "puta", "caralho", "porra", "merda",
+    "bangsat", "kontol", "memek",
+))
+
+def _has_censored_word(s: str) -> bool:
+    i = s.find("*")
+    while i > 0:
+        j = i
+        while j < len(s) and s[j] == "*":
+            j += 1
+        if s[i - 1].isalpha() and j < len(s) and s[j].isalpha():
+            return True
+        i = s.find("*", j)
+    return False
+
+def is_profane_title(title: str) -> bool:
+    """A headline with a censored word ("D*ck!") or a short profanity list, token-matched."""
+    t = title or ""
+    return _has_censored_word(t) or any(w in _PROFANE_WORDS for w in fq_tokens(t))
+
+def shop_markers_for(manifest: str) -> bool:
+    return manifest.split("_")[0] not in SHOP_MARKERS_OFF_APPS
+
+def drops_row(article: dict, manifest: str) -> bool:
+    """True for a row the appning app drops from this manifest by a stateless rule (BAKER-4)."""
+    title, url = article.get("title") or "", article.get("articleUrl") or ""
+    return is_low_value_story(title, url, shop_markers_for(manifest)) or is_profane_title(title)
+
+# -- BAKER-4: FeedQuality.dedupeNearDuplicates (one story from several outlets, a re-titled copy) --
+_NEAR_DUP_STOP = frozenset((
+    "the", "and", "for", "with", "this", "that", "from", "his", "her", "its", "after", "has",
+    "have", "who", "how", "why", "what", "will", "new", "says", "say", "are", "was", "were",
+    "into", "about", "over", "than", "their", "they", "you", "your", "our", "not", "but", "all", "can",
+    "los", "las", "una", "del", "por", "para", "con", "que", "sus", "como", "sobre", "dos",
+    "nao", "mais", "seu", "sua", "yang", "dan", "ini", "itu", "untuk", "dari", "dengan", "pada",
+))
+NEAR_DUP_WINDOW_MS = 36 * 3600 * 1000
+
+def _headline_only(title: str) -> str:
+    t = title.strip()
+    i = t.rfind(" - ")
+    return t[:i] if i > 0 else t
+
+def near_dup_tokens(title: str) -> frozenset:
+    return frozenset(w for w in fq_tokens(_headline_only(title or ""))
+                     if (_fq_digits(w) or len(w) >= 3) and w not in _NEAR_DUP_STOP)
+
+def is_near_duplicate_title(a: frozenset, b: frozenset) -> bool:
+    if not a or not b:
+        return False
+    na = {w for w in a if _fq_digits(w)}
+    nb = {w for w in b if _fq_digits(w)}
+    if na and nb and na != nb:
+        return False
+    shared = len(a & b)
+    small = min(len(a), len(b))
+    if a == b:
+        return small >= 4
+    if small >= 4 and shared == small:
+        return True
+    if small >= 5 and shared * 5 >= small * 4:
+        return True
+    union = len(a) + len(b) - shared
+    return shared >= 4 and shared * 5 >= union * 3
+
+_AGGREGATOR_FEED_HOSTS = frozenset({"news.google.com"})
+
+def _url_host(url: str | None) -> str | None:
+    """OutletName.urlHostOf."""
+    if not url or not url.strip():
+        return None
+    s = url.strip()
+    k = s.find("://")
+    if k >= 0:
+        s = s[k + 3:]
+    ends = [i for i in (s.find("/"), s.find("?"), s.find("#")) if i >= 0]
+    if ends:
+        s = s[:min(ends)]
+    s = _before(s.rsplit("@", 1)[-1], ":").lower()
+    s = s[4:] if s.startswith("www.") else s
+    return s if "." in s and " " not in s else None
+
+def _is_date_run(run: str) -> bool:
+    if len(run) not in (6, 8):
+        return False
+    y, m = int(run[:4]), int(run[4:6])
+    if not 1990 <= y <= 2099 or not 1 <= m <= 12:
+        return False
+    return len(run) == 6 or 1 <= int(run[6:8]) <= 31
+
+def article_number_key(url: str) -> str | None:
+    """The site plus the 6+ digit runs of a link's path (never a date, never an aggregator link)."""
+    host = _url_host(url)
+    if host is None:
+        return None
+    host = host[2:] if host.startswith("m.") else host
+    if host in _AGGREGATOR_FEED_HOSTS:
+        return None
+    after = _after(url, "://")
+    slash = after.find("/")
+    if slash < 0:
+        return None
+    path = _before(_before(after[slash:], "?"), "#")
+    runs = [r for r in re.findall(r"[0-9]+", path) if len(r) >= 6 and not _is_date_run(r)]
+    return host + "|" + "|".join(runs) if runs else None
+
+def is_retitled_copy(key_a: str | None, key_b: str | None, a: frozenset, b: frozenset) -> bool:
+    return key_a is not None and key_a == key_b and len(a & b) >= 3
+
+def _is_aggregator_copy(a: dict) -> bool:
+    """MergedTitleDedup.isAggregatorCopy (Kotlin substringAfter("://", "") is "" without a scheme)."""
+    u = a.get("articleUrl") or ""
+    rest = u[u.find("://") + 3:] if "://" in u else ""
+    host = _before(_before(rest, "/"), "?").lower()
+    return host == "news.google.com" or host.endswith(".news.google.com") or a.get("realPublisher") is not None
+
+def dedupe_near_duplicates(items: list, prefer=None) -> list:
+    """FeedQuality.dedupeNearDuplicates: the later copies of one story (same meaningful headline
+    words, or one article number re-titled) published within 36 h go; the copy kept is an outlet's
+    own before an aggregator copy, then one with a picture, then list order. [prefer] (baker only)
+    ranks its items first: plan_manifest passes "MP3 already in R2", so a listed story never gives
+    way to an unbaked copy. With prefer=None this is the apps' function."""
+    if len(items) < 2:
+        return items
+    toks = [near_dup_tokens(a.get("title") or "") for a in items]
+    nums = [article_number_key(a.get("articleUrl") or "") for a in items]
+    pub = [_pub_ms(a) for a in items]
+
+    def rank(i: int) -> tuple:
+        a = items[i]
+        r = (2 if _is_aggregator_copy(a) else 0) + (0 if (a.get("imageUrl") or "").strip() else 1)
+        return ((0 if prefer is None or prefer(a) else 1), r)
+
+    keep = [False] * len(items)
+    kept: list = []
+    for i in sorted(range(len(items)), key=lambda i: (rank(i), i)):
+        if not any(abs(pub[k] - pub[i]) <= NEAR_DUP_WINDOW_MS
+                   and (is_near_duplicate_title(toks[i], toks[k]) or is_retitled_copy(nums[i], nums[k], toks[i], toks[k]))
+                   for k in kept):
+            keep[i] = True
+            kept.append(i)
+    return [a for i, a in enumerate(items) if keep[i]]
+
+def r1007_text(article: dict) -> dict:
+    """The r1007 text rules on one article, in the apps' RssParser order: entities decoded; the
+    summary's code run (strip_code_residue) and syndication footer removed; a cut TOI title repaired
+    and the item's own outlet suffix cut from the title. The same dict when nothing changes."""
+    title, summary, src = article.get("title"), article.get("summary"), article.get("source") or ""
+    nt, ns = title, summary
+    if isinstance(title, str) and title:
+        nt = decode_entities(title)
+        rep = repair_cut_headline(nt.strip(), decode_entities(src).strip())
+        if rep != nt.strip():
+            nt = rep
+        nt = strip_outlet_suffix(nt, src)
+    if isinstance(summary, str) and summary:
+        ns = strip_posted_first_footer(strip_code_residue(decode_entities(summary)))
+    if nt == title and ns == summary:
+        return article
+    return {**article, "title": nt, "summary": ns}
+
 def sanitize_article(article: dict) -> dict:
     # Sep 26 2026 (JS): the summary is stored and voiced without a code run (see strip_code_residue).
-    return without_code_residue({k: (fix_surrogates(v) if isinstance(v, str) else v) for k, v in article.items()})
+    # Oct 8 2026 (r1007 BK): and with the r1007 text rules (r1007_text), stored as voiced.
+    return without_code_residue(r1007_text({k: (fix_surrogates(v) if isinstance(v, str) else v)
+                                            for k, v in article.items()}))
 
 # Sep 24 2026 (r6): a roster edition tag ("KoreanIndo (ID)", "Kenh14 Star (VN)",
 # "Investing.com France (FR)") must not be READ ALOUD. Spoken text only: the manifest
@@ -1112,16 +1579,37 @@ def plan_manifest(m: dict[str, Any]) -> dict | None:
     try:
         r = requests.get(m["feed_url"], timeout=FEED_TIMEOUT_S)
         r.raise_for_status()
-        items = [sanitize_article(a) for a in r.json().get("items", []) if isinstance(a, dict)]
+        raw_items = [a for a in r.json().get("items", []) if isinstance(a, dict)]
+        items = [sanitize_article(a) for a in raw_items]
     except Exception as e:
         # Do NOT rewrite the manifest on a fetch failure — leave the last good one.
         print(f"[{name}] feed fetch failed: {e}; manifest left unchanged")
         return None
     print(f"[{name}] feed has {len(items)} items (force={force})")
+    raw_by_id = {a.get("id"): a for a in raw_items if a.get("id")}
+    # r1007 (BK): the rows the appning app drops (BAKER-4: low-value and template rows, profane
+    # headlines) and window items older than WINDOW_MAX_AGE_MS (BAKER-3) are never baked or listed.
+    now_ms = int(time.time() * 1000)
+    n_drop = n_old = 0
+    kept_items = []
+    for a in items:
+        if drops_row(a, name):
+            n_drop += 1
+        elif 0 < _pub_ms(a) < now_ms - WINDOW_MAX_AGE_MS:
+            n_old += 1
+        else:
+            kept_items.append(a)
+    if n_drop or n_old:
+        print(f"[{name}] r1007: {n_drop} rows the app drops (low-value or profane) and {n_old} older than "
+              f"{WINDOW_MAX_AGE_MS // 86400000} days: not baked, not listed")
+    items = kept_items
     # Re-voice modes for this manifest: (cutover_ms, listed ids or None = every window item,
     # baked-after ms or None). An item is redone when its MP3 predates a mode's cutover and
     # the mode selects it.
     retext_modes: list[tuple[int, set | None, int | None]] = []
+    # r9 (r1007 text rules): the ids whose voiced text changes; filled below, window and carry-forward.
+    r9_cut = None if force else retext_cutover_ms(RETEXT_R1007_TAG)
+    r9_ids: set[str] = set()
     if name.split("_")[0] in RETEXT_APPS:
         c = retext_cutover_ms()
         if c is not None:
@@ -1160,7 +1648,9 @@ def plan_manifest(m: dict[str, Any]) -> dict | None:
             continue
         window.append(article)
         if exists and not force:
-            if retext_modes:
+            if r9_cut is not None and r1007_voice_changed(raw_by_id.get(aid, article)):
+                r9_ids.add(aid)
+            if retext_modes or aid in r9_ids:
                 retext_candidates.append((aid, key, article))
             if aid in prio_map:
                 t, i, after = prio_map[aid]
@@ -1176,7 +1666,6 @@ def plan_manifest(m: dict[str, Any]) -> dict | None:
                 print(f"[{name}] skip {aid[:30]}: text too short ({len(text)})")
             continue
         pending.append((article, key, text, exists))
-    pending.sort(key=lambda j: _pub_ms(j[0]), reverse=True)   # newest first
     prev_items: list = []
     if not force:
         try:
@@ -1184,12 +1673,47 @@ def plan_manifest(m: dict[str, Any]) -> dict | None:
             prev_items = json.loads(prev["Body"].read().decode("utf-8")).get("items", [])
         except Exception:
             prev_items = []
+    # r1007 (BK, BAKER-4): one story from several outlets, or one article re-titled, is one row on
+    # the car (FeedQuality.dedupeNearDuplicates on the device). An unbaked copy of a story the
+    # manifest already lists (window or carry-forward), or the second of two unbaked copies, is not
+    # baked: a story with an MP3 always wins over an unbaked copy, so no listed story ever gives way
+    # to one that may fail to bake. Listed stories are left to the device's own pass (it already
+    # hides their copies).
+    if pending:
+        pend_ids = {j[0]["id"] for j in pending}
+        listed = set(confirmed)
+        pool = [a for a in window if a["id"] in confirmed or a["id"] in pend_ids]
+        for a in prev_items:
+            if (isinstance(a, dict) and a.get("id") and a["id"] not in seen
+                    and 0 <= now_ms - _pub_ms(a) <= CARRY_MAX_AGE_MS):
+                s = sanitize_article(a)
+                if not drops_row(s, name):   # finalize_manifest carries exactly these
+                    listed.add(s["id"])
+                    pool.append(s)
+        keep = {a["id"] for a in dedupe_near_duplicates(pool, prefer=lambda a: a["id"] in listed)}
+        dup = {j[0]["id"] for j in pending if not j[3] and j[0]["id"] not in keep}
+        if dup:
+            pending = [j for j in pending if j[0]["id"] not in dup]
+            window = [a for a in window if a["id"] not in dup]
+            print(f"[{name}] r1007: {len(dup)} unbaked copies of a story already listed or queued: not baked")
+    pending.sort(key=lambda j: _pub_ms(j[0]), reverse=True)   # newest first
+    # r9: carried stories (out of the window, still listed, <= CARRY_MAX_AGE_MS old) whose voice changes.
+    if r9_cut is not None:
+        for a in prev_items:
+            if (isinstance(a, dict) and a.get("id") and a["id"] not in seen
+                    and 0 <= now_ms - _pub_ms(a) <= CARRY_MAX_AGE_MS):
+                s = sanitize_article(a)
+                if not drops_row(s, name) and r1007_voice_changed(a):
+                    r9_ids.add(a["id"])
+                    retext_candidates.append((a["id"], article_key(a["id"]), s))
+    if r9_ids:
+        retext_modes.append((r9_cut, r9_ids, None))
+        print(f"[{name}] r9: {len(r9_ids)} listed stories voice differently under the r1007 text rules")
     # r8 entries the car still plays from the carry-forward (out of the feed window, still in the
     # live manifest, <= CARRY_MAX_AGE_MS old; finalize_manifest keeps exactly these). Sep 26: 4 of
     # the 5 owner-flagged stories had already left the feed window, so a window-only rule would
     # never have re-voiced them. Their MP3 is in R2 by construction.
     if prio_map:
-        now_ms = int(time.time() * 1000)
         for a in prev_items:
             if (isinstance(a, dict) and a.get("id") in prio_map and a["id"] not in seen
                     and 0 <= now_ms - _pub_ms(a) <= CARRY_MAX_AGE_MS):
@@ -1266,10 +1790,16 @@ def finalize_manifest(p: dict) -> None:
     # out (<=72h) — acceptable. Window items always win on id collision via `seen`.
     if not p["force"]:
         now_ms = int(time.time() * 1000)
+        # r1007 (BK): a carried story is stored with the r1007 text (as its r9 re-voice reads it), and a
+        # row the app drops (BAKER-4) is not carried. A row dropped from the window this pass is not in
+        # "seen", so without the drops_row check it would come back through the carry-forward.
         carried = [
-            a for a in p["prev_items"]
-            if isinstance(a, dict) and a.get("id") and a["id"] not in p["seen"]
-            and 0 <= now_ms - int(a.get("publishedAtMs") or 0) <= CARRY_MAX_AGE_MS
+            c for c in (
+                sanitize_article(a) for a in p["prev_items"]
+                if isinstance(a, dict) and a.get("id") and a["id"] not in p["seen"]
+                and 0 <= now_ms - int(a.get("publishedAtMs") or 0) <= CARRY_MAX_AGE_MS
+            )
+            if not drops_row(c, name)
         ]
         if carried:
             items.extend(carried)

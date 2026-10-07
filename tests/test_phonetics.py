@@ -8,6 +8,7 @@ import csv
 import importlib.util
 import os
 import tempfile
+import time
 import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -282,8 +283,10 @@ class TargetedRevoice(unittest.TestCase):
 
     def run_pass(self, listed, mods, r6_apps):
         from unittest import mock
+        # Oct 8 2026 (r1007 BK): dated an hour ago (a 1970 date is past the 14-day window cap).
+        now = int(time.time() * 1000) - 3600 * 1000
         items = [{"id": i, "title": f"Title {i} with enough words to pass the minimum length check",
-                  "summary": "Summary text long enough.", "source": "Soompi", "publishedAtMs": 1} for i in mods]
+                  "summary": "Summary text long enough.", "source": "Soompi", "publishedAtMs": now} for i in mods]
         resp = mock.Mock(); resp.json.return_value = {"items": items}; resp.raise_for_status.return_value = None
         voiced = []
         tgt = {"generated_ms": 500, "manifests": {"kpop_en": listed}}
@@ -300,8 +303,11 @@ class TargetedRevoice(unittest.TestCase):
 
     def test_a_manifest_whose_fresh_stories_all_fail_is_reported_starved(self):
         from unittest import mock
-        items = [{"id": f"n{k}", "title": "A fresh story title with enough words for the length check",
-                  "summary": "Summary.", "source": "Soompi", "publishedAtMs": 1} for k in range(6)]
+        # Oct 8 2026 (r1007 BK): 6 different recent stories (one headline 6 times is one story under the
+        # near-duplicate rule, and a 1970 date is past the 14-day window cap).
+        now = int(time.time() * 1000) - 3600 * 1000
+        items = [{"id": f"n{k}", "title": f"A fresh story title with enough words for the length check, part {k}",
+                  "summary": "Summary.", "source": "Soompi", "publishedAtMs": now} for k in range(6)]
         resp = mock.Mock(); resp.json.return_value = {"items": items}; resp.raise_for_status.return_value = None
         bake._STARVED.clear()
         with mock.patch.object(bake.requests, "get", return_value=resp),              mock.patch.object(bake, "r2_exists", return_value=False),              mock.patch.object(bake, "synth_to_mp3", side_effect=Exception("429 Too Many Requests")),              mock.patch.object(bake, "write_manifest"),              mock.patch.object(bake.s3, "get_object", side_effect=Exception("no prev")),              mock.patch.object(bake, "retext_targeted", return_value={}),              mock.patch.object(bake, "RETEXT_APPS", set()):

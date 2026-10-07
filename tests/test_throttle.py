@@ -14,6 +14,7 @@ import os
 import re
 import time
 import unittest
+import zlib
 from unittest import mock
 
 from botocore.exceptions import ClientError
@@ -91,7 +92,10 @@ class FakeTTS:
 
 
 def story(sid, age_min):
-    return {"id": sid, "title": f"Story {sid} has a headline long enough to be voiced",
+    # Oct 8 2026 (r1007 BK): each fixture story has its own headline (a number derived from the id).
+    # Headlines that differed only in a short id were near-duplicates of one another, so the r1007
+    # near-duplicate rule (bake.dedupe_near_duplicates) baked only the first; real stories differ.
+    return {"id": sid, "title": f"Story {sid} has a headline long enough to be voiced, take {zlib.crc32(sid.encode())}",
             "summary": "A summary line.", "source": "Wire",
             "publishedAtMs": int(time.time() * 1000) - age_min * 60 * 1000}
 
