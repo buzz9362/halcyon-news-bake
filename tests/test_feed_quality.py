@@ -303,6 +303,31 @@ class Titles(unittest.TestCase):
         # A worker edition tag on the source is not part of the name in the title.
         self.assertEqual("BTS tẩy chay Grammy", bake.strip_outlet_suffix("BTS tẩy chay Grammy - Kenh14 Musik", "Kenh14 Musik (VN)"))
 
+    def test_a_section_label_left_after_the_outlet_suffix_is_cut(self):   # CreditAndTitleTest (r1007 NS6)
+        disha = "Disha Patani on 10 years in Bollywood: 'I don't want to be defined by one role or image'"
+        raw = disha + " | Bollywood - Hindustan Times"
+        self.assertEqual(disha, bake.strip_outlet_suffix(raw, "Hindustan Times"))
+        self.assertEqual(disha, bake.device_clean_title(raw, "Hindustan Times"))
+        self.assertEqual("Koffee With Karan 9 promo: KJo reveals the guest list",
+                         bake.strip_outlet_suffix("Koffee With Karan 9 promo: KJo reveals the guest list | Watch - WION", "WION"))
+        # A pipe that says something stays; so does a short head.
+        v = "Bật tình yêu lên - Hòa Minzy | V Concert"
+        self.assertEqual(v, bake.device_clean_title(v + " - VTVgo", "VTVgo"))
+        self.assertEqual("BTS | K-pop", bake.strip_section_tail("BTS | K-pop"))
+        self.assertTrue(bake.is_section_label("Entertainment News"))
+        self.assertTrue(bake.is_section_label("Giải trí"))
+        self.assertFalse(bake.is_section_label("Hindustan Times"))
+
+    def test_section_labels_match_the_apps(self):   # parity with MergedTitleDedup.kt SECTION_TAIL_LABELS
+        import pathlib, re as _r
+        kt = pathlib.Path(__file__).resolve().parents[2] / "App Market Submission" / "bollywood-today-app" / "app" / "src" / "main" / "java" / "com" / "bollywoodtoday" / "news" / "data" / "network" / "MergedTitleDedup.kt"
+        if not kt.exists():
+            self.skipTest("app tree not beside the baker")
+        src = kt.read_text(encoding="utf-8")
+        block = src[src.index("SECTION_TAIL_LABELS: Set<String> = setOf("):]
+        block = block[:block.index(chr(10) + ")" + chr(10))]
+        self.assertEqual(set(_r.findall(r'"([^"]+)"', block)), set(bake._SECTION_LABELS))
+
     def test_a_suffix_cut_never_changes_the_title_the_app_shows(self):
         # The app's display pass also cuts any short last segment. Cutting the outlet first would let it
         # eat "Remix" from the headline, so the title stays as it was.

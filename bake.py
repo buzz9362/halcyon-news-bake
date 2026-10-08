@@ -1020,6 +1020,46 @@ def _strip_suffix_once(raw_title: str, source: str, allow_short_tail: bool) -> s
             return title[:idx].strip()
     return title
 
+# r1007 NS6 (car, Bollywood Today Latest): "<headline> | Bollywood - Hindustan Times" kept its
+# " | Bollywood" desk label after the outlet suffix was cut, so it was shown and voiced, and the copy
+# did not fold onto the direct feed's bare headline. The apps' MergedTitleDedup.kt
+# SECTION_TAIL_LABELS / isSectionLabel / stripSectionTail, same words (parity, pinned by a test).
+_SECTION_LABELS = frozenset((
+    "bollywood", "hollywood", "tollywood", "kollywood", "mollywood", "sandalwood", "entertainment",
+    "music", "movies", "movie", "film", "films", "cinema", "tv", "television", "ott", "web series",
+    "celebrity", "celebrities", "celebs", "lifestyle", "showbiz", "culture", "arts", "trending",
+    "viral", "news", "latest", "breaking", "tech", "technology", "gadgets", "mobile", "science",
+    "gaming", "games", "business", "markets", "market", "economy", "finance", "money", "stocks",
+    "crypto", "investing", "personal finance", "anime", "manga", "k-pop", "kpop", "k-drama",
+    "kdrama", "k-dramas", "korean drama", "watch", "video", "videos", "photos", "photo", "fotos",
+    "foto", "gallery", "photo gallery", "in pics", "pics", "entretenimiento", "entretenimento",
+    "espectáculos", "espetáculos", "música", "cine", "televisión", "televisão", "famosos",
+    "cultura", "luces", "tecnología", "tecnologia", "economía", "economia", "mercados", "negocios",
+    "negócios", "finanzas", "finanças", "premercado", "bolsa", "noticias", "notícias",
+    "spettacoli", "spettacolo", "musica", "finanza", "mercati", "borsa", "unterhaltung", "musik",
+    "kino", "wirtschaft", "finanzen", "börse", "technik", "divertissement", "musique", "cinéma",
+    "économie", "bourse", "marchés", "hiburan", "seleb", "selebriti", "gaya hidup", "teknologi",
+    "ekonomi", "bisnis", "berita", "giải trí", "âm nhạc", "điện ảnh", "văn hóa", "văn hoá",
+    "kinh doanh", "công nghệ", "thế giới sao", "sao việt",
+))
+
+def is_section_label(tail: str) -> bool:
+    """MergedTitleDedup.isSectionLabel: only a desk or media label, optionally followed by "News"."""
+    t = unicodedata.normalize("NFC", tail.strip()).lower()
+    if not t or len(t) > 30:
+        return False
+    if t in _SECTION_LABELS:
+        return True
+    return t.endswith(" news") and t[:-5].rstrip() in _SECTION_LABELS
+
+def strip_section_tail(title: str) -> str:
+    """MergedTitleDedup.stripSectionTail: a trailing " | <Section>" label is cut (head >= 8 chars)."""
+    t = title.strip()
+    i = t.rfind(" | ")
+    if i < 8:
+        return t
+    return t[:i].rstrip() if is_section_label(t[i + 3:]) else t
+
 def _display_source(source: str) -> str:
     """Article.displaySource for a manifest item (no realPublisher)."""
     return source.replace(" (English)", "").replace(" (Spanish)", "").replace(" (Portuguese)", "")
@@ -1035,7 +1075,7 @@ def device_clean_title(title: str, source: str) -> str:
         if n == t:
             break
         t = n
-    return t
+    return strip_section_tail(t)
 
 def strip_outlet_suffix(title: str, source: str) -> str:
     """r1007 NS-19 on the voiced title: " | Outlet - Outlet" and every other trailing suffix that
@@ -1049,6 +1089,7 @@ def strip_outlet_suffix(title: str, source: str) -> str:
         n = t
         for name in names:
             n = _strip_suffix_once(n, name, False)
+        n = strip_section_tail(n)   # r1007 NS6: a desk label left after the outlet suffix
         if n == t:
             break
         t = n
