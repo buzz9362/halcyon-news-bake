@@ -156,6 +156,16 @@ class LowValueRows(unittest.TestCase):
         self.assertTrue(lv("Samsung Galaxy Z Flip 8 a 729 euro su Amazon, sconto del 47%", "https://www.tecnoandroid.it/x"))
         self.assertTrue(lv("MSI PRO MP165A E6 a 89 euro: monitor portatile al minimo storico", "https://www.tecnoandroid.it/y"))
 
+    def test_sector_list_pages_are_low_value(self):   # FeedQualityTest (r1007 NS5)
+        lv = bake.is_low_value_story
+        self.assertTrue(lv("Renewable Energy Stocks", "https://news.google.com/rss/articles/x", shop_markers=False))
+        self.assertTrue(lv("Consumer Discretionary Stocks - Benzinga", "https://news.google.com/rss/articles/y", shop_markers=False))
+        self.assertTrue(lv("Wine Stocks", "https://outlet.example/wine-stocks"))
+        self.assertFalse(lv("4 Top CEOs Are Sounding the Same Alarm, and It Could Be a Major Win for These Memory Stocks", "https://www.fool.com/investing/2026/10/07/x/", shop_markers=False))
+        self.assertFalse(lv("Asian stocks", "https://outlet.example/a", shop_markers=False))
+        self.assertFalse(lv("Stocks", "https://outlet.example/b", shop_markers=False))
+        self.assertFalse(lv("Why Chip Stocks Fell Today Despite Strong Earnings", "https://outlet.example/c", shop_markers=False))
+
     def test_real_news_is_not_low_value(self):   # FeedQualityTest
         lv = bake.is_low_value_story
         self.assertFalse(lv("Kakao Entertainment strikes K-pop partnership with Atlantic Music Group", "https://example.com/a"))

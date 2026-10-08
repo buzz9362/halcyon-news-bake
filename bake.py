@@ -1111,6 +1111,17 @@ def _before(s: str, delim: str) -> str:
     i = s.find(delim)
     return s if i < 0 else s[:i]
 
+def _is_sector_list_title(title: str) -> bool:
+    """r1007 NS5 (Oct 8 phone check): a sector or industry list page titled with its list name
+    and nothing else ("Renewable Energy Stocks", "Consumer Discretionary Stocks - Benzinga").
+    Two to four Title-Case words ending in "Stocks". Parity: FeedQuality.kt isSectorListTitle."""
+    words = [w for w in _headline_only(title).split(" ") if w]
+    if not 2 <= len(words) <= 4:
+        return False
+    if words[-1].lower() != "stocks":
+        return False
+    return all(w == "&" or w[0].isupper() or w[0].isdigit() for w in words)
+
 def is_low_value_story(title: str, article_url: str, shop_markers: bool = True) -> bool:
     """A deals post, an evergreen price-prediction page, a Benzinga /money/ guide, a dubbed
     back-catalog episode drop, or a wire template (broker note, dividend declaration, TV listing)."""
@@ -1127,6 +1138,8 @@ def is_low_value_story(title: str, article_url: str, shop_markers: bool = True) 
     if "dub) - episode " in t or "dub) – episode " in t:
         return True
     if _is_template_title(t):
+        return True
+    if _is_sector_list_title(title or ""):
         return True
     u = (article_url or "").lower()
     rest = _after(u, "://")
