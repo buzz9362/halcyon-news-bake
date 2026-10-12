@@ -1226,6 +1226,73 @@ def _is_template_title(t: str) -> bool:
         return True
     return False
 
+# r1010 N2-6 (deferred item 1): Indonesian TV programme listing rows ("Saksikan Sinetron Kisah Nyata ...
+# Pukul 13.30 WIB di Indosiar", the bare "Kisah Nyata 13.30"). A token walk, no regex. Hype ID only (the
+# short-title rung must stay away from finance titles). Parity: hype-id FeedQuality.kt isTvListingTitle,
+# the last branch of its isTemplateTitle; pinned by tests/test_tv_listing.py.
+_TV_OPENERS = (
+    "saksikan ", "tonton ", "nonton ", "jangan lewatkan ", "jangan sampai ketinggalan ",
+    "live streaming ", "link streaming ", "link live streaming ",
+)
+_TV_JADWAL = ("jadwal acara ", "jadwal tv ", "jadwal siaran ", "jadwal tayang ")
+_TV_CHANNELS = (
+    "indosiar", "sctv", "rcti", "mnctv", "gtv", "antv", "trans tv", "trans7", "trans 7", "net tv",
+    "inews", "moji", "vidio", "kompas tv", "tvone", "tv one", "metro tv", "tvri", "rtv", "mentari tv",
+)
+_TV_SCHED = (
+    " sinetron ", " ftv ", " tayang ", " siaran ", " episode ", " eps ", " hari ini ", " malam ini ",
+)
+_TV_ZONES = frozenset(("wib", "wita", "wit"))
+_TV_LISTING_APPS = frozenset({"hype"})
+_ASCII_DIGITS = "0123456789"
+
+def _is_clock_token(raw: str) -> bool:
+    """"13.30", "8:00" (h < 24, m < 60), ignoring a trailing comma or semicolon."""
+    tok = raw.strip(",;")
+    if len(tok) not in (4, 5):
+        return False
+    if tok[-3] not in ".:":
+        return False
+    h, m = tok[:-3], tok[-2:]
+    if not all(c in _ASCII_DIGITS for c in h) or not all(c in _ASCII_DIGITS for c in m):
+        return False
+    return int(h) < 24 and int(m) < 60
+
+def is_tv_listing_title(title: str) -> bool:
+    """True for a TV schedule row: JADWAL; or OPENER and (TIME or CHANNEL); or TIME and CHANNEL and SCHED;
+    or a bare "Programme Name 13.30" of 2 to 6 words (SHORT). A news story that only names a time is kept."""
+    low = (title or "").lower()
+    for ch in (chr(9), chr(10), chr(13), chr(160)):   # tab, LF, CR, no-break space (Kotlin split set)
+        low = low.replace(ch, " ")
+    words = [w for w in low.split(" ") if w]
+    if not words:
+        return False
+    head = " ".join(words)
+    t = f" {head} "
+    if any(head.startswith(j) for j in _TV_JADWAL):
+        return True
+    time_ = False
+    for i, w in enumerate(words):
+        if not _is_clock_token(w):
+            continue
+        before = i > 0 and words[i - 1] in ("pukul", "jam")
+        after = i + 1 < len(words) and words[i + 1].strip(",;") in _TV_ZONES
+        if before or after:
+            time_ = True
+            break
+    channel = any(f" di {c} " in t or f" live {c} " in t for c in _TV_CHANNELS)
+    opener = any(head.startswith(o) for o in _TV_OPENERS)
+    if opener and (time_ or channel):
+        return True
+    if time_ and channel and any(x in t for x in _TV_SCHED):
+        return True
+    w = words[:-1] if words[-1] in _TV_ZONES else words
+    if (2 <= len(w) <= 6 and _is_clock_token(w[-1])
+            and not any(any(c in _ASCII_DIGITS for c in x) for x in w[:-1])
+            and not any(x in ("pukul", "jam") for x in w)):
+        return True
+    return False
+
 def _after(s: str, delim: str) -> str:
     """Kotlin substringAfter: the whole string when the delimiter is missing."""
     i = s.find(delim)
@@ -1246,7 +1313,8 @@ def _is_sector_list_title(title: str) -> bool:
         return False
     return all(w == "&" or w[0].isupper() or w[0].isdigit() for w in words)
 
-def is_low_value_story(title: str, article_url: str, shop_markers: bool = True) -> bool:
+def is_low_value_story(title: str, article_url: str, shop_markers: bool = True,
+                       tv_listing: bool = False) -> bool:
     """A deals post, an evergreen price-prediction page, a Benzinga /money/ guide, a dubbed
     back-catalog episode drop, or a wire template (broker note, dividend declaration, TV listing)."""
     t = " " + (title or "").lower().strip() + " "
@@ -1262,6 +1330,8 @@ def is_low_value_story(title: str, article_url: str, shop_markers: bool = True) 
     if "dub) - episode " in t or "dub) – episode " in t:
         return True
     if _is_template_title(t):
+        return True
+    if tv_listing and is_tv_listing_title(t):   # r1010 N2-6, Hype ID only
         return True
     if _is_sector_list_title(title or ""):
         return True
@@ -1297,10 +1367,14 @@ def is_profane_title(title: str) -> bool:
 def shop_markers_for(manifest: str) -> bool:
     return manifest.split("_")[0] not in SHOP_MARKERS_OFF_APPS
 
+def tv_listing_for(manifest: str) -> bool:
+    return manifest.split("_")[0] in _TV_LISTING_APPS
+
 def drops_row(article: dict, manifest: str) -> bool:
     """True for a row the appning app drops from this manifest by a stateless rule (BAKER-4)."""
     title, url = article.get("title") or "", article.get("articleUrl") or ""
-    return is_low_value_story(title, url, shop_markers_for(manifest)) or is_profane_title(title)
+    return (is_low_value_story(title, url, shop_markers_for(manifest), tv_listing_for(manifest))
+            or is_profane_title(title))
 
 # -- BAKER-4: FeedQuality.dedupeNearDuplicates (one story from several outlets, a re-titled copy) --
 _NEAR_DUP_STOP = frozenset((
@@ -1417,6 +1491,29 @@ def dedupe_near_duplicates(items: list, prefer=None) -> list:
             kept.append(i)
     return [a for i, a in enumerate(items) if keep[i]]
 
+# r1010 N2-2: a publisher's read-more marker ends the teaser; what follows is a promo call to action
+# ("[Lire la suite] Si vous voulez recevoir les meilleures actus Frandroid sur WhatsApp ..."), shown and
+# voiced inside the 350-char snippet. Cut the summary at the earliest marker that starts at index 60 or later
+# (some teaser text before it). Literal list, case-insensitive, no regex. "[...]" and the one-character
+# ellipsis in brackets mark a mid-text cut, not a footer, and are not markers. Parity: the apps'
+# SocialResidue.kt READ_MORE_MARKERS / cutReadMorePromo (RSS stripLinkJunk and the manifest summary map).
+READ_MORE_MARKERS = (
+    "[Lire la suite]", "[Read more]", "[Leer mas]", "[Leer más]", "[Leia mais]",
+    "[Weiterlesen]", "[Continua a leggere]", "[Doc them]", "[Đọc thêm]",
+)
+READ_MORE_MIN_INDEX = 60
+
+def cut_read_more_promo(summary: str) -> str:
+    if not summary:
+        return summary
+    low = summary.lower()
+    cut = -1
+    for m in READ_MORE_MARKERS:
+        i = low.find(m.lower())
+        if i >= READ_MORE_MIN_INDEX and (cut < 0 or i < cut):
+            cut = i
+    return summary if cut < 0 else summary[:cut].rstrip()
+
 def r1007_text(article: dict) -> dict:
     """The r1007 text rules on one article, in the apps' RssParser order: entities decoded; the
     summary's code run (strip_code_residue) and syndication footer removed; a cut TOI title repaired
@@ -1430,7 +1527,7 @@ def r1007_text(article: dict) -> dict:
             nt = rep
         nt = strip_outlet_suffix(nt, src)
     if isinstance(summary, str) and summary:
-        ns = strip_posted_first_footer(strip_code_residue(decode_entities(summary)))
+        ns = cut_read_more_promo(strip_posted_first_footer(strip_code_residue(decode_entities(summary))))
     if nt == title and ns == summary:
         return article
     return {**article, "title": nt, "summary": ns}

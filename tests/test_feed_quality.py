@@ -551,6 +551,10 @@ class AppParity(unittest.TestCase):
 
     def test_the_8_apps_share_one_rule_file(self):
         def norm(s):
+            # r1010 N2-6: hype-id alone carries the TV listing rung (isTvListingTitle and its lists, pinned
+            # by test_tv_listing.py); everything else in the file stays shared by all 8 apps.
+            s = s.replace("    if (isTvListingTitle(t)) return true\n", "")
+            s = re.sub(r"// r1010 N2-6 \(deferred item 1\).*?\ninternal fun isTvListingTitle\(.*?\n}\n\n", "", s, flags=re.S)
             return re.sub(r"\bcom\.[a-z]+\.[a-z]+(?:\.[a-z]+)?\.data\b", "PKG.data", re.sub(r"^package .*$", "", s, flags=re.M))
         base = norm(self.feed_quality(NEWS_APPS[0]))
         for app in NEWS_APPS[1:]:
