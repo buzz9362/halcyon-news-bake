@@ -779,6 +779,14 @@ def split_hashtag_words(tag: str) -> str:
         out.append(c)
     return "".join(out).strip()
 
+def split_single_hashtags(text: str) -> str:
+    """r1010 N2-7: only the single-hashtag step of strip_social_residue ("#SongYuqi returns" -> "Song Yuqi
+    returns"), for a TITLE: the rest of the social strip is summary-only. The apps run the same step on
+    titles (splitHashtagWords at parse time and in the manifest map)."""
+    if not text or "#" not in text:
+        return text
+    return _SR_HASHTAG_ONE.sub(lambda m: split_hashtag_words(m.group(1)), text)
+
 def strip_social_handles(t: str) -> str:
     """The Sep 26 handle, photo-credit and embed rules; clean text comes back unchanged."""
     s = t
@@ -1453,11 +1461,12 @@ def spoken_source(name: str) -> str:
     return n[:op].rstrip()
 
 def text_for(article: dict) -> str:
-    title = clean_text(article.get("title", ""))
+    # r1010 N2-7: a single hashtag in the title is read as words, as the summary rule already does.
+    title = split_single_hashtags(clean_text(article.get("title", "")))
     # Sep 26 2026 (SX): a social handle, photo credit or embed line in the summary is never voiced.
     # The appning apps plan the headline cut on the same cleaned summary (BakedHeadlineCut).
     # Sep 26 2026 (JS): nor a code run (a <script> body the worker left in the summary). The title is
-    # never passed through this rule. Manifest summaries are already stored without it (idempotent).
+    # only gets the single-hashtag step (split_single_hashtags). Manifest summaries are already stored without it (idempotent).
     summary = strip_social_residue(clean_text(strip_code_residue(article.get("summary", "") or "")))
     source = spoken_source(clean_text(article.get("source", "")))
     body_parts = []
