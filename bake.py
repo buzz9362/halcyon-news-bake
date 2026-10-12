@@ -546,6 +546,81 @@ def upload(key: str, data: bytes) -> None:
         CacheControl="public, max-age=2592000, immutable",
     )
 
+# ---------- r1010 N2-3: id-to-link collision guard (interim) ---------------
+# The MP3 key is sha256(id)[:32] and the id is the worker's rss_<djb2_32(link)>, one global key space
+# shared by every app and language, and MP3s are never deleted. When a NEW story's id equals an older
+# story's id (a 32-bit hash collision), r2_exists() says "already baked" and the car would play the
+# OLD story's audio under the new title. The id scheme stays (changing it needs an app change), so the
+# baker keeps a bounded id -> link index in R2 and keeps a story whose id already maps to a DIFFERENT
+# link out of the manifest (logged as COLLISION). The older story keeps its id and its audio.
+ID_INDEX_KEY = "_index/ids.json"
+ID_INDEX_MAX = 30_000          # newest-seen first; about 4 MB of JSON at the cap
+ID_INDEX_LINK_MAX = 400        # stored link length cap (the compare uses the same cut)
+
+class IdLinkIndex:
+    """id -> [link, last seen day]. check() records a new id, refreshes a known one, and returns
+    the stored link only when the id already maps to a different link."""
+
+    def __init__(self, ids: dict | None = None, enabled: bool = True):
+        self.ids: dict[str, list] = {}
+        for k, v in (ids or {}).items():
+            if isinstance(k, str) and isinstance(v, list) and len(v) == 2 and isinstance(v[0], str):
+                self.ids[k] = [v[0], int(v[1] or 0)]
+        self.enabled = enabled
+        self.dirty = False
+
+    def check(self, aid: str, link: str, day: int) -> str | None:
+        link = (link or "").strip()[:ID_INDEX_LINK_MAX]
+        if not self.enabled or not aid or not link:
+            return None
+        old = self.ids.get(aid)
+        if old is None:
+            self.ids[aid] = [link, day]
+            self.dirty = True
+            return None
+        if old[0] != link:
+            return old[0]
+        if old[1] != day:
+            old[1] = day
+            self.dirty = True
+        return None
+
+    def to_json(self) -> bytes:
+        if len(self.ids) > ID_INDEX_MAX:
+            keep = sorted(self.ids.items(), key=lambda kv: kv[1][1], reverse=True)[:ID_INDEX_MAX]
+            self.ids = dict(keep)
+        return json.dumps({"v": 1, "ids": self.ids}, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+
+_id_index: list = []   # lazily loaded once per pass
+
+def id_index() -> IdLinkIndex:
+    if _id_index:
+        return _id_index[0]
+    try:
+        obj = s3.get_object(Bucket=R2_BUCKET, Key=ID_INDEX_KEY)
+        idx = IdLinkIndex(json.loads(obj["Body"].read().decode("utf-8")).get("ids") or {})
+    except ClientError as e:
+        if e.response["Error"]["Code"] in ("404", "NoSuchKey", "NotFound"):
+            idx = IdLinkIndex()
+        else:   # never overwrite an index this pass could not read
+            print(f"[index] id index unreadable ({e}); collision guard off for this pass")
+            idx = IdLinkIndex(enabled=False)
+    except Exception as e:
+        print(f"[index] id index unreadable ({e}); collision guard off for this pass")
+        idx = IdLinkIndex(enabled=False)
+    _id_index.append(idx)
+    return idx
+
+def save_id_index() -> None:
+    if not _id_index or not _id_index[0].enabled or not _id_index[0].dirty:
+        return
+    idx = _id_index[0]
+    try:
+        s3.put_object(Bucket=R2_BUCKET, Key=ID_INDEX_KEY, ContentType="application/json", Body=idx.to_json())
+        idx.dirty = False
+    except Exception as e:
+        print(f"[index] id index write failed: {e}")
+
 # Strip HTML tags + collapse whitespace before TTS so we don't speak markup.
 _HTML_RE = re.compile(r"<[^>]+>")
 _WS_RE = re.compile(r"\s+")
@@ -1689,9 +1764,17 @@ def plan_manifest(m: dict[str, Any]) -> dict | None:
     retext_candidates: list[tuple[str, str, dict]] = []
     seen: set[str] = set()
     skipped = 0
+    day = now_ms // 86400000
+    idx = id_index()
     for article in items:
         aid = article.get("id")
         if not aid or aid in seen:
+            continue
+        # r1010 N2-3: an id that already maps to a different link is not listed or baked. It is not
+        # added to "seen", so the older story (same id, its own audio) keeps its carry-forward.
+        clash = idx.check(aid, article.get("articleUrl") or "", day)
+        if clash is not None:
+            print(f"COLLISION {aid} {clash} {(article.get('articleUrl') or '').strip()}")
             continue
         seen.add(aid)
         key = article_key(aid)
@@ -1974,7 +2057,9 @@ def bake_manifest(m: dict[str, Any], breaker: ThrottleBreaker | None = None) -> 
     """One manifest on its own (ad hoc runs and tests): the same plan -> fresh -> write ->
     re-voice steps main() runs across all manifests."""
     breaker = breaker or ThrottleBreaker()
+    _id_index.clear()
     p = plan_manifest(m)
+    save_id_index()   # r1010 N2-3
     if p is None:
         return 0, 0
     revoice_priority([p], breaker)
@@ -2146,6 +2231,7 @@ def main() -> int:
         return retext_ids_pass(RETEXT_IDS)
     started = time.monotonic()
     _STARVED.clear()
+    _id_index.clear()   # r1010 N2-3: read the id index fresh each pass
     breaker = ThrottleBreaker()   # one per pass: every gTTS call of this pass goes through it
     # Manifest passes FIRST: the appning app reads these R2 manifests directly.
     # Each lists ONLY ids whose MP3 is confirmed in R2, so the car never 404s,
@@ -2168,6 +2254,7 @@ def main() -> int:
             continue
         if p is not None:
             plans.append(p)
+    save_id_index()   # r1010 N2-3
     # r8 tier 1 BEFORE the fresh round-robin: the owner is listening to these stories now.
     try:
         revoice_priority(plans, breaker)
