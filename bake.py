@@ -779,13 +779,32 @@ def split_hashtag_words(tag: str) -> str:
         out.append(c)
     return "".join(out).strip()
 
-def split_single_hashtags(text: str) -> str:
+# r1019 N2-18: a single title hashtag that is a name in the app's search dictionary keeps its case
+# ("#NewJeans" -> "NewJeans", "#iKON" -> "iKON"); any other tag is split as before ("#SongYuqi" ->
+# "Song Yuqi"). hashtag_keep.json holds each app's dictionary terms, lower-cased, keyed by the app prefix
+# of the phonetics key (kpop_en -> kpop). It is GENERATED from the apps' data/SearchDictionary.kt (the
+# apps' HASHTAG_KEEP_LOWER source) by tools/sync_hashtag_keep.py; never edit it by hand.
+def _load_hashtag_keep() -> dict:
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hashtag_keep.json")
+    with open(path, encoding="utf-8") as fh:
+        return {k: frozenset(v) for k, v in json.load(fh).items()}
+
+HASHTAG_KEEP = _load_hashtag_keep()
+
+def hashtag_keep_for(key: str) -> frozenset:
+    """The keep set for a phonetics key or app slug ("kpop_en", "bollywood_hi", "hype"); empty when unknown."""
+    return HASHTAG_KEEP.get((key or "").split("_")[0], frozenset())
+
+def split_single_hashtags(text: str, app: str = "") -> str:
     """r1010 N2-7: only the single-hashtag step of strip_social_residue ("#SongYuqi returns" -> "Song Yuqi
     returns"), for a TITLE: the rest of the social strip is summary-only. The apps run the same step on
-    titles (splitHashtagWords at parse time and in the manifest map)."""
+    titles (splitTitleHashtags at parse time and in the manifest map). r1019 N2-18: [app] (a phonetics
+    key or slug) selects the dictionary keep list, as the apps' HASHTAG_KEEP_LOWER does."""
     if not text or "#" not in text:
         return text
-    return _SR_HASHTAG_ONE.sub(lambda m: split_hashtag_words(m.group(1)), text)
+    keep = hashtag_keep_for(app)
+    return _SR_HASHTAG_ONE.sub(
+        lambda m: m.group(1) if m.group(1).lower() in keep else split_hashtag_words(m.group(1)), text)
 
 def strip_social_handles(t: str) -> str:
     """The Sep 26 handle, photo-credit and embed rules; clean text comes back unchanged."""
@@ -1557,9 +1576,10 @@ def spoken_source(name: str) -> str:
         return name
     return n[:op].rstrip()
 
-def text_for(article: dict) -> str:
+def text_for(article: dict, app: str = "") -> str:
     # r1010 N2-7: a single hashtag in the title is read as words, as the summary rule already does.
-    title = split_single_hashtags(clean_text(article.get("title", "")))
+    # r1019 N2-18: [app] (the phonetics key) keeps a dictionary name's case, as the apps do.
+    title = split_single_hashtags(clean_text(article.get("title", "")), app)
     # Sep 26 2026 (SX): a social handle, photo credit or embed line in the summary is never voiced.
     # The appning apps plan the headline cut on the same cleaned summary (BakedHeadlineCut).
     # Sep 26 2026 (JS): nor a code run (a <script> body the worker left in the summary). The title is
@@ -1627,7 +1647,7 @@ def bake_app(app: dict[str, Any], breaker: "ThrottleBreaker | None" = None) -> t
                 print(f"[{slug}] head_object failed for {aid[:30]}: {e}")
                 continue
 
-            text = text_for(article)
+            text = text_for(article, app.get("phonetics", slug))
             # Sep 26 2026: the table key, not the slug ("hype" has no table; "hype_id" does).
             text = apply_phonetics(text, app.get("phonetics", slug))
             if len(text) < MIN_TEXT_LEN:
@@ -1680,7 +1700,7 @@ def bake_hindi(app: dict[str, Any]) -> tuple[int, int]:
             continue
         # Amar Ujala gives clean Hindi title + summary, so read the full text like
         # the English path; phonetics_hi transliterates any Latin names to Devanagari.
-        text = apply_phonetics(text_for(article), app["phonetics_slug"])
+        text = apply_phonetics(text_for(article, app["phonetics_slug"]), app["phonetics_slug"])
         if len(text) < MIN_TEXT_LEN:
             continue
         try:
@@ -1903,7 +1923,7 @@ def plan_manifest(m: dict[str, Any]) -> dict | None:
             continue
         if exists:
             confirmed.add(aid)   # FORCE re-bake: the old MP3 stays listed until the new one lands
-        text = apply_phonetics(text_for(article), phon)
+        text = apply_phonetics(text_for(article, phon), phon)
         if len(text) < MIN_TEXT_LEN:
             if not exists:
                 print(f"[{name}] skip {aid[:30]}: text too short ({len(text)})")
@@ -2088,7 +2108,7 @@ def revoice_priority(plans: list[dict], breaker: ThrottleBreaker,
         mod = r2_modified_ms(key)
         if mod is None or mod >= after:
             continue   # re-voiced already (or gone): done
-        rtext = apply_phonetics(text_for(article), p["phon"])
+        rtext = apply_phonetics(text_for(article, p["phon"]), p["phon"])
         if len(rtext) < MIN_TEXT_LEN:
             continue
         try:
@@ -2140,7 +2160,7 @@ def revoice(plans: list[dict], breaker: ThrottleBreaker) -> None:
                 for cut, ids, after in p["retext_modes"]
             ):
                 continue
-            rtext = apply_phonetics(text_for(article), p["phon"])
+            rtext = apply_phonetics(text_for(article, p["phon"]), p["phon"])
             if len(rtext) < MIN_TEXT_LEN:
                 continue
             try:
@@ -2297,7 +2317,7 @@ def retext_ids_pass(ids: list[str]) -> int:
             continue
         m, article = found[aid]
         key = article_key(aid)
-        text = apply_phonetics(text_for(article), m["phonetics"])
+        text = apply_phonetics(text_for(article, m["phonetics"]), m["phonetics"])
         if len(text) < MIN_TEXT_LEN:
             failed.append(aid)
             print(f"[retext_ids] [{m['manifest']}] {aid}: text too short ({len(text)}); skipped")
