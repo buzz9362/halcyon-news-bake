@@ -820,6 +820,11 @@ def strip_social_handles(t: str) -> str:
         s = rx.sub(rep, s)
     return s
 
+# r1019 D-5: a bare http/https URL token (with any trailing punctuation) is never voiced (Koreaboo:
+# "... https://storage.googleapis.com/koreaboo-cdn/2026/10/Choa-1."). After the social rules, as in the apps'
+# SocialResidue.kt BARE_URL_REGEX.
+_SR_BARE_URL = re.compile(r"(?<![A-Za-z0-9_/])https?://[^\s\u0085\u00a0\u1680\u2000-\u200b\u2028\u2029\u202f\u205f\u3000]+", re.IGNORECASE)
+
 def strip_social_residue(text: str) -> str:
     """stripSocialResidue() of the apps, minus the unserved-script rule (see the block note)."""
     if not text or not text.strip():
@@ -827,6 +832,7 @@ def strip_social_residue(text: str) -> str:
     t = _SR_GN_FOOTER.sub(" ", text)
     t = _SR_TWEET_CREDIT.sub(" ", _SR_PIC_TWITTER.sub(" ", t))
     t = strip_social_handles(t)
+    t = _SR_BARE_URL.sub(" ", t)
     t = _SR_HASHTAG_RUN.sub(" ", _SR_BRACKET_HASHTAG.sub(" ", t))
     t = _SR_HASHTAG_ONE.sub(lambda m: split_hashtag_words(m.group(1)), t)
     return _SR_SPACE_BEFORE_PUNCT.sub(r"\1", _WS_RE.sub(" ", t)).strip()
