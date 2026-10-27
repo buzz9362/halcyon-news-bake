@@ -1383,14 +1383,30 @@ def is_spam_title(title: str) -> bool:
     low = t.lower()
     return any(m in low for m in SPAM_TITLE_MARKERS)
 
+# r1027 W58-15 / W54-1: an institution that is not a news outlet ("NYC Health + Hospitals", a hacked
+# hospital site Google News listed as the publisher) never supplies a story. Keyed on the publisher name
+# the user sees (realPublisher, else source). The apps' FeedQuality.kt isOffTopicOutlet is the same list.
+OFF_TOPIC_OUTLET_MARKERS = (
+    " hospital ", " hospitals ", "medical center", "medical centre", "health system", "school district",
+    " county of ", " city of ", " department of ", " ministry of ", ".gov ",
+)
+
+def is_off_topic_outlet(publisher) -> bool:
+    if not publisher or not str(publisher).strip():
+        return False
+    p = " " + re.sub(r"\s+", " ", str(publisher).lower().replace("+", " ")).strip() + " "
+    return any(m in p for m in OFF_TOPIC_OUTLET_MARKERS)
+
 def is_low_value_story(title: str, article_url: str, shop_markers: bool = True,
-                       tv_listing: bool = False) -> bool:
+                       tv_listing: bool = False, publisher=None) -> bool:
     """A deals post, an evergreen price-prediction page, a Benzinga /money/ guide, a dubbed
     back-catalog episode drop, a wire template (broker note, dividend declaration, TV listing),
     or (r1027) SEO spam (is_spam_title)."""
     t = " " + (title or "").lower().strip() + " "
     head = t.strip()
     if is_spam_title(title or ""):
+        return True
+    if is_off_topic_outlet(publisher):
         return True
     if any(head.startswith(p) for p in _COMMERCE_PREFIXES):
         return True
@@ -1446,7 +1462,8 @@ def tv_listing_for(manifest: str) -> bool:
 def drops_row(article: dict, manifest: str) -> bool:
     """True for a row the appning app drops from this manifest by a stateless rule (BAKER-4)."""
     title, url = article.get("title") or "", article.get("articleUrl") or ""
-    return (is_low_value_story(title, url, shop_markers_for(manifest), tv_listing_for(manifest))
+    publisher = article.get("realPublisher") or article.get("source")
+    return (is_low_value_story(title, url, shop_markers_for(manifest), tv_listing_for(manifest), publisher)
             or is_profane_title(title))
 
 # -- BAKER-4: FeedQuality.dedupeNearDuplicates (one story from several outlets, a re-titled copy) --

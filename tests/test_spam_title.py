@@ -50,5 +50,28 @@ class SpamTitle(unittest.TestCase):
         self.assertFalse(bake._is_template_title(t))
 
 
+
+class OffTopicOutlet(unittest.TestCase):
+    """r1027 W58-15 / W54-1: the outlet gate, same list as the apps' FeedQuality.isOffTopicOutlet (R1027DataLayerTest)."""
+
+    def test_institutions_are_dropped(self):
+        for p in ("NYC Health + Hospitals", "Mount Sinai Medical Center", "Kaiser Permanente Health System",
+                  "Department of Education", "County of Los Angeles", "City of Austin", "Ministry of Culture", "cdc.gov"):
+            self.assertTrue(bake.is_off_topic_outlet(p), p)
+
+    def test_news_outlets_stay(self):
+        for p in (None, "", "Crunchyroll News", "Anime News Network", "Soompi", "BBC News", "Men's Health",
+                  "Vatican News", "The Korea Times"):
+            self.assertFalse(bake.is_off_topic_outlet(p), p)
+
+    def test_drops_row_by_publisher_with_a_clean_title(self):
+        art = {"title": "Top 10 anime of the season", "articleUrl": "https://news.google.com/x",
+               "source": "Google News Anime", "realPublisher": "NYC Health + Hospitals"}
+        self.assertTrue(bake.drops_row(art, "anime_en"))
+        art["realPublisher"] = "Anime News Network"
+        self.assertFalse(bake.drops_row(art, "anime_en"))
+        self.assertTrue(bake.drops_row({"title": "x y z", "articleUrl": "", "source": "NYC Health + Hospitals"}, "anime_en"))
+
+
 if __name__ == "__main__":
     unittest.main()
