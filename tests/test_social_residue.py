@@ -180,6 +180,37 @@ VECTORS = [
 ]
 
 
+# r1027 (Oct 27 2026, kpop_pt headline "... @ILLITBrazil"): the title handle rule. GENERATED from the app repo's
+# _catalog_state/tools/title_handle_vectors.json; every news app's SocialHandleRuleTest pins the same rows
+# against stripTitleHandles (SocialResidue.kt).
+TITLE_VECTORS = [
+    ('title_handle_end_pt', 'pt', 'ILLIT anuncia turne no Brasil @ILLITBrazil',
+     'ILLIT anuncia turne no Brasil'),
+    ('title_handle_start_pt', 'pt', '@ILLITBrazil confirma datas',
+     'confirma datas'),
+    ('title_handle_before_bracket_pt', 'pt', 'Fala com @ILLITBrazil (fanbase)',
+     'Fala com (fanbase)'),
+    ('title_handle_in_parens_en', 'en', 'ILLIT announces Brazil dates (@ILLITBrazil)',
+     'ILLIT announces Brazil dates'),
+    ('title_handle_after_dash_en', 'en', 'ILLIT announces Brazil dates - @ILLITBrazil',
+     'ILLIT announces Brazil dates'),
+    ('title_handle_run_es', 'es', '@ILLITBrazil y @ILLIT_twt anuncian gira',
+     'anuncian gira'),
+    ('title_handle_dotted_id', 'id', 'Jennie unggah foto bareng @roses_are_rosie.official di Paris',
+     'Jennie unggah foto bareng di Paris'),
+    ('title_handle_between_commas_vi', 'vi', 'Jennie, @jennierubyjane, khoe anh moi',
+     'Jennie, khoe anh moi'),
+    ('keep_title_email_pt', 'pt', 'Contato da HYBE muda para contato@hybe.com.br',
+     'Contato da HYBE muda para contato@hybe.com.br'),
+    ('keep_title_bare_at_pt', 'pt', 'Show em Sao Paulo, 100 @ 20h',
+     'Show em Sao Paulo, 100 @ 20h'),
+    ('keep_title_age_marker_en', 'en', 'Nick Jonas @34 shares a birthday post',
+     'Nick Jonas @34 shares a birthday post'),
+    ('keep_title_domain_en', 'en', 'Fans flood @weverse.com with messages',
+     'Fans flood @weverse.com with messages'),
+]
+
+
 def old_text_for(article):
     """text_for before SX (Sep 26): the summary was voiced as clean_text() left it."""
     title = bake.clean_text(article.get("title", ""))
@@ -245,6 +276,37 @@ class TextForNeverVoicesAHandle(unittest.TestCase):
             self.assertIsNone(bake.SOCIAL_HANDLE_RE.search(s), s)
         for s in ("| @_chaechae_1/Instagram", "de @kpopverse.es el 21"):
             self.assertIsNotNone(bake.SOCIAL_HANDLE_RE.search(s), s)
+
+
+
+class TitleHandleVectors(unittest.TestCase):
+    """r1027: a social handle in a TITLE is never voiced (strip_title_handles in text_for), parity with the
+    apps' stripTitleHandles. Positive control: the r1019 text_for (title through split_single_hashtags only)
+    voiced the kpop_pt handle."""
+
+    def test_every_title_vector_matches_the_app_mirror(self):
+        for name, _lang, inp, exp in TITLE_VECTORS:
+            self.assertEqual(bake.strip_title_handles(inp), exp, name)
+
+    def test_no_handle_survives_and_keep_vectors_stay_whole(self):
+        for name, _lang, inp, exp in TITLE_VECTORS:
+            self.assertIsNone(bake.SOCIAL_HANDLE_RE.search(exp), name)
+            if name.startswith("keep_"):
+                self.assertIs(bake.strip_title_handles(inp), inp, name)
+            else:
+                self.assertNotEqual(inp, exp, name)
+            self.assertEqual(bake.strip_title_handles(exp), exp, name)
+
+    def test_text_for_never_voices_a_title_handle(self):
+        for name, _lang, inp, exp in TITLE_VECTORS:
+            t = bake.text_for({"source": "Src", "title": inp, "summary": "Plain summary of the story for the test."})
+            self.assertIsNone(bake.SOCIAL_HANDLE_RE.search(t), name)
+            self.assertTrue(t.startswith("Src, " + exp), name)
+
+    def test_positive_control_r1019_title_path_voiced_the_handle(self):
+        owner = next(v for v in TITLE_VECTORS if v[0] == "title_handle_end_pt")
+        self.assertIsNotNone(bake.SOCIAL_HANDLE_RE.search(bake.split_single_hashtags(bake.clean_text(owner[2]), "kpop_pt")))
+        self.assertIsNotNone(bake.SOCIAL_HANDLE_RE.search(old_text_for({"source": "Src", "title": owner[2], "summary": "Plain."})))
 
 
 if __name__ == "__main__":

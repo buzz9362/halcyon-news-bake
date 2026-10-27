@@ -837,6 +837,34 @@ def strip_social_residue(text: str) -> str:
     t = _SR_HASHTAG_ONE.sub(lambda m: split_hashtag_words(m.group(1)), t)
     return _SR_SPACE_BEFORE_PUNCT.sub(r"\1", _WS_RE.sub(" ", t)).strip()
 
+# r1027 (Oct 27 2026, kpop_pt headline "... @ILLITBrazil"): a social handle inside a TITLE is never voiced.
+# Only the handle step runs on a title (the caption, embed and credit rules stay summary-only): every handle
+# goes, with the "@a, @b and @c" run it heads, then an emptied bracket and a separator left at either end.
+# E-mail addresses, "@34" and a bare "@" stay. The apps' stripTitleHandles (SocialResidue.kt) is the same rule,
+# applied at RSS parse, in the manifest map and on the disk prime, so the car row, the phone card and the MP3
+# say the same title (the appning headline cut keys on it). Shared vectors: tests/test_social_residue.py
+# TITLE_VECTORS, generated from the app repo's _catalog_state/tools/title_handle_vectors.json.
+_TITLE_HANDLE_RUN = re.compile(r"(?<![A-Za-z0-9_.@/])" + _SR_H +
+                               r"(?:(?:\s*,\s*|\s+(?:(?:and|&|e|y|et|und|dan|v\u00e0|ou|o)\s+)?)" + _SR_H + r")*")
+_TITLE_TIDY = [
+    (re.compile(r"[(\[]\s*[)\]]"), " "),
+    (re.compile(r"\s+"), " "),
+    (re.compile(r"([,;:])(?:\s*[,;:])+"), r"\1"),
+    (re.compile(r"(?:\s*[|:;,(\[\u2013\u2014-])+\s*$"), ""),
+    (re.compile(r"^\s*[|:;,)\]\u2013\u2014-]+\s*"), ""),
+]
+
+def strip_title_handles(title: str) -> str:
+    """A title without its social handles; a clean title comes back unchanged (the same object)."""
+    if not title or "@" not in title:
+        return title
+    s = _TITLE_HANDLE_RUN.sub(" ", title)
+    if s == title:
+        return title
+    for rx, rep in _TITLE_TIDY:
+        s = rx.sub(rep, s)
+    return _SR_SPACE_BEFORE_PUNCT.sub(r"\1", s).strip()
+
 # ---------- Code residue (Sep 26 2026, JS) -----------------------------------------------------
 # Ear test, circuitly_de rss_1l6c716 (PC-Welt, baked 2026-09-26T09:01:59Z): after the headline the
 # car read about 40 s of JavaScript ("function, document, querySelector, Raute sticky promo block").
@@ -1585,7 +1613,8 @@ def spoken_source(name: str) -> str:
 def text_for(article: dict, app: str = "") -> str:
     # r1010 N2-7: a single hashtag in the title is read as words, as the summary rule already does.
     # r1019 N2-18: [app] (the phonetics key) keeps a dictionary name's case, as the apps do.
-    title = split_single_hashtags(clean_text(article.get("title", "")), app)
+    # r1027: and a social handle in the title is never voiced (strip_title_handles, the apps' stripTitleHandles).
+    title = strip_title_handles(split_single_hashtags(clean_text(article.get("title", "")), app))
     # Sep 26 2026 (SX): a social handle, photo credit or embed line in the summary is never voiced.
     # The appning apps plan the headline cut on the same cleaned summary (BakedHeadlineCut).
     # Sep 26 2026 (JS): nor a code run (a <script> body the worker left in the summary). The title is
