@@ -103,7 +103,7 @@ MIN_PASSES_FOR_SHARE = 4
 PLAN_RULE_FRAGMENTS = (
     "sanitize_article(a)",
     "if not aid or aid in seen",
-    "apply_phonetics(text_for(article), phon)",
+    "apply_phonetics(text_for(article, phon), phon)",
     "len(text) < MIN_TEXT_LEN",
 )
 
@@ -142,7 +142,7 @@ def bake_eligible(bake, m: dict, raw_items: list) -> list[dict]:
                 if not aid or aid in seen:
                     continue
                 seen.add(aid)
-                text = bake.apply_phonetics(bake.text_for(a), m["phonetics"])
+                text = bake.apply_phonetics(bake.text_for(a, m["phonetics"]), m["phonetics"])
                 if len(text) < bake.MIN_TEXT_LEN:
                     continue
                 out.append(a)
