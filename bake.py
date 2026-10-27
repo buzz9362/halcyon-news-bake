@@ -1366,12 +1366,32 @@ def _is_sector_list_title(title: str) -> bool:
         return False
     return all(w == "&" or w[0].isupper() or w[0].isdigit() for w in words)
 
+# r1027 W58-15 (anime-brief phone: "Anime Ai Free Premium Account Advanced AI Girlfriend Chat {us45RT}" from a
+# hacked non-anime site reached the queue and was read aloud): SEO spam, keyed on the title the user sees. A
+# brace-coded tracking token or a give-away phrase. The apps' FeedQuality.kt isSpamTitle is the same rule;
+# tests/test_spam_title.py and the apps' R1027DataLayerTest pin the same vectors.
+_SPAM_CODE_TOKEN = re.compile(r"\{[A-Za-z0-9]{4,10}\}")
+SPAM_TITLE_MARKERS = (
+    "free premium account", "premium account free", "unlimited coins", "unlimited gems", "free robux",
+    "free v-bucks", "free vbucks", "no human verification", "mod apk download", "apk download free",
+)
+
+def is_spam_title(title: str) -> bool:
+    t = title or ""
+    if _SPAM_CODE_TOKEN.search(t):
+        return True
+    low = t.lower()
+    return any(m in low for m in SPAM_TITLE_MARKERS)
+
 def is_low_value_story(title: str, article_url: str, shop_markers: bool = True,
                        tv_listing: bool = False) -> bool:
     """A deals post, an evergreen price-prediction page, a Benzinga /money/ guide, a dubbed
-    back-catalog episode drop, or a wire template (broker note, dividend declaration, TV listing)."""
+    back-catalog episode drop, a wire template (broker note, dividend declaration, TV listing),
+    or (r1027) SEO spam (is_spam_title)."""
     t = " " + (title or "").lower().strip() + " "
     head = t.strip()
+    if is_spam_title(title or ""):
+        return True
     if any(head.startswith(p) for p in _COMMERCE_PREFIXES):
         return True
     if any(m in t for m in _COMMERCE_CORE):
