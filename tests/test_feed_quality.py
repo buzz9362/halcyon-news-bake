@@ -329,14 +329,25 @@ class Titles(unittest.TestCase):
         self.assertEqual(set(_r.findall(r'"([^"]+)"', block)), set(bake._SECTION_LABELS))
 
     def test_a_suffix_cut_never_changes_the_title_the_app_shows(self):
-        # The app's display pass also cuts any short last segment. Cutting the outlet first would let it
-        # eat "Remix" from the headline, so the title stays as it was.
+        # r1116 shared title rule (NEWS-03 / CN-07): only the item's own outlet name is cut, so the
+        # outlet tail goes and the real headline segment "Remix" stays, shown and voiced alike.
         t = "Stray Kids drops a surprise single - Remix - Soompi"
         self.assertEqual("Stray Kids drops a surprise single - Remix", bake.device_clean_title(t, "Soompi"))
-        self.assertEqual(t, bake.strip_outlet_suffix(t, "Soompi"))
+        self.assertEqual("Stray Kids drops a surprise single - Remix", bake.strip_outlet_suffix(t, "Soompi"))
         # Titles without the outlet are untouched.
         self.assertEqual("BTS - Dynamite review", bake.strip_outlet_suffix("BTS - Dynamite review", "Soompi"))
         self.assertEqual("No suffix here at all", bake.strip_outlet_suffix("No suffix here at all", "Soompi"))
+
+    def test_a_generic_short_tail_is_never_cut(self):   # r1116 CN-07 defect cases from the car data
+        for t, src in (("Song Review: ATEEZ - Up", "Soompi"),
+                       ("Buried Treasure: NCT Dream - Pressure", "Soompi"),
+                       ("Betrugsmasche auf Linkedin: Wenn der Headhunter echt ist - aber das Jobangebot nicht", "t3n"),
+                       ("LETRA E TRADUCAO / ENHYPEN - I Want You", "KoreaIN")):
+            self.assertEqual(t, bake.device_clean_title(t, src))
+            self.assertEqual(t, bake.strip_outlet_suffix(t, src))
+        # Control: the outlet's own name, any case, is cut.
+        self.assertEqual("Song Review: ATEEZ - Up", bake.device_clean_title("Song Review: ATEEZ - Up - SOOMPI", "Soompi"))
+        self.assertEqual("Song Review: ATEEZ - Up", bake.device_clean_title("Song Review: ATEEZ - Up | Soompi ", "Soompi"))
 
     def test_the_voiced_title_reads_the_outlet_once(self):
         raw = {"id": "rss_ht", "title": "India gets its own Weverse Con Festival in March 2027 | Hindustan Times - Hindustan Times",

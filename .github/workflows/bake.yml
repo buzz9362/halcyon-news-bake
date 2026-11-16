@@ -39,6 +39,11 @@ concurrency:
   # colour of the run list. (Two such cancelled runs on Sep 12 2026 were read as
   # failures at first glance and were not.)
 
+# r1116 CN-01: the job may dispatch the next run of this workflow (see the last step).
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   bake:
     runs-on: ubuntu-latest
@@ -56,6 +61,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Bake
+        id: bake
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -98,6 +104,7 @@ jobs:
             # a row following a productive one, end green and hand the runner to the queued run.
             if [ "${ok}" -gt 0 ] && [ "${idle}" -ge "${IDLE_STOP}" ]; then
               echo "${idle} failed passes in a row after a productive one: ending early so the next run gets a fresh runner"
+              echo "redispatch=1" >> "$GITHUB_OUTPUT"
               break
             fi
             nap=$(( INTERVAL_MINUTES * 60 - elapsed ))
@@ -110,3 +117,14 @@ jobs:
           # Green if anything got through; red only if the whole window failed, which
           # is a real outage rather than one flaky fetch.
           [ "${ok}" -gt 0 ] || { echo "every bake pass in this window failed"; exit 1; }
+
+      # r1116 CN-01 (Nov 17 2026): an IDLE_STOP end used to wait 2 to 9 h for the next schedule event
+      # (65% of 10 days with no bake running). Dispatch the next run now: a new run is a new runner IP,
+      # so gTTS answers again. workflow_dispatch is the event GITHUB_TOKEN may trigger. The dispatched
+      # run has empty inputs, so it is a normal loop run in the same "bake" concurrency group; it
+      # starts when this job ends. Only an IDLE_STOP end dispatches (it had a productive pass first).
+      - name: Re-dispatch after an early stop
+        if: steps.bake.outputs.redispatch == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run bake.yml -R "${{ github.repository }}" --ref "${{ github.ref_name }}"

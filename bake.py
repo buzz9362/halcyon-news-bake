@@ -157,6 +157,7 @@ MAX_NEW_HINDI_BAKES = 80     # Hindi gets a higher cap: the Amar Ujala feed rota
 # deleted) — until they age out or the cap trims them.
 CARRY_MAX_AGE_MS = 72 * 3600 * 1000  # carried items older than 72h drop off
 MAX_MANIFEST_ITEMS = 80              # newest-first cap on the merged manifest
+CARRY_SOURCE_CAP = max(10, MAX_MANIFEST_ITEMS // 4)  # r1116 CN-04: one outlet's share of the carry-forward
 # Oct 8 2026 (r1007 BK, BAKER-3): a feed-window item older than this is neither baked nor listed.
 # The carry-forward already stops at 72 h, but window items had no age limit, so a slow feed kept
 # months-old stories on the car: kpop_es reached back 5,037 h (HallyuReviews roundups from May),
@@ -1135,24 +1136,22 @@ _SUFFIX_SEPS = (" - ", " — ", " – ", " | ", " · ", " :: ")
 _SQUISH = re.compile(r"[\s\-_.]+")
 
 def _strip_suffix_once(raw_title: str, source: str, allow_short_tail: bool) -> str:
-    """Article.stripPublisherSuffixOnce."""
+    """Article.stripPublisherSuffixOnce, r1116 shared title rule (NEWS-03 / CN-07): a trailing
+    " - X" or " | X" tail (dash variants included) is cut only when X equals, trimmed and
+    case-insensitive, the item's own outlet name. A generic short tail is never cut: the old
+    short-tail pass dropped real headline segments ("Song Review: ATEEZ - Up", "Buried Treasure:
+    NCT Dream - Pressure"). [allow_short_tail] is kept for the call sites and no longer cuts."""
     title = raw_title.strip()
     if not title:
         return title
     pub = source.strip().lower()
-    pub_sq = _SQUISH.sub("", pub)
+    if not pub:
+        return title
     for sep in _SUFFIX_SEPS:
         idx = title.rfind(sep)
         if idx <= 8:
             continue
-        tail = title[idx + len(sep):].strip()
-        tl = tail.lower()
-        tsq = _SQUISH.sub("", tl)
-        if pub and (tl == pub or pub in tl or tl in pub or tsq == pub_sq
-                    or (len(pub_sq) >= 4 and pub_sq in tsq) or (len(tsq) >= 4 and tsq in pub_sq)):
-            return title[:idx].strip()
-        if (allow_short_tail and 2 <= len(tail) <= 40
-                and not any(ch in tail for ch in ".!?,;:")):
+        if title[idx + len(sep):].strip().lower() == pub:
             return title[:idx].strip()
     return title
 
@@ -1201,13 +1200,16 @@ def _display_source(source: str) -> str:
     return source.replace(" (English)", "").replace(" (Spanish)", "").replace(" (Portuguese)", "")
 
 def device_clean_title(title: str, source: str) -> str:
-    """Article.cleanTitle as the appning app computes it for a manifest item (the shown title): one
-    pass that may cut a short tail, then up to 2 exact passes. The apps also try the folded roster
-    credit, which the baker does not hold; on a worker source name it is the same name."""
+    """Article.cleanTitle as the appning app computes it for a manifest item (the shown title): up to
+    3 exact outlet-name passes (r1116 shared title rule; the name with and without its roster edition
+    tag, e.g. "Kenh14 Musik (VN)" and "Kenh14 Musik"), then a desk label left behind."""
     src = _display_source(source)
-    t = _strip_suffix_once(title, src, True)
-    for _ in range(2):
-        n = _strip_suffix_once(t, src, False)
+    names = [n for n in dict.fromkeys((src, spoken_source(src))) if n.strip()]
+    t = title
+    for _ in range(3):
+        n = t
+        for name in names:
+            n = _strip_suffix_once(n, name, False)
         if n == t:
             break
         t = n
@@ -1459,12 +1461,51 @@ def shop_markers_for(manifest: str) -> bool:
 def tv_listing_for(manifest: str) -> bool:
     return manifest.split("_")[0] in _TV_LISTING_APPS
 
+# r1116 CN-15: the finance and tech car lists voiced disaster and politics stories the phone hides
+# ("Kebakaran ... 11 Orang Tewas", "Nach Terroranschlag: Jordanien laesst Telegram sperren"). The phone's
+# own term lists (tickerly NewsApi.kt OFF_TOPIC_TERMS; circuitly NewsApi.kt OFF_TOPIC_TERMS and
+# GN_HARD_NEWS_TERMS), copied verbatim into topic_gates.json, plus the id / vi casualty words the
+# report named; token-matched on title + summary like containsToken.
+def _load_topic_gates() -> dict:
+    try:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "topic_gates.json"), encoding="utf-8") as f:
+            raw = json.load(f)
+        return {app: tuple(t.lower() for terms in lists.values() for t in terms)
+                for app, lists in raw.items() if not app.startswith("_")}
+    except Exception as e:
+        print(f"[topic gate] unavailable: {e}")
+        return {}
+TOPIC_GATES = _load_topic_gates()
+
+def _token_char(c: str) -> bool:
+    return c.isalnum() or unicodedata.category(c) in ("Mn", "Mc", "Me") or c in "‌‍"
+
+def contains_token(hay: str, needle: str) -> bool:
+    """The apps' containsToken: needle at word boundaries (letters, digits, marks and joiners continue a word)."""
+    if not needle:
+        return False
+    i = hay.find(needle)
+    while i >= 0:
+        end = i + len(needle)
+        if (i == 0 or not _token_char(hay[i - 1])) and (end >= len(hay) or not _token_char(hay[end])):
+            return True
+        i = hay.find(needle, i + 1)
+    return False
+
+def is_off_topic_for(manifest: str, title: str, summary: str) -> bool:
+    terms = TOPIC_GATES.get(manifest.split("_")[0])
+    if not terms:
+        return False
+    hay = unicodedata.normalize("NFC", f"{title} {summary}").lower()
+    return any(contains_token(hay, t) for t in terms)
+
 def drops_row(article: dict, manifest: str) -> bool:
     """True for a row the appning app drops from this manifest by a stateless rule (BAKER-4)."""
     title, url = article.get("title") or "", article.get("articleUrl") or ""
     publisher = article.get("realPublisher") or article.get("source")
     return (is_low_value_story(title, url, shop_markers_for(manifest), tv_listing_for(manifest), publisher)
-            or is_profane_title(title))
+            or is_profane_title(title)
+            or is_off_topic_for(manifest, title, article.get("summary") or ""))
 
 # -- BAKER-4: FeedQuality.dedupeNearDuplicates (one story from several outlets, a re-titled copy) --
 _NEAR_DUP_STOP = frozenset((
@@ -1591,6 +1632,11 @@ READ_MORE_MARKERS = (
     "[Lire la suite]", "[Read more]", "[Leer mas]", "[Leer más]", "[Leia mais]",
     "[Weiterlesen]", "[Continua a leggere]", "[Doc them]", "[Đọc thêm]",
 )
+# r1116 CN-06: unbracketed feed tails that were read aloud on the car. Soompi "... Continue reading
+# <the headline again>", t3n "...neue Rolleweiterlesen auf t3n.de" (glued to the last word, so the
+# literal find matches inside it), Viva "Simak selengkapnya". Same index floor as the others. Kept
+# apart from READ_MORE_MARKERS (pinned to the apps' SocialResidue.kt list) until the apps carry them.
+READ_MORE_MARKERS_CAR = ("Continue reading", "weiterlesen auf t3n.de", "Simak selengkapnya")
 READ_MORE_MIN_INDEX = 60
 
 def cut_read_more_promo(summary: str) -> str:
@@ -1598,7 +1644,7 @@ def cut_read_more_promo(summary: str) -> str:
         return summary
     low = summary.lower()
     cut = -1
-    for m in READ_MORE_MARKERS:
+    for m in READ_MORE_MARKERS + READ_MORE_MARKERS_CAR:
         i = low.find(m.lower())
         if i >= READ_MORE_MIN_INDEX and (cut < 0 or i < cut):
             cut = i
@@ -1647,6 +1693,130 @@ def spoken_source(name: str) -> str:
         return name
     return n[:op].rstrip()
 
+# r1116 CN-05: the spoken summary is cut like the phone's Article.snippet = TextCut.kt cutToBudget
+# (kpop-today-app data/model/TextCut.kt), not sliced at 350: 22% of the car summaries stopped inside a
+# word. The last real sentence end at or after minKeep (a full stop first, an ellipsis only when no full
+# stop fits), else the last whole word plus an ellipsis. A text within the budget is returned unchanged.
+_TC_OPENERS = '"\u201c\u2018([\u00ab'
+_TC_CLOSERS = '"\')]\u201d\u2019\u00bb'
+_TC_TAIL_TRIM = ',;:-\u2013\u2014("\u201c'
+_TC_ABBR = frozenset((
+    "dr", "mr", "mrs", "ms", "prof", "jr", "sr", "st", "vs", "etc", "approx", "dept",
+    "inc", "corp", "ltd", "co", "bros", "govt", "pvt", "smt", "rs", "ft", "feat", "mt", "intl",
+    "sra", "srta", "dra", "profa", "sta", "sto", "lic", "ing", "avda", "gral", "pdte",
+    "aprox", "pág", "págs", "cía", "cia", "ltda", "ej", "exmo", "excmo",
+    "bzw", "usw", "vgl", "evtl", "ggf", "inkl", "zzgl", "ca", "mio", "mrd",
+    "mme", "mlle", "ste", "cf", "env", "dott", "avv", "sig", "ecc",
+    "tn", "ny", "nn", "bpk", "sdr", "sdri", "jl", "jln", "dll", "dsb", "dst", "hj", "drs", "rp",
+))
+_TC_ABBR_CASED = frozenset((
+    "Jan", "Feb", "Mar", "Apr", "Jun", "Jul", "Aug", "Sep", "Sept", "Oct", "Nov", "Dec",
+    "Gen", "Col", "Capt", "Lt", "Sgt", "Gov", "Sen", "Rep", "Rev", "Hon", "Pres", "Ave", "Av",
+    "Me", "MM", "Ud", "Uds", "Ir",
+    "TP", "PGS", "GS", "TS", "ThS", "BS", "KS", "TT",
+    "\u0921\u0949", "\u092a\u094d\u0930\u094b",
+))
+_TC_NUM_ABBR = frozenset(("no", "nos", "nr", "num", "núm", "art", "vol", "p", "pp", "hal", "tel"))
+
+def _tc_digit(c: str) -> bool:
+    return unicodedata.category(c) == "Nd"
+
+def _tc_word(c: str) -> bool:
+    return c.isalpha() or c == "." or unicodedata.category(c) in ("Mn", "Mc")
+
+def _tc_abbrev_dot(text: str, p: int) -> bool:
+    if p > 0 and text[p - 1] in ".\u2026":
+        return False
+    s = p
+    while s > 0 and _tc_word(text[s - 1]):
+        s -= 1
+    if s == p:
+        return False
+    token = text[s:p]
+    if "." in token:
+        return True
+    if len(token) == 1 and token.isupper():
+        if s > 0 and _tc_digit(text[s - 1]):
+            return False
+        b = s - 1
+        while b >= 0 and text[b] == " ":
+            b -= 1
+        return not (b >= 0 and _tc_digit(text[b]))
+    if token in _TC_ABBR_CASED or token.lower() in _TC_ABBR:
+        return True
+    if token.lower() in _TC_NUM_ABBR:
+        n = p + 1
+        while n < len(text) and text[n].isspace():
+            n += 1
+        return n < len(text) and (_tc_digit(text[n]) or text[n] == "#")
+    return False
+
+def _tc_run_on(text: str, p: int, e: int) -> bool:
+    if e != p + 1:
+        return False
+    n = e
+    while n < len(text) and text[n] in _TC_OPENERS:
+        n += 1
+    if n + 1 >= len(text) or not text[n].isalpha():
+        return False
+    q = p
+    while q > 0 and text[q - 1] in _TC_CLOSERS:
+        q -= 1
+    s = q
+    while s > 0 and text[s - 1] != "." and _tc_word(text[s - 1]):
+        s -= 1
+    if q - s < 2:
+        d = q
+        while d > 0 and _tc_digit(text[d - 1]):
+            d -= 1
+        if q - d < 2 or (d > 0 and (text[d - 1] in ".," or text[d - 1].isalpha())):
+            return False
+        return text[n].isupper() and text[n + 1].islower()
+    if s > 0 and (text[s - 1] in "./@" or _tc_digit(text[s - 1])):
+        return False
+    prev, nxt = text[q - 1], text[n]
+    if nxt.isupper():
+        return text[n + 1].islower() or prev.islower()
+    return not nxt.islower() and not prev.islower() and not prev.isupper()
+
+def _tc_sentence_end(text: str, p: int, mx: int, ellipsis_ok: bool) -> int:
+    c = text[p]
+    if c not in ".!?\u0964\u2026":
+        return -1
+    ellipsis = c == "\u2026" or (c == "." and p > 0 and text[p - 1] == ".")
+    if ellipsis and not ellipsis_ok:
+        return -1
+    e = p + 1
+    while e < len(text) and text[e] in _TC_CLOSERS:
+        e += 1
+    if e > mx:
+        return -1
+    if e < len(text) and not text[e].isspace() and text[e] != "\u2026" and not _tc_run_on(text, p, e):
+        return -1
+    if c == "." and _tc_abbrev_dot(text, p):
+        return -1
+    return e
+
+def cut_to_budget(text: str, mx: int, min_keep: int) -> str:
+    """TextCut.kt cutToBudget (r1007 NS7), ported for the spoken summary (r1116 CN-05)."""
+    if len(text) <= mx:
+        return text
+    if mx < 2:
+        return text[:mx]
+    floor = max(1, min(min_keep, mx))
+    for ellipsis_ok in (False, True):
+        p = mx - 1
+        while p >= floor:
+            end = _tc_sentence_end(text, p, mx, ellipsis_ok)
+            if end > 0:
+                return text[:end]
+            p -= 1
+    s = mx - 1
+    while s > 0 and not text[s].isspace():
+        s -= 1
+    head = text[:s] if s >= floor else text[:mx - 1]
+    return head.rstrip(" \t\n\r\f\v" + _TC_TAIL_TRIM).rstrip() + "\u2026"
+
 def text_for(article: dict, app: str = "") -> str:
     # r1010 N2-7: a single hashtag in the title is read as words, as the summary rule already does.
     # r1019 N2-18: [app] (the phonetics key) keeps a dictionary name's case, as the apps do.
@@ -1666,7 +1836,7 @@ def text_for(article: dict, app: str = "") -> str:
         if not title.endswith((".", "!", "?")):
             body_parts.append(".")
     if summary and summary.lower() != title.lower():
-        body_parts.append(summary[:FAIR_USE_SNIPPET])  # fair-use excerpt cap
+        body_parts.append(cut_to_budget(summary, FAIR_USE_SNIPPET, FAIR_USE_SNIPPET // 3))  # fair-use excerpt cap (r1116 CN-05)
     body = " ".join(body_parts).strip()
     return body[:MAX_TEXT_LEN]
 
@@ -2136,6 +2306,25 @@ def finalize_manifest(p: dict) -> None:
             )
             if not drops_row(c, name)
         ]
+        # r1116 CN-04: a high-volume outlet's rotated-out rows piled up in the carry-forward until it
+        # owned the newest-80 cut (Tickerly it 88% Investing.com Italia, de 84% FinanzNachrichten).
+        # Window rows are never dropped; a carried row is admitted only while its source holds fewer
+        # than CARRY_SOURCE_CAP rows in the manifest (window rows count first), newest carried first.
+        if carried:
+            per_src: dict = {}
+            for a in items:
+                k = (a.get("source") or "").strip().lower()
+                per_src[k] = per_src.get(k, 0) + 1
+            carried.sort(key=lambda a: int(a.get("publishedAtMs") or 0), reverse=True)
+            capped = []
+            for a in carried:
+                k = (a.get("source") or "").strip().lower()
+                if per_src.get(k, 0) < CARRY_SOURCE_CAP:
+                    per_src[k] = per_src.get(k, 0) + 1
+                    capped.append(a)
+            if len(capped) < len(carried):
+                print(f"[{name}] r1116 CN-04: {len(carried) - len(capped)} carried rows over the per-source cap ({CARRY_SOURCE_CAP}) not carried")
+            carried = capped
         if carried:
             items.extend(carried)
             items.sort(key=lambda a: int(a.get("publishedAtMs") or 0), reverse=True)
