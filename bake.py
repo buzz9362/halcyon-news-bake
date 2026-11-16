@@ -1513,7 +1513,7 @@ TERMS_DISABLED_SOURCES = frozenset((
 ))
 
 def _source_key(name: str) -> str:
-    n = unicodedata.normalize("NFC", (name or "").strip()).lower().replace("—", "-").replace("–", "-")
+    n = unicodedata.normalize("NFC", (name or "").strip()).lower().replace("\u2014", "-").replace("\u2013", "-")
     if n.endswith(")") and " (" in n:
         n = n[:n.rfind(" (")]
     return " ".join(n.split())
