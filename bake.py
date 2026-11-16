@@ -1499,13 +1499,36 @@ def is_off_topic_for(manifest: str, title: str, summary: str) -> bool:
     hay = unicodedata.normalize("NFC", f"{title} {summary}").lower()
     return any(contains_token(hay, t) for t in terms)
 
+# r1116 FM-05 (LEGAL r1116): outlets whose published terms bar commercial or aggregated reuse, or whose
+# feeds carry full text. The workers no longer fetch them (rosters disabled, reversible); this list stops
+# the carry-forward from keeping their already-baked rows for up to 72 h. Matched on the manifest
+# "source" name, case-insensitive, dash variants folded, a trailing "(..)" edition tag ignored.
+TERMS_DISABLED_SOURCES = frozenset((
+    "20minutos música", "abc españa cultura", "abc españa espectáculos", "billboard k-pop",
+    "clarín espectáculos", "antara hiburan", "antara news hiburan", "cnn indonesia hiburan",
+    "india tv - entertainment", "times of india - entertainment", "bollywood hungama", "koimoi",
+    "bollywood bubble", "bbc news - business", "bbc news - economy", "ansa - economia",
+    "ansa - economia/pmi", "cnbc indonesia - entrepreneur", "cnbc indonesia - market",
+    "cnbc indonesia - my money", "cnbc indonesia - news", "cnbc indonesia - syariah", "india tv - paisa",
+))
+
+def _source_key(name: str) -> str:
+    n = unicodedata.normalize("NFC", (name or "").strip()).lower().replace("—", "-").replace("–", "-")
+    if n.endswith(")") and " (" in n:
+        n = n[:n.rfind(" (")]
+    return " ".join(n.split())
+
+def is_terms_disabled_source(article: dict) -> bool:
+    return _source_key(article.get("source") or "") in TERMS_DISABLED_SOURCES
+
 def drops_row(article: dict, manifest: str) -> bool:
     """True for a row the appning app drops from this manifest by a stateless rule (BAKER-4)."""
     title, url = article.get("title") or "", article.get("articleUrl") or ""
     publisher = article.get("realPublisher") or article.get("source")
     return (is_low_value_story(title, url, shop_markers_for(manifest), tv_listing_for(manifest), publisher)
             or is_profane_title(title)
-            or is_off_topic_for(manifest, title, article.get("summary") or ""))
+            or is_off_topic_for(manifest, title, article.get("summary") or "")
+            or is_terms_disabled_source(article))
 
 # -- BAKER-4: FeedQuality.dedupeNearDuplicates (one story from several outlets, a re-titled copy) --
 _NEAR_DUP_STOP = frozenset((

@@ -106,5 +106,16 @@ class TopicGate(unittest.TestCase):
         self.assertFalse(bake.contains_token("protestant churches", "protest"))
 
 
+class TermsDisabled(unittest.TestCase):   # r1116 FM-05: carried rows of a disabled outlet are dropped
+    def test_disabled_outlets_drop(self):
+        for src in ("Times of India - Entertainment", "BBC News — Business (EN/UK)", "CNBC Indonesia - News",
+                    "Clarín Espectáculos", "Billboard K-pop", "India TV - Paisa"):
+            self.assertTrue(bake.drops_row({"title": "Ordinary headline here", "source": src}, "tickerly_en"), src)
+
+    def test_kept_outlets_stay(self):   # control: KEEP rows and neighbours of a disabled name
+        for src in ("FilmiBeat Bollywood", "Yahoo Finance", "Computer Hoy (ES)", "CNBC - Economy", "NDTV Movies"):
+            self.assertFalse(bake.drops_row({"title": "Ordinary headline here", "source": src}, "tickerly_en"), src)
+
+
 if __name__ == "__main__":
     unittest.main()
